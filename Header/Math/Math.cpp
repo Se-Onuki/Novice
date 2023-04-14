@@ -93,7 +93,7 @@ Vector2 Transform(const Vector2 &vector, const Matrix3x3 &matrix) {
 	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
 	const float w = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
 	assert(w != 0.0f);
-	return result / w; // ‰‰Zq‚ÌƒI[ƒo[ƒ‰ƒCƒh
+	return result / w; // æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
 }
 
 

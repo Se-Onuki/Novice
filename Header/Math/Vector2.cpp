@@ -19,7 +19,7 @@ Vector2 Vector2::Rotate(const float &theta) const {
 }
 
 float Vector2::Length() const {
-	return sqrt(pow(x, 2) + pow(y, 2));
+	return sqrtf(powf(x, 2) + powf(y, 2));
 }
 
 Vector2 Vector2::Nomalize() const {
@@ -32,9 +32,9 @@ Vector2 Vector2::Nomalize() const {
 	}
 }
 
-void Vector2::Printf(int x, int y) const {
-	Novice::ScreenPrintf(x, y, "%12.2f // %6.2f", this->x, Length());
-	Novice::ScreenPrintf(x, y + TextHeight, "%12.2f", this->y);
+void Vector2::Printf(int x_, int y_) const {
+	Novice::ScreenPrintf(x_, y_, "%12.2f // %6.2f", this->x, Length());
+	Novice::ScreenPrintf(x_, y_ + TextHeight, "%12.2f", this->y);
 }
 
 Vector2 Vector2::operator+(const Vector2 &Second) const {
@@ -97,7 +97,7 @@ Vector2 Vector2::operator*(const Matrix3x3 &matrix) const {
 	result.y = x * matrix.m[0][1] + y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
 	const float w = x * matrix.m[0][2] + y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
 	assert(w != 0.0f);
-	return result / w; // ‰‰Zq‚ÌƒI[ƒo[ƒ‰ƒCƒh
+	return result / w; // æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
 }
 
 void Vector2::operator*=(const Matrix3x3 &matrix) {
@@ -105,7 +105,7 @@ void Vector2::operator*=(const Matrix3x3 &matrix) {
 	this->y = x * matrix.m[0][1] + y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
 	const float w = x * matrix.m[0][2] + y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
 	assert(w != 0.0f);
-	*this / w; // ‰‰Zq‚ÌƒI[ƒo[ƒ‰ƒCƒh
+	*this / w; // æ¼”ç®—å­ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ©ã‚¤ãƒ‰
 }
 
 

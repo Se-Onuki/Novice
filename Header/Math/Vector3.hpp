@@ -12,22 +12,22 @@
 //	float z;
 //
 //	/// <summary>
-//	/// ƒxƒNƒgƒ‹‚ğƒfƒoƒbƒN•\¦‚·‚é
+//	/// ãƒ™ã‚¯ãƒˆãƒ«ã‚’ãƒ‡ãƒãƒƒã‚¯è¡¨ç¤ºã™ã‚‹
 //	/// </summary>
-//	/// <param name="x">xÀ•W</param>
-//	/// <param name="y">yÀ•W</param>
+//	/// <param name="x">xåº§æ¨™</param>
+//	/// <param name="y">yåº§æ¨™</param>
 //	void Printf(int x, int y) const;
 //
 //	/// <summary>
-//	/// ƒxƒNƒgƒ‹’·ŠÖ”
+//	/// ãƒ™ã‚¯ãƒˆãƒ«é•·é–¢æ•°
 //	/// </summary>
-//	/// <returns>ƒxƒNƒgƒ‹‚Ì’·‚³</returns>
+//	/// <returns>ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•</returns>
 //	float Length() const { return 0; }
 //
 //	/// <summary>
-//	/// ³‹K‰»
+//	/// æ­£è¦åŒ–
 //	/// </summary>
-//	/// <returns>ƒxƒNƒgƒ‹’·‚ª1‚ÌƒxƒNƒgƒ‹</returns>
+//	/// <returns>ãƒ™ã‚¯ãƒˆãƒ«é•·ãŒ1ã®ãƒ™ã‚¯ãƒˆãƒ«</returns>
 //	Vector3 Nomalize() const;
 //
 //	Vector3 operator+(const Vector3& Second) const {}
@@ -51,12 +51,12 @@
 //	//void operator*=(const Matrix4x4& Second){}
 //
 //
-//	// ‹tƒxƒNƒgƒ‹
+//	// é€†ãƒ™ã‚¯ãƒˆãƒ«
 //	inline Vector3 operator-() const { return *this * -1; }
 //
-//	// “àÏ
+//	// å†…ç©
 //	inline float operator*(const Vector3& v) const { return x * v.x + y * v.y; }
-//	// ŠOÏ
+//	// å¤–ç©
 //	// inline float operator^(const Vector3& v) const { return x * v.y - y * v.x; }
 //
 //	inline static Vector3 zero() { return {0, 0}; }

@@ -15,34 +15,34 @@ public:
 	float y;
 
 	/// <summary>
-	/// ƒxƒNƒgƒ‹‚ğƒfƒoƒbƒN•\¦‚·‚é
+	/// ãƒ™ã‚¯ãƒˆãƒ«ã‚’ãƒ‡ãƒãƒƒã‚¯è¡¨ç¤ºã™ã‚‹
 	/// </summary>
-	/// <param name="x">xÀ•W</param>
-	/// <param name="y">yÀ•W</param>
+	/// <param name="x">xåº§æ¨™</param>
+	/// <param name="y">yåº§æ¨™</param>
 	void Printf(int x, int y) const;
 
 	/// <summary>
-	/// ƒxƒNƒgƒ‹‚ğ‰ñ“]‚³‚¹‚é
+	/// ãƒ™ã‚¯ãƒˆãƒ«ã‚’å›è»¢ã•ã›ã‚‹
 	/// </summary>
-	/// <param name="theta">‰ñ“]Šp</param>
-	/// <returns>‰ñ“]‚µ‚½ƒxƒNƒgƒ‹</returns>
+	/// <param name="theta">å›è»¢è§’</param>
+	/// <returns>å›è»¢ã—ãŸãƒ™ã‚¯ãƒˆãƒ«</returns>
 	Vector2 Rotate(const float& theta) const;
 
 	/// <summary>
-	/// ƒ[ƒƒxƒNƒgƒ‹
+	/// ã‚¼ãƒ­ãƒ™ã‚¯ãƒˆãƒ«
 	/// </summary>
 	void Reset();
 
 	/// <summary>
-	/// ƒxƒNƒgƒ‹’·ŠÖ”
+	/// ãƒ™ã‚¯ãƒˆãƒ«é•·é–¢æ•°
 	/// </summary>
-	/// <returns>ƒxƒNƒgƒ‹‚Ì’·‚³</returns>
+	/// <returns>ãƒ™ã‚¯ãƒˆãƒ«ã®é•·ã•</returns>
 	float Length() const;
 
 	/// <summary>
-	/// ³‹K‰»
+	/// æ­£è¦åŒ–
 	/// </summary>
-	/// <returns>ƒxƒNƒgƒ‹’·‚ª1‚ÌƒxƒNƒgƒ‹</returns>
+	/// <returns>ãƒ™ã‚¯ãƒˆãƒ«é•·ãŒ1ã®ãƒ™ã‚¯ãƒˆãƒ«</returns>
 	Vector2 Nomalize() const;
 
 	Vector2 operator+(const Vector2& Second) const;
@@ -75,12 +75,12 @@ public:
 		return atan2(y, x);
 	}
 
-	// ‹tƒxƒNƒgƒ‹
+	// é€†ãƒ™ã‚¯ãƒˆãƒ«
 	inline Vector2 operator-() const { return *this * -1; }
 
-	// “àÏ
+	// å†…ç©
 	inline float operator*(const Vector2& v) const { return x * v.x + y * v.y; }
-	// ŠOÏ
+	// å¤–ç©
 	inline float operator^(const Vector2& v) const { return x * v.y - y * v.x; }
 
 
@@ -102,14 +102,14 @@ inline Vector2 operator*(const float& A, const Vector2& B) { return B * A; }
 
 
 /// <summary>
-	/// intŒ^‚Ì“ñŸŒ³ƒxƒNƒgƒ‹
+	/// intå‹ã®äºŒæ¬¡å…ƒãƒ™ã‚¯ãƒˆãƒ«
 	/// </summary>
-	/// <param name="x">‰¡</param>
-	/// <param name="y">c</param>
+	/// <param name="x">æ¨ª</param>
+	/// <param name="y">ç¸¦</param>
 class IntVector2 {
 public:
 	inline IntVector2() :x(0), y(0) {}
-	inline IntVector2(Vector2 vec) : x(vec.x), y(vec.y) {}
+	inline IntVector2(Vector2 vec) : x(int(vec.x)), y(int(vec.y)) {}
 	int x;
 	int y;
 };
@@ -123,13 +123,13 @@ const Vector2 ScreenSize{
 
 
 
-/// ƒ[ƒƒxƒNƒgƒ‹
+/// ã‚¼ãƒ­ãƒ™ã‚¯ãƒˆãƒ«
 const Vector2 ZeroVector2 = { 0,0 };
 
 
 
 
-/// UI‚È‚Ç‚ÌŠî€’l‚Æ‚È‚éÀ•W
+/// UIãªã©ã®åŸºæº–å€¤ã¨ãªã‚‹åº§æ¨™
 const Vector2 MiddleLeftOver = { (float)(-ScreenSize.x / 2), (float)(ScreenSize.y / 2) };
 const Vector2 TopLeftOver = { (float)(-ScreenSize.x / 2), (float)(ScreenSize.y) };
 const Vector2 DownLeftOver = { (float)(-ScreenSize.x / 2), 0 };

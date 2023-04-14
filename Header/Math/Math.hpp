@@ -6,124 +6,124 @@
 #include "Matrix3x3.hpp"
 
 /// <summary>
-/// “ñŸŒ³“àÏŠÖ”
+/// äºŒæ¬¡å…ƒå†…ç©é–¢æ•°
 /// </summary>
-/// <param name="startA">ü•ªA‚Ìn“_</param>
-/// <param name="endA">ü•ªA‚ÌI“_</param>
-/// <param name="startB">ü•ªB‚Ìn“_</param>
-/// <param name="endB">ü•ªB‚ÌI“_</param>
+/// <param name="startA">ç·šåˆ†Aã®å§‹ç‚¹</param>
+/// <param name="endA">ç·šåˆ†Aã®çµ‚ç‚¹</param>
+/// <param name="startB">ç·šåˆ†Bã®å§‹ç‚¹</param>
+/// <param name="endB">ç·šåˆ†Bã®çµ‚ç‚¹</param>
 /// <param name="normalizeFlagA"></param>
 /// <param name="normalizeFlagB"></param>
-/// <returns>“àÏŒvZ‚ÌŒ‹‰Ê</returns>
+/// <returns>å†…ç©è¨ˆç®—ã®çµæœ</returns>
 float DotProduct(Vector2 startA, Vector2 endA, Vector2 startB, Vector2 endB);
 
 /// <summary>
-/// “ñŸŒ³“àÏŠÖ”
+/// äºŒæ¬¡å…ƒå†…ç©é–¢æ•°
 /// </summary>
-/// <param name="VectorA">ƒxƒNƒgƒ‹A</param>
-/// <param name="VectorB">ƒxƒNƒgƒ‹B</param>
-/// <returns>“àÏŒvZ‚ÌŒ‹‰Ê</returns>
+/// <param name="VectorA">ãƒ™ã‚¯ãƒˆãƒ«A</param>
+/// <param name="VectorB">ãƒ™ã‚¯ãƒˆãƒ«B</param>
+/// <returns>å†…ç©è¨ˆç®—ã®çµæœ</returns>
 float DotProduct(Vector2 VectorA, Vector2 VectorB);
 
 
 /// <summary>
-/// “ñŸŒ³ŠOÏŠÖ”
+/// äºŒæ¬¡å…ƒå¤–ç©é–¢æ•°
 /// </summary>
-/// <param name="startA">ü•ªA‚Ìn“_</param>
-/// <param name="endA">ü•ªA‚ÌI“_</param>
-/// <param name="startB">ü•ªB‚Ìn“_</param>
-/// <param name="endB">ü•ªB‚ÌI“_</param>
+/// <param name="startA">ç·šåˆ†Aã®å§‹ç‚¹</param>
+/// <param name="endA">ç·šåˆ†Aã®çµ‚ç‚¹</param>
+/// <param name="startB">ç·šåˆ†Bã®å§‹ç‚¹</param>
+/// <param name="endB">ç·šåˆ†Bã®çµ‚ç‚¹</param>
 /// <param name="normalizeFlagA"></param>
 /// <param name="normalizeFlagB"></param>
-/// <returns>“àÏŒvZ‚ÌŒ‹‰Ê</returns>
+/// <returns>å†…ç©è¨ˆç®—ã®çµæœ</returns>
 float CrossProduct(Vector2 startA, Vector2 endA, Vector2 startB, Vector2 endB);
 
 
 /// <summary>
-/// “ñŸŒ³ŠOÏŠÖ”
+/// äºŒæ¬¡å…ƒå¤–ç©é–¢æ•°
 /// </summary>
-/// <param name="VectorA">ƒxƒNƒgƒ‹A</param>
-/// <param name="VectorB">ƒxƒNƒgƒ‹B</param>
-/// <returns>“àÏŒvZ‚ÌŒ‹‰Ê</returns>
+/// <param name="VectorA">ãƒ™ã‚¯ãƒˆãƒ«A</param>
+/// <param name="VectorB">ãƒ™ã‚¯ãƒˆãƒ«B</param>
+/// <returns>å†…ç©è¨ˆç®—ã®çµæœ</returns>
 float CrossProduct(Vector2 VectorA, Vector2 VectorB);
 
 
 
 /// <summary>
-/// ‹ÉÀ•WŒn‚ğƒxƒNƒgƒ‹‚É•ÏŠ·‚·‚éB
+/// æ¥µåº§æ¨™ç³»ã‚’ãƒ™ã‚¯ãƒˆãƒ«ã«å¤‰æ›ã™ã‚‹ã€‚
 /// </summary>
-/// <param name="Polar">‹ÉÀ•W</param>
-/// <returns>ƒxƒNƒgƒ‹</returns>
+/// <param name="Polar">æ¥µåº§æ¨™</param>
+/// <returns>ãƒ™ã‚¯ãƒˆãƒ«</returns>
 Vector2 Polar2Rectangular(Polar Polar);
 
 /// <summary>
-/// ƒxƒNƒgƒ‹‚ğ‹ÉÀ•WŒn‚É•ÏŠ·‚·‚éB
+/// ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ¥µåº§æ¨™ç³»ã«å¤‰æ›ã™ã‚‹ã€‚
 /// </summary>
-/// <param name="Vector">ƒxƒNƒgƒ‹</param>
-/// <returns>‹ÉÀ•WƒNƒ‰ƒX</returns>
+/// <param name="Vector">ãƒ™ã‚¯ãƒˆãƒ«</param>
+/// <returns>æ¥µåº§æ¨™ã‚¯ãƒ©ã‚¹</returns>
 Polar Rectangular2Polar(Vector2 Vector);
 
 
 /// <summary>
-/// ‰ñ“]s—ñì¬ŠÖ”
+/// å›è»¢è¡Œåˆ—ä½œæˆé–¢æ•°
 /// </summary>
-/// <param name="theta">radianŠp“x</param>
-/// <returns>2x2‚Ì‰ñ“]s—ñ</returns>
+/// <param name="theta">radianè§’åº¦</param>
+/// <returns>2x2ã®å›è»¢è¡Œåˆ—</returns>
 Matrix2x2 MakeRotateMatrix(const float &theta);
 
 
 // <summary>
-/// Šgks—ñì¬ŠÖ”
+/// æ‹¡ç¸®è¡Œåˆ—ä½œæˆé–¢æ•°
 /// </summary>
-/// <param name="scale">Šgk‚Ì”{—¦</param>
-/// <returns>3x3‚ÌŠgks—ñ</returns>
+/// <param name="scale">æ‹¡ç¸®ã®å€ç‡</param>
+/// <returns>3x3ã®æ‹¡ç¸®è¡Œåˆ—</returns>
 Matrix3x3 MakeScaleMatrix3x3(const Vector2 &scale);
 
 // <summary>
-/// ‰ñ“]s—ñì¬ŠÖ”
+/// å›è»¢è¡Œåˆ—ä½œæˆé–¢æ•°
 /// </summary>
-/// <param name="theta">radianŠp“x</param>
-/// <returns>3x3‚Ì‰ñ“]s—ñ</returns>
+/// <param name="theta">radianè§’åº¦</param>
+/// <returns>3x3ã®å›è»¢è¡Œåˆ—</returns>
 Matrix3x3 MakeRotateMatrix3x3(const float &theta);
 
 
 /// <summary>
-/// •½sˆÚ“®s—ñ‚Ìì¬ŠÖ”
+/// å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆé–¢æ•°
 /// </summary>
-/// <param name="translate">•ÏŠ·Œ³‚ÌƒxƒNƒgƒ‹</param>
-/// <returns>“¯ŸÀ•WŒn</returns>
+/// <param name="translate">å¤‰æ›å…ƒã®ãƒ™ã‚¯ãƒˆãƒ«</param>
+/// <returns>åŒæ¬¡åº§æ¨™ç³»</returns>
 Matrix3x3 MakeTranslateMatrix(const Vector2 &translate);
 
 
 /// <summary>
-/// ƒAƒtƒBƒ“s—ñ‚Ìì¬ŠÖ”
+/// ã‚¢ãƒ•ã‚£ãƒ³è¡Œåˆ—ã®ä½œæˆé–¢æ•°
 /// </summary>
-/// <param name="scale">Šgk‚Ì”{—¦</param>
-/// <param name="theta">radianŠp“x</param>
-/// <param name="translate">•ÏŠ·Œ³‚ÌƒxƒNƒgƒ‹</param>
-/// <returns>“¯ŸÀ•WŒn</returns>
+/// <param name="scale">æ‹¡ç¸®ã®å€ç‡</param>
+/// <param name="theta">radianè§’åº¦</param>
+/// <param name="translate">å¤‰æ›å…ƒã®ãƒ™ã‚¯ãƒˆãƒ«</param>
+/// <returns>åŒæ¬¡åº§æ¨™ç³»</returns>
 Matrix3x3 MakeAffineMatrix(const Vector2 &scale, const float &theta, const Vector2 &translate);
 
 /// <summary>
-/// ƒxƒNƒgƒ‹‚Æ“¯ŸÀ•WŒn‚Ì‡¬
+/// ãƒ™ã‚¯ãƒˆãƒ«ã¨åŒæ¬¡åº§æ¨™ç³»ã®åˆæˆ
 /// </summary>
-/// <param name="vector">‡¬‘O‚ÌƒxƒNƒgƒ‹</param>
-/// <param name="matrix">“¯ŸÀ•WŒn‚Ì•½sˆÚ“®s—ñ</param>
-/// <returns>‡¬‚µ‚½ƒxƒNƒgƒ‹</returns>
+/// <param name="vector">åˆæˆå‰ã®ãƒ™ã‚¯ãƒˆãƒ«</param>
+/// <param name="matrix">åŒæ¬¡åº§æ¨™ç³»ã®å¹³è¡Œç§»å‹•è¡Œåˆ—</param>
+/// <returns>åˆæˆã—ãŸãƒ™ã‚¯ãƒˆãƒ«</returns>
 Vector2 Transform(const Vector2 &vector, const Matrix3x3 &matrix);
 
 /// <summary>
-/// ³Ë‰es—ñ
+/// æ­£å°„å½±è¡Œåˆ—
 /// </summary>
-/// <param name="LeftTop">¶ã</param>
-/// <param name="RightBottom">‰E‰º</param>
-/// <returns>³Ë‰es—ñ</returns>
+/// <param name="LeftTop">å·¦ä¸Š</param>
+/// <param name="RightBottom">å³ä¸‹</param>
+/// <returns>æ­£å°„å½±è¡Œåˆ—</returns>
 Matrix3x3 MakeOrthographicMatrix(const Vector2 &LeftTop, const Vector2 &RightBottom);
 
 /// <summary>
-/// ƒrƒ…[ƒ|[ƒgs—ñ
+/// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¡Œåˆ—
 /// </summary>
-/// <param name="LeftTop">¶ã</param>
-/// <param name="RightBottom">‰E‰º</param>
-/// <returns>ƒrƒ…[ƒ|[ƒgs—ñ</returns>
+/// <param name="LeftTop">å·¦ä¸Š</param>
+/// <param name="RightBottom">å³ä¸‹</param>
+/// <returns>ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¡Œåˆ—</returns>
 Matrix3x3 MakeViewportMatrix(const Vector2 &LeftTop, const Vector2 &RightBottom);

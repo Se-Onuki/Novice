@@ -12,15 +12,15 @@ public:
 	void Printf(const int &x, const int &y) const;
 
 	/// <summary>
-	/// ‹ts—ñŠÖ”
+	/// é€†è¡Œåˆ—é–¢æ•°
 	/// </summary>
-	/// <returns>‹ts—ñ</returns>
+	/// <returns>é€†è¡Œåˆ—</returns>
 	Matrix3x3 Inverse();
 
 	/// <summary>
-	/// “]’us—ñ
+	/// è»¢ç½®è¡Œåˆ—
 	/// </summary>
-	/// <returns>“]’us—ñ</returns>
+	/// <returns>è»¢ç½®è¡Œåˆ—</returns>
 	Matrix3x3 Transpose();
 
 	Matrix3x3 operator+(const Matrix3x3 &Second) const;
@@ -35,21 +35,21 @@ public:
 
 
 
-	void operator+=(const Matrix3x3 &Second);
+	Matrix3x3 operator+=(const Matrix3x3& Second);
 
-	void operator-=(const Matrix3x3 &Second);
+	Matrix3x3 operator-=(const Matrix3x3& Second);
 
-	void operator*=(const Matrix3x3 &Second);
+	Matrix3x3 operator*=(const Matrix3x3& Second);
 
 
-	void operator*=(const float &Second);
-	void operator/=(const float &Second);
+	Matrix3x3 operator*=(const float& Second);
+	Matrix3x3 operator/=(const float& Second);
 
 
 	/// <summary>
-	/// ’PˆÊs—ñ
+	/// å˜ä½è¡Œåˆ—
 	/// </summary>
-	/// <returns>’PˆÊs—ñ</returns>
+	/// <returns>å˜ä½è¡Œåˆ—</returns>
 	static Matrix3x3 Identity(){
 		return Matrix3x3{
 			1, 0, 0,
