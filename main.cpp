@@ -1,4 +1,6 @@
 #include <Novice.h>
+#include <Header/Math/Vector2.hpp>
+#include <Header/Math/Vector3.hpp>
 
 const char kWindowTitle[] = "LE2A_03_オヌキ_セイヤ_MT3";
 
