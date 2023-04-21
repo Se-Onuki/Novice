@@ -4,6 +4,8 @@
 
 #include <imgui.h>
 
+#include "Header/Math/Matrix4x4.hpp"
+
 const char kWindowTitle[] = "LE2A_03_オヌキ_セイヤ_MT3";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -16,10 +18,24 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	// 変数
-	Vector3 v1{1.f, 3.f, -5.f};
-	Vector3 v2{4.f, -1.f, 2.f};
-	float k{4.f};
+	Matrix4x4 m1 = {3.2f, 0.7f, 9.6f, 4.4f, 5.5f, 1.3f, 7.8f, 2.1f,
+	                6.9f, 8.f,  2.6f, 1.f,  0.5f, 7.2f, 5.1f, 3.3f};
+	Matrix4x4 m2 = {4.1f, 6.5f, 3.3f, 2.2f, 8.8f, 0.6f, 9.9f, 7.7f,
+	                1.1f, 5.5f, 6.6f, 0.0f, 3.3f, 9.9f, 8.8f, 2.2f};
+
+	Matrix4x4 add = m1 + m2;
+	Matrix4x4 subtract = m1 - m2;
+	Matrix4x4 multiply = m1 * m2;
+
+	Matrix4x4 inverseM1 = m1.Inverse();
+	Matrix4x4 inverseM2 = m2.Inverse();
+
+	Matrix4x4 transposeM1 = m1.Transpose();
+	Matrix4x4 transposeM2 = m2.Transpose();
+
+	Matrix4x4 identity = Matrix4x4::Identity();
+
+	bool toggle = false;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -34,28 +50,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓更新処理ここから
 		///
 
-		ImGui::Begin("config");
-		ImGui::Text("vector1");
-		ImGui::InputFloat("v1.x", &v1.x);
-		ImGui::InputFloat("v1.y", &v1.y);
-		ImGui::InputFloat("v1.z", &v1.z);
-		ImGui::Text("vector2");
-		ImGui::InputFloat("v2.x", &v2.x);
-		ImGui::InputFloat("v2.y", &v2.y);
-		ImGui::InputFloat("v2.z", &v2.z);
-		ImGui::Text("k");
-		ImGui::InputFloat("k", &k);
-		ImGui::End();
-
-		Vector3 add = v1 + v2;
-		Vector3 subtract = v1 - v2;
-
-		Vector3 multiply = v1 * k;
-
-		float dot = v1 * v2;
-		float length = v1.Length();
-
-		Vector3 nomalize = v2.Nomalize();
+		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+			if (toggle) {
+				toggle = false;
+			} else {
+				toggle = true;
+			}
+		}
 
 		///
 		/// ↑更新処理ここまで
@@ -64,13 +65,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		///
 		/// ↓描画処理ここから
 		///
-
-		add.Printf(0, 0);
-		subtract.Printf(0, 70);
-		multiply.Printf(0, 140);
-		Novice::ScreenPrintf(0, 220, "%.3f", dot);
-		Novice::ScreenPrintf(0, 240, "%.3f", length);
-		nomalize.Printf(0, 260);
+		if (toggle) {
+			add.Printf(0, 0);
+			subtract.Printf(0, 100);
+			multiply.Printf(0, 200);
+			inverseM1.Printf(0, 300);
+			inverseM2.Printf(0, 400);
+		} else {
+			transposeM1.Printf(600, 0);
+			transposeM2.Printf(600, 100);
+			identity.Printf(600, 200);
+		}
+		Novice::ScreenPrintf(600, 400, "Toggle Space");
 
 		///
 		/// ↑描画処理ここまで

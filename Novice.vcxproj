@@ -110,6 +110,7 @@
     <ClCompile Include="Header\Math\Math.cpp" />
     <ClCompile Include="Header\Math\Matrix2x2.cpp" />
     <ClCompile Include="Header\Math\Matrix3x3.cpp" />
+    <ClCompile Include="Header\Math\Matrix4x4.cpp" />
     <ClCompile Include="Header\Math\PolarCoordinates.cpp" />
     <ClCompile Include="Header\Math\Vector2.cpp" />
     <ClCompile Include="Header\Math\Vector3.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Header\Math\Math.hpp" />
     <ClInclude Include="Header\Math\Matrix2x2.hpp" />
     <ClInclude Include="Header\Math\Matrix3x3.hpp" />
+    <ClInclude Include="Header\Math\Matrix4x4.hpp" />
     <ClInclude Include="Header\Math\PolarCoordinates.hpp" />
     <ClInclude Include="Header\Math\Vector2.hpp" />
     <ClInclude Include="Header\Math\Vector3.hpp" />
