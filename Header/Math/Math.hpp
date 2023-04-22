@@ -4,49 +4,7 @@
 #include "PolarCoordinates.hpp"
 #include "Matrix2x2.hpp"
 #include "Matrix3x3.hpp"
-
-/// <summary>
-/// 二次元内積関数
-/// </summary>
-/// <param name="startA">線分Aの始点</param>
-/// <param name="endA">線分Aの終点</param>
-/// <param name="startB">線分Bの始点</param>
-/// <param name="endB">線分Bの終点</param>
-/// <param name="normalizeFlagA"></param>
-/// <param name="normalizeFlagB"></param>
-/// <returns>内積計算の結果</returns>
-float DotProduct(Vector2 startA, Vector2 endA, Vector2 startB, Vector2 endB);
-
-/// <summary>
-/// 二次元内積関数
-/// </summary>
-/// <param name="VectorA">ベクトルA</param>
-/// <param name="VectorB">ベクトルB</param>
-/// <returns>内積計算の結果</returns>
-float DotProduct(Vector2 VectorA, Vector2 VectorB);
-
-
-/// <summary>
-/// 二次元外積関数
-/// </summary>
-/// <param name="startA">線分Aの始点</param>
-/// <param name="endA">線分Aの終点</param>
-/// <param name="startB">線分Bの始点</param>
-/// <param name="endB">線分Bの終点</param>
-/// <param name="normalizeFlagA"></param>
-/// <param name="normalizeFlagB"></param>
-/// <returns>内積計算の結果</returns>
-float CrossProduct(Vector2 startA, Vector2 endA, Vector2 startB, Vector2 endB);
-
-
-/// <summary>
-/// 二次元外積関数
-/// </summary>
-/// <param name="VectorA">ベクトルA</param>
-/// <param name="VectorB">ベクトルB</param>
-/// <returns>内積計算の結果</returns>
-float CrossProduct(Vector2 VectorA, Vector2 VectorB);
-
+#include "Matrix4x4.hpp"
 
 
 /// <summary>
@@ -54,14 +12,14 @@ float CrossProduct(Vector2 VectorA, Vector2 VectorB);
 /// </summary>
 /// <param name="Polar">極座標</param>
 /// <returns>ベクトル</returns>
-Vector2 Polar2Rectangular(Polar Polar);
+Vector2 operator <<(Vector2 &vec2, const Polar &Polar);
 
 /// <summary>
 /// ベクトルを極座標系に変換する。
 /// </summary>
 /// <param name="Vector">ベクトル</param>
 /// <returns>極座標クラス</returns>
-Polar Rectangular2Polar(Vector2 Vector);
+Polar operator <<(Polar &Polar, const Vector2 &vec2);
 
 
 /// <summary>
@@ -77,7 +35,14 @@ Matrix2x2 MakeRotateMatrix(const float &theta);
 /// </summary>
 /// <param name="scale">拡縮の倍率</param>
 /// <returns>3x3の拡縮行列</returns>
-Matrix3x3 MakeScaleMatrix3x3(const Vector2 &scale);
+Matrix3x3 MakeScaleMatrix(const Vector2& scale);
+
+// <summary>
+/// 拡縮行列作成関数
+/// </summary>
+/// <param name="scale">拡縮の倍率</param>
+/// <returns>4x4の拡縮行列</returns>
+Matrix4x4 MakeScaleMatrix(const Vector3 &scale);
 
 // <summary>
 /// 回転行列作成関数
@@ -96,6 +61,14 @@ Matrix3x3 MakeTranslateMatrix(const Vector2 &translate);
 
 
 /// <summary>
+/// 平行移動行列の作成関数
+/// </summary>
+/// <param name="translate">変換元のベクトル</param>
+/// <returns>同次座標系</returns>
+Matrix4x4 MakeTranslateMatrix(const Vector3 &translate);
+
+
+/// <summary>
 /// アフィン行列の作成関数
 /// </summary>
 /// <param name="scale">拡縮の倍率</param>
@@ -111,6 +84,14 @@ Matrix3x3 MakeAffineMatrix(const Vector2 &scale, const float &theta, const Vecto
 /// <param name="matrix">同次座標系の平行移動行列</param>
 /// <returns>合成したベクトル</returns>
 Vector2 Transform(const Vector2 &vector, const Matrix3x3 &matrix);
+
+/// <summary>
+/// ベクトルと同次座標系の合成
+/// </summary>
+/// <param name="vector">合成前のベクトル</param>
+/// <param name="matrix">同次座標系の平行移動行列</param>
+/// <returns>合成したベクトル</returns>
+Vector3 Transform(const Vector3 &vector, const Matrix4x4 &matrix);
 
 /// <summary>
 /// 正射影行列

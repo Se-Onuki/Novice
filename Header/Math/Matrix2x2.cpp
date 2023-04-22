@@ -35,10 +35,10 @@ Matrix2x2 Matrix2x2::operator*(const Matrix2x2& Second) const {
 	const Vector2 b[2]{ {Second.m[0][0],Second.m[1][0]},{Second.m[0][1],Second.m[1][1]}};
 
 	return (Matrix2x2{
-		DotProduct(a[0], b[0]),
-		DotProduct(a[0], b[1]),
-		DotProduct(a[1], b[0]),
-		DotProduct(a[1], b[1])
+		(a[0]* b[0]),
+		(a[0]* b[1]),
+		(a[1]* b[0]),
+		(a[1]* b[1])
 		});
 }
 
@@ -86,10 +86,10 @@ void Matrix2x2::operator*=(const Matrix2x2& Second) {
 	const Vector2 b[2]{ {Second.m[0][0],Second.m[1][0]},{Second.m[0][1],Second.m[1][1]} };
 
 	*this = {
-		DotProduct(a[0], b[0]),
-		DotProduct(a[0], b[1]),
-		DotProduct(a[1], b[0]),
-		DotProduct(a[1], b[1])
+		(a[0]* b[0]),
+		(a[0]* b[1]),
+		(a[1]* b[0]),
+		(a[1]* b[1])
 	};
 }
 

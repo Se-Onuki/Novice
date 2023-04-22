@@ -1,7 +1,9 @@
 #pragma once
-#include "Matrix3x3.hpp"
+//#include "Matrix3x3.hpp"
 
 #include <cmath>
+
+class Matrix4x4;
 
 class Vector3 {
 public:
@@ -45,13 +47,13 @@ public:
 		return Vector3{this->x - Second.x, this->y - Second.y, this->z - Second.z};
 	}
 
-	Vector3 operator+=(const Vector3& Second) {
+	Vector3 &operator+=(const Vector3& Second) {
 		this->x += Second.x;
 		this->y += Second.y;
 		this->z += Second.z;
 		return *this;
 	}
-	Vector3 operator-=(const Vector3& Second) {
+	Vector3 &operator-=(const Vector3& Second) {
 		this->x -= Second.x;
 		this->y -= Second.y;
 		this->z -= Second.z;
@@ -65,13 +67,13 @@ public:
 		return Vector3{this->x / Second, this->y / Second, this->z / Second};
 	}
 
-	Vector3 operator*=(const float& Second) {
+	Vector3 &operator*=(const float& Second) {
 		this->x *= Second;
 		this->y *= Second;
 		this->z *= Second;
 		return *this;
 	}
-	Vector3 operator/=(const float& Second) {
+	Vector3& operator/=(const float& Second) {
 		this->x /= Second;
 		this->y /= Second;
 		this->z /= Second;
@@ -82,9 +84,9 @@ public:
 
 	// Vector3 operator*=(const Matrix3x3& Second) {}
 
-	// Vector3 operator*(const Matrix4x4& Second) const {}
+	 Vector3 operator*(const Matrix4x4& Second) const;
 
-	// void operator*=(const Matrix4x4& Second){}
+	 Vector3& operator*=(const Matrix4x4& Second);
 
 	// 逆ベクトル
 	inline Vector3 operator-() const { return *this * -1; }

@@ -4,6 +4,7 @@
 #include<math.h>
 
 #include "Vector2.hpp"
+#include "Vector3.hpp"
 #include "PolarCoordinates.hpp"
 
 #include <assert.h>
@@ -33,16 +34,21 @@ float CrossProduct(Vector2 VectorA, Vector2 VectorB) {
 
 
 
-Vector2 Polar2Rectangular(Polar Polar) {
-	return { (float)(cos(Polar.theta) * Polar.radius),(float)(sin(Polar.theta) * Polar.radius) };
+Vector2 operator <<(Vector2 &vec2, const Polar &Polar)
+{
+	return vec2 = {
+		(float)(cos(Polar.theta) * Polar.radius), (float)(sin(Polar.theta) * Polar.radius)
+	};
 }
 
-Polar Rectangular2Polar(Vector2 Vector) {
-	return { (float)(atan2(Vector.y,Vector.x)),Vector.Length() };
+Polar operator<<(Polar& Polar, const Vector2& vec2)  {
+	return Polar = {(float)(atan2(vec2.y, vec2.x)), vec2.Length()};
 }
 
 
-Matrix2x2 MakeRotateMatrix(const float &theta) {
+
+
+Matrix2x2 MakeRotateMatrix(const float& theta) {
 	return Matrix2x2(
 		cos(theta), sin(theta),
 		-sin(theta), cos(theta)
@@ -50,12 +56,21 @@ Matrix2x2 MakeRotateMatrix(const float &theta) {
 }
 
 
-Matrix3x3 MakeScaleMatrix3x3(const Vector2 &scale) {
-	return Matrix3x3(
+Matrix3x3 MakeScaleMatrix(const Vector2 &scale) {
+	return Matrix3x3 {
 		scale.x, 0, 0,
 		0, scale.y, 0,
 		0, 0, 1
-	);
+	};
+}
+
+Matrix4x4 MakeScaleMatrix(const Vector3& scale) { 
+	return Matrix4x4 {
+		scale.x, 0, 0, 0,
+		0, scale.y, 0, 0,
+		0, 0, scale.z, 0,
+		0, 0, 0, 1
+	};
 }
 
 
@@ -76,6 +91,15 @@ Matrix3x3 MakeTranslateMatrix(const Vector2 &translate) {
 	};
 }
 
+Matrix4x4 MakeTranslateMatrix(const Vector3& translate) { 
+	return Matrix4x4{
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		translate.x, translate.y, translate.z, 1
+	};
+}
+
 
 Matrix3x3 MakeAffineMatrix(const Vector2 &scale, const float &theta, const Vector2 &translate) {
 	return Matrix3x3{
@@ -92,6 +116,18 @@ Vector2 Transform(const Vector2 &vector, const Matrix3x3 &matrix) {
 	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + 1.0f * matrix.m[2][0];
 	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
 	const float w = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
+	assert(w != 0.0f);
+	return result / w; // 演算子のオーバーライド
+}
+
+
+Vector3 Transform(const Vector3 &vector, const Matrix4x4 &matrix) {
+	Vector3 result;
+
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
+	const float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1.0f * matrix.m[3][3];
 	assert(w != 0.0f);
 	return result / w; // 演算子のオーバーライド
 }

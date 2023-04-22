@@ -1,5 +1,7 @@
 #pragma once
 
+class Vector3;
+
 class Matrix4x4 {
 public:
 	inline Matrix4x4()
