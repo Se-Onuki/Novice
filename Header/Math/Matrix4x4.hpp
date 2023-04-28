@@ -62,7 +62,10 @@ public:
 
 	bool operator==(const Matrix4x4& Second) { return *this == Second; }
 
+	static Matrix4x4 Affine(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
 	static Matrix4x4 EulerRotate(EulerAngle, float angle);
+	static Matrix4x4 EulerRotate(const Vector3& angle);
 	
 	/// @brief 単位行列関数
 	/// @return 単位行列

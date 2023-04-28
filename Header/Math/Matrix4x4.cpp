@@ -1,6 +1,7 @@
 #include "Matrix4x4.hpp"
 
 #include "Matrix2x2.hpp"
+#include "Header/Math/Vector3.hpp"
 #include <Novice.h>
 
 #include <cmath>
@@ -65,6 +66,31 @@ Matrix4x4 Matrix4x4::Transpose() {
 	};
 }
 
+Matrix4x4 Matrix4x4::Affine(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
+	return Matrix4x4{
+	    scale.x * (std::cos(rotate.y) * std::cos(rotate.z)),
+	    scale.x * (std::cos(rotate.y) * std::sin(rotate.z)),
+	    scale.x * (-std::sin(rotate.y)),
+	    0,
+
+		scale.y * (std::sin(rotate.x) * std::sin(rotate.y) * std::cos(rotate.z) -
+	               std::cos(rotate.x) * std::sin(rotate.z)),
+	    scale.y * (std::sin(rotate.x) * std::sin(rotate.y) * std::sin(rotate.z) +
+	               std::cos(rotate.x) * std::cos(rotate.z)),
+	    scale.y * (std::sin(rotate.x) * std::cos(rotate.y)),
+	    0,
+
+		scale.z * (std::cos(rotate.x) * std::sin(rotate.y) * std::cos(rotate.z) +
+	               std::sin(rotate.x) * std::sin(rotate.z)),
+	    scale.z * (std::cos(rotate.x) * std::sin(rotate.y) * std::sin(rotate.z) -
+	               std::sin(rotate.x) * std::cos(rotate.z)),
+	    scale.z * (std::cos(rotate.x) * std::cos(rotate.y)),
+	    0,
+
+		translate.x,translate.y,translate.z,1
+	};
+}
+
 Matrix4x4 Matrix4x4::EulerRotate(EulerAngle eulerAngle, float angle) {
 	switch (eulerAngle) {
 	case Matrix4x4::Pitch:
@@ -95,6 +121,34 @@ Matrix4x4 Matrix4x4::EulerRotate(EulerAngle eulerAngle, float angle) {
 		return Identity();
 		break;
 	}
+}
+
+Matrix4x4 Matrix4x4::EulerRotate(const Vector3& rotate) {
+	return Matrix4x4{
+	    std::cos(rotate.y) * std::cos(rotate.z),
+	    std::cos(rotate.y) * std::sin(rotate.z),
+	    -std::sin(rotate.y),
+	    0,
+
+	    std::sin(rotate.x) * std::sin(rotate.y) * std::cos(rotate.z) -
+	        std::cos(rotate.x) * std::sin(rotate.z),
+	    std::sin(rotate.x) * std::sin(rotate.y) * std::sin(rotate.z) +
+	        std::cos(rotate.x) * std::cos(rotate.z),
+	    std::sin(rotate.x) * std::cos(rotate.y),
+	    0,
+
+	    std::cos(rotate.x) * std::sin(rotate.y) * std::cos(rotate.z) +
+	        std::sin(rotate.x) * std::sin(rotate.z),
+	    std::cos(rotate.x) * std::sin(rotate.y) * std::sin(rotate.z) -
+	        std::sin(rotate.x) * std::cos(rotate.z),
+	    std::cos(rotate.x) * std::cos(rotate.y),
+	    0,
+
+	    0,
+	    0,
+	    0,
+	    1
+	};
 }
 
 Matrix4x4 Matrix4x4::operator+(const Matrix4x4& Second) const {
