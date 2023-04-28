@@ -60,6 +60,8 @@ public:
 	Matrix4x4 operator*=(const float& Second);
 	Matrix4x4 operator/=(const float& Second);
 
+	bool operator==(const Matrix4x4& Second) { return *this == Second; }
+
 	static Matrix4x4 EulerRotate(EulerAngle, float angle);
 	
 	/// @brief 単位行列関数
