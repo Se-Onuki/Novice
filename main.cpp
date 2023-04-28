@@ -6,6 +6,8 @@
 
 #include "Header/Math/Matrix4x4.hpp"
 #include "Header/Math/Math.hpp"
+#include <cmath>
+#include <numbers>
 
 const char kWindowTitle[] = "LE2A_03_オヌキ_セイヤ_MT3";
 
@@ -20,8 +22,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	char preKeys[256] = {0};
 
 	// 変数
-	
-
+	Vector3 rotate{0.4f, 1.43f, -0.8f};
+	Matrix4x4 rotateX = Matrix4x4::EulerRotate(Matrix4x4::Pitch, rotate.x);
+	Matrix4x4 rotateY = Matrix4x4::EulerRotate(Matrix4x4::Yaw, rotate.y);
+	Matrix4x4 rotateZ = Matrix4x4::EulerRotate(Matrix4x4::Roll, rotate.z);
+	Matrix4x4 rotateXYZ = rotateX * rotateY * rotateZ;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -46,7 +51,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓描画処理ここから
 		///
 		
-		
+		rotateX.Printf(0, 0);
+		rotateY.Printf(0, 100);
+		rotateZ.Printf(0, 200);
+		rotateXYZ.Printf(0, 300);
 
 		///
 		/// ↑描画処理ここまで

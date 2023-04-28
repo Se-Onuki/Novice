@@ -4,6 +4,12 @@ class Vector3;
 
 class Matrix4x4 {
 public:
+	enum EulerAngle {
+		Pitch,	// x軸
+		Yaw,	// y軸
+		Roll	// z軸
+	};
+
 	inline Matrix4x4()
 	    : m{
 	          {0, 0, 0, 0},
@@ -28,16 +34,12 @@ public:
 
 	void Printf(const int& x, const int& y) const;
 
-	/// <summary>
-	/// 逆行列関数
-	/// </summary>
-	/// <returns>逆行列</returns>
+	/// @brief 逆行列関数
+	/// @return 逆行列
 	Matrix4x4 Inverse();
 
-	/// <summary>
-	/// 転置行列
-	/// </summary>
-	/// <returns>転置行列</returns>
+	/// @brief 転置行列関数
+	/// @return 転置行列
 	Matrix4x4 Transpose();
 
 	Matrix4x4 operator+(const Matrix4x4& Second) const;
@@ -58,10 +60,10 @@ public:
 	Matrix4x4 operator*=(const float& Second);
 	Matrix4x4 operator/=(const float& Second);
 
-	/// <summary>
-	/// 単位行列
-	/// </summary>
-	/// <returns>単位行列</returns>
+	static Matrix4x4 EulerRotate(EulerAngle, float angle);
+	
+	/// @brief 単位行列関数
+	/// @return 単位行列
 	static Matrix4x4 Identity() {
 		return Matrix4x4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 	}

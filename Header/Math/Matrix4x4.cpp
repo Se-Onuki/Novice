@@ -3,6 +3,8 @@
 #include "Matrix2x2.hpp"
 #include <Novice.h>
 
+#include <cmath>
+
 void Matrix4x4::Printf(const int& x, const int& y) const {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
@@ -61,6 +63,38 @@ Matrix4x4 Matrix4x4::Transpose() {
 		this->m[0][2], this->m[1][2], this->m[2][2], this->m[3][2],
 		this->m[0][3], this->m[1][3], this->m[2][3], this->m[3][3],
 	};
+}
+
+Matrix4x4 Matrix4x4::EulerRotate(EulerAngle eulerAngle, float angle) {
+	switch (eulerAngle) {
+	case Matrix4x4::Pitch:
+		return Matrix4x4 { 
+			1,0,0,0,
+			0,std::cos(angle),std::sin(angle),0,
+			0,-std::sin(angle),std::cos(angle),0,
+			0,0,0,1
+		};
+		break;
+	case Matrix4x4::Yaw:
+		return Matrix4x4 { 
+			std::cos(angle),0,-std::sin(angle),0,
+			0,1,0,0,
+			std::sin(angle),0,std::cos(angle),0,
+			0,0,0,1
+		};
+		break;
+	case Matrix4x4::Roll:
+		return Matrix4x4 { 
+			std::cos(angle),std::sin(angle),0,0,
+			-std::sin(angle),std::cos(angle),0,0,
+			0,0,1,0,
+			0,0,0,1
+		};
+		break;
+	default:
+		return Identity();
+		break;
+	}
 }
 
 Matrix4x4 Matrix4x4::operator+(const Matrix4x4& Second) const {
