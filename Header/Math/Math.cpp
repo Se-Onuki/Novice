@@ -3,11 +3,12 @@
 #define _USE_MATH_DEFINES
 #include<math.h>
 
-#include "Vector2.hpp"
-#include "Vector3.hpp"
-#include "PolarCoordinates.hpp"
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Polar.h"
 
 #include <assert.h>
+
 
 
 float DotProduct(Vector2 startA, Vector2 endA, Vector2 startB, Vector2 endB) {

@@ -1,16 +1,15 @@
-#include "Matrix2x2.hpp"
+#include "Matrix2x2.h"
 
-#include <Novice.h>
-#include"Vector2.hpp"
+#include"Vector2.h"
 #include"Math.hpp"
 
-void Matrix2x2::Printf(const int& x, const int& y) {
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 2; j++) {
-			Novice::ScreenPrintf(x + j * TextWidth, y + i * TextHeight, "%6.2f", m[i][j]);
-		}
-	}
-}
+//void Matrix2x2::Printf(const int& x, const int& y) {
+//	for (int i = 0; i < 2; i++) {
+//		for (int j = 0; j < 2; j++) {
+//			//Novice::ScreenPrintf(x + j * TextWidth, y + i * TextHeight, "%6.2f", m[i][j]);
+//		}
+//	}
+//}
 
 Matrix2x2 Matrix2x2::operator+(const Matrix2x2& Second) const {
 	return (Matrix2x2{

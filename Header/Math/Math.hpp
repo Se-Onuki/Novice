@@ -1,13 +1,15 @@
 #pragma once
 
-#include"Vector2.hpp"
-#include "PolarCoordinates.hpp"
-#include "Matrix2x2.hpp"
-#include "Matrix3x3.hpp"
-#include "Matrix4x4.hpp"
+#include "Vector2.h"
+#include "Polar.h"
+#include "Matrix2x2.h"
+#include "Matrix3x3.h"
+#include "Matrix4x4.h"
+
+static const Vector2 TextSize{50, 20};
 
 
-/// <summary>
+    /// <summary>
 /// 極座標系をベクトルに変換する。
 /// </summary>
 /// <param name="Polar">極座標</param>

@@ -111,9 +111,10 @@
     <ClCompile Include="Header\Math\Matrix2x2.cpp" />
     <ClCompile Include="Header\Math\Matrix3x3.cpp" />
     <ClCompile Include="Header\Math\Matrix4x4.cpp" />
-    <ClCompile Include="Header\Math\PolarCoordinates.cpp" />
+    <ClCompile Include="Header\Math\Polar.cpp" />
     <ClCompile Include="Header\Math\Vector2.cpp" />
     <ClCompile Include="Header\Math\Vector3.cpp" />
+    <ClCompile Include="Header\Render\Render.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -144,12 +145,14 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
     <ClInclude Include="Header\Math\Math.hpp" />
-    <ClInclude Include="Header\Math\Matrix2x2.hpp" />
-    <ClInclude Include="Header\Math\Matrix3x3.hpp" />
-    <ClInclude Include="Header\Math\Matrix4x4.hpp" />
-    <ClInclude Include="Header\Math\PolarCoordinates.hpp" />
-    <ClInclude Include="Header\Math\Vector2.hpp" />
-    <ClInclude Include="Header\Math\Vector3.hpp" />
+    <ClInclude Include="Header\Math\Matrix2x2.h" />
+    <ClInclude Include="Header\Math\Matrix3x3.h" />
+    <ClInclude Include="Header\Math\Matrix4x4.h" />
+    <ClInclude Include="Header\Math\Polar.h" />
+    <ClInclude Include="Header\Math\Vector2.h" />
+    <ClInclude Include="Header\Math\Vector3.h" />
+    <ClInclude Include="Header\Math\Vector4.h" />
+    <ClInclude Include="Header\Render\Render.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

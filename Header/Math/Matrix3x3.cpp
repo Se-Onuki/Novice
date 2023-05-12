@@ -1,15 +1,15 @@
-#include "Matrix3x3.hpp"
+#include "Matrix3x3.h"
 
-#include <Novice.h>
-#include "Matrix2x2.hpp"
+//#include <Novice.h>
+#include "Math.hpp"
 
-void Matrix3x3::Printf(const int &x, const int &y) const {
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			Novice::ScreenPrintf(x + j * TextWidth * 2, y + i * TextHeight, "%10.6f", m[i][j]);
-		}
-	}
-}
+//void Matrix3x3::Printf(const int &x, const int &y) const {
+//	for (int i = 0; i < 3; i++) {
+//		for (int j = 0; j < 3; j++) {
+//			//Novice::ScreenPrintf(x + j * TextWidth * 2, y + i * TextHeight, "%10.6f", m[i][j]);
+//		}
+//	}
+//}
 
 Matrix3x3 Matrix3x3::Inverse() {
 	return Matrix3x3{

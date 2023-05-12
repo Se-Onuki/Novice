@@ -3,10 +3,9 @@
 
 #include <cmath>
 
-class Matrix4x4;
+struct Matrix4x4;
 
-class Vector3 {
-public:
+struct Vector3 {
 	Vector3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z) {}
 
 	float x;
@@ -18,7 +17,7 @@ public:
 	/// </summary>
 	/// <param name="x">x座標</param>
 	/// <param name="y">y座標</param>
-	void Printf(int x, int y) const;
+	//void Printf(int x, int y) const;
 
 	/// <summary>
 	/// ベクトル長関数
@@ -105,7 +104,7 @@ public:
 	}
 
 	inline bool operator==(const Vector3& vec) const {
-		return (this->x == vec.x) && (this->y == vec.y);
+		return (this->x == vec.x) && (this->y == vec.y) && (this->z == vec.z);
 	}
 
 private:

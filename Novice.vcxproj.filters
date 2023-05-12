@@ -17,6 +17,9 @@
     <Filter Include="Math">
       <UniqueIdentifier>{362a6ddc-cecf-4ecc-ba66-09ec5fb5a2d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{6e1eb4ca-f625-4b69-96db-fabd9a0ab815}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\DirectXCommon.cpp">
@@ -38,25 +41,28 @@
     <ClCompile Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Header\Math\Vector2.cpp">
-      <Filter>Math</Filter>
+    <ClCompile Include="Header\Render\Render.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Header\Math\PolarCoordinates.cpp">
+    <ClCompile Include="Header\Math\Matrix2x2.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Header\Math\Matrix3x3.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Header\Math\Matrix2x2.cpp">
+    <ClCompile Include="Header\Math\Matrix4x4.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Header\Math\Math.cpp">
+    <ClCompile Include="Header\Math\Polar.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Header\Math\Vector2.cpp">
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Header\Math\Vector3.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Header\Math\Matrix4x4.cpp">
+    <ClCompile Include="Header\Math\Math.cpp">
       <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
@@ -129,25 +135,31 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector3.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Vector4.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.h" />
+    <ClInclude Include="Header\Render\Render.hpp">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Matrix2x2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Matrix3x3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Matrix4x4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Polar.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Vector2.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Vector3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Vector4.h">
+      <Filter>Math</Filter>
+    </ClInclude>
     <ClInclude Include="Header\Math\Math.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Header\Math\Matrix2x2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Header\Math\Matrix3x3.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Header\Math\PolarCoordinates.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Header\Math\Vector2.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Header\Math\Vector3.hpp">
-      <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Header\Math\Matrix4x4.hpp">
       <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>

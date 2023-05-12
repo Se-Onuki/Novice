@@ -1,13 +1,15 @@
-#include <Header/Math/Vector2.hpp>
-#include <Header/Math/Vector3.hpp>
+#include <Header/Math/Vector2.h>
+#include <Header/Math/Vector3.h>
 #include <Novice.h>
 
 #include <imgui.h>
 
-#include "Header/Math/Matrix4x4.hpp"
+#include "Header/Math/Matrix4x4.h"
 #include "Header/Math/Math.hpp"
 #include <cmath>
 #include <numbers>
+
+#include "Header/Render/Render.hpp"
 
 const char kWindowTitle[] = "LE2A_03_オヌキ_セイヤ_MT3";
 
@@ -22,10 +24,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	char preKeys[256] = {0};
 
 	// 変数
-	Vector3 scale{1.2f,0.79f,-2.1f};
-	Vector3 rotate{0.4f, 1.43f, -0.8f};
-	Vector3 translate{2.7f, -4.15f, 1.57f};
-	Matrix4x4 worldMatrix = Matrix4x4::Affine(scale, rotate, translate);
+	Matrix4x4 orthograficMatrix =
+	    Render::MakeOrthographicMatrix({-160.f, 160.f}, {200.f, 300.f}, 0.f, 1000.f);
+	Matrix4x4 perspectiveFovMatrix = Render::MakePerspectiveFovMatrix(0.63f, 1.33f, 0.1f, 1000.f);
+	Matrix4x4 viewportMatrix = Render::MakeViewportMarix({100.f, 200.f}, 600.f, 300.f, 0.f, 1.f);
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -50,7 +52,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓描画処理ここから
 		///
 		
-		worldMatrix.Printf(0, 0);
+		orthograficMatrix.Printf(0, 0);
+		perspectiveFovMatrix.Printf(0, 100);
+		viewportMatrix.Printf(0, 200);
 
 		///
 		/// ↑描画処理ここまで

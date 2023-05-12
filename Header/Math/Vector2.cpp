@@ -1,10 +1,10 @@
-#include "Vector2.hpp"
+#include "Vector2.h"
 
-#include <Novice.h>
+//#include <Novice.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include "Matrix2x2.hpp"
+
 #include"Math.hpp"
 
 #include <assert.h>
@@ -31,11 +31,11 @@ Vector2 Vector2::Nomalize() const {
 		return ZeroVector2;
 	}
 }
-
-void Vector2::Printf(int x_, int y_) const {
-	Novice::ScreenPrintf(x_, y_, "%12.2f // %6.2f", this->x, Length());
-	Novice::ScreenPrintf(x_, y_ + TextHeight, "%12.2f", this->y);
-}
+//
+//void Vector2::Printf(int x_, int y_) const {
+////	Novice::ScreenPrintf(x_, y_, "%12.2f // %6.2f", this->x, Length());
+////	Novice::ScreenPrintf(x_, y_ + TextHeight, "%12.2f", this->y);
+//}
 
 Vector2 Vector2::operator+(const Vector2 &Second) const {
 	return { (this->x) + (Second.x), (this->y) + (Second.y) };
@@ -108,10 +108,6 @@ void Vector2::operator*=(const Matrix3x3 &matrix) {
 	*this / w; // 演算子のオーバーライド
 }
 
-
-Vector2::Vector2() : x(0), y(0)
-{
-}
 
 
 Vector2::Vector2(float x, float y) : x(x), y(y)

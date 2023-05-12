@@ -1,15 +1,14 @@
 #pragma once
 
 
-class Matrix3x3 {
-public:
+struct Matrix3x3 {
 	inline Matrix3x3() : m{ {0, 0, 0}, {0, 0, 0}, {0, 0, 0} } {	}
 
 	inline Matrix3x3(float A, float B, float C, float D, float E, float F, float G, float H, float I) : m{ {A, B, C}, {D, E, F}, {G, H, I} } {	}
 
 	float m[3][3];
 
-	void Printf(const int &x, const int &y) const;
+	//void Printf(const int &x, const int &y) const;
 
 	/// <summary>
 	/// 逆行列関数

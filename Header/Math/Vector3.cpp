@@ -1,14 +1,14 @@
-#include "Vector3.hpp"
-#include "Matrix2x2.hpp"
-#include "Matrix4x4.hpp"
-#include <Novice.h>
+#include "Vector3.h"
+#include "Matrix4x4.h"
+#include "Math.hpp"
+//#include <Novice.h>
 #include <cassert>
-
-void Vector3::Printf(int x_, int y_) const {
-	Novice::ScreenPrintf(x_, y_, "%12.2f // %6.2f", this->x, Length());
-	Novice::ScreenPrintf(x_, y_ + TextHeight, "%12.2f", this->y);
-	Novice::ScreenPrintf(x_, y_ + TextHeight * 2, "%12.2f", this->z);
-}
+//
+//void Vector3::Printf(int x_, int y_) const {
+////	Novice::ScreenPrintf(x_, y_, "%12.2f // %6.2f", this->x, Length());
+////	Novice::ScreenPrintf(x_, y_ + TextHeight, "%12.2f", this->y);
+////	Novice::ScreenPrintf(x_, y_ + TextHeight * 2, "%12.2f", this->z);
+//}
 
 Vector3 Vector3::operator*(const Matrix4x4& Second) const {
 	Vector3 result;
