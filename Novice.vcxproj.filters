@@ -65,6 +65,12 @@
     <ClCompile Include="Header\Math\Math.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="Header\Object\Object.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Header\Object\Transform.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -161,6 +167,12 @@
     </ClInclude>
     <ClInclude Include="Header\Math\Math.hpp">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Object\Object.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Object\Transform.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

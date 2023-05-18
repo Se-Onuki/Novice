@@ -6,6 +6,7 @@
 
 #include "Header/Math/Math.hpp"
 #include "Header/Math/Matrix4x4.h"
+#include "Header/Object/Transform.h"
 #include <cmath>
 #include <numbers>
 
@@ -28,10 +29,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Vector3 v2{2.8f, 0.4f, -1.3f};
 	Vector3 cross = v1 ^ v2;
 
-	Vector3 rotate{0.f, 0.f, 0.f};
-	Vector3 translate{0, 0, 5.f};
-
-	Vector3 cameraPosition{0.f, 0.f, 0.f};
+	Transform triangleTrans{
+	    {1.f, 1.f, 1.f},
+        {0.f, 0.f, 0.f},
+        {0,   0,   5.f}
+    };
+	Transform cameraTrans{
+	    {1.f, 1.f, 1.f},
+        {0.f, 0.f, 0.f},
+        {0.f, 0.f, 0.f}
+    };
 
 	Vector3 kLocalVertices[3]{
 	    {0,     0.75f, 0},
@@ -53,38 +60,46 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		///
 
 		if (keys[DIK_A]) {
-			translate.x -= 0.01f;
+			triangleTrans.translate.x -= 0.01f;
 		}
 		if (keys[DIK_D]) {
-			translate.x += 0.01f;
+			triangleTrans.translate.x += 0.01f;
 		}
 		if (keys[DIK_W]) {
-			translate.z += 0.01f;
+			triangleTrans.translate.z += 0.01f;
 		}
 		if (keys[DIK_S]) {
-			translate.z -= 0.01f;
+			triangleTrans.translate.z -= 0.01f;
 		}
 
-		rotate.y += 0.05f;
+		triangleTrans.rotate.y += 0.05f;
 
-		Matrix4x4 worldMatrix = Matrix4x4::Affine({1.f, 1.f, 1.f}, rotate, translate);
-		Matrix4x4 cameraMatrix =
-		    Matrix4x4::Affine({1.f, 1.f, 1.f}, {0.f, 0.f, 0.f}, cameraPosition);
+		if (keys[DIK_SPACE]) {
+			triangleTrans.rotate.y = 0.f;
+		}
+
+		Matrix4x4 worldMatrix = triangleTrans.Affine();
+		Matrix4x4 cameraMatrix = cameraTrans.Affine();
 
 		Matrix4x4 viewMatrix = cameraMatrix.Inverse();
 
 		Matrix4x4 projectonMatrix =
 		    Render::MakePerspectiveFovMatrix(0.45f, 1280.f / 720.f, 0.1f, 100.f);
 
-		Matrix4x4 worldViewProjectionMatrix = worldMatrix * (viewMatrix * projectonMatrix);
+		Matrix4x4 worldViewProjectionMatrix = worldMatrix * viewMatrix * projectonMatrix;
 
-		Matrix4x4 viewportMatrix = Render::MakeViewportMatrix({0, 0}, 1280.f, 720.f, 0.f, 1.f);
+		Matrix4x4 viewportMatrix = Render::MakeViewportMatrix(0, 0, 1280.f, 720.f, 0.f, 1.f);
 
 		Vector3 screenVertices[3];
+		Vector3 ndcVertices[3];
 		for (uint32_t i = 0; i < 3; i++) {
-			Vector3 ndcVertex = Transform(kLocalVertices[i], worldViewProjectionMatrix);
-			screenVertices[i] = Transform(ndcVertex, viewportMatrix);
+			ndcVertices[i] = (kLocalVertices[i] * worldViewProjectionMatrix);
+			screenVertices[i] = (ndcVertices[i] * viewportMatrix);
 		}
+		const Vector3& VecA = ndcVertices[1] - ndcVertices[0];
+		const Vector3& VecB = ndcVertices[2] - ndcVertices[1];
+
+		Vector3 cameraFacing = TransformNormal({0, 0, 1}, viewMatrix);
 
 		///
 		/// ↑更新処理ここまで
@@ -99,12 +114,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		worldViewProjectionMatrix.Printf(0, 100);
 
 		cross.Printf(0, 200);
+		triangleTrans.rotate.Printf(0, 260);
 
-		Novice::DrawTriangle(
-		    static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
-		    static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
-		    static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y), RED,
-		    kFillModeSolid);
+		if (cameraFacing * (VecA ^ VecB) <= 0) {
+			Novice::DrawTriangle(
+			    static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
+			    static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
+			    static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y), RED,
+			    kFillModeSolid);
+		}
 
 		///
 		/// ↑描画処理ここまで

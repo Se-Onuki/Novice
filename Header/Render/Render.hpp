@@ -3,7 +3,8 @@
 struct Vector2;
 struct Matrix4x4;
 
-class Render {
+
+class Render final {
 public:
 	Render();
 	~Render();
@@ -28,6 +29,6 @@ public:
 	    const float& fovY, const float& aspectRatio, const float& nearClip, const float& farClip);
 
 	static Matrix4x4 MakeViewportMatrix(
-	    const Vector2& LeftTop, const float& width, const float& height, const float& minDepth,
-	    const float& maxDepth);
+	    const float& Left, const float& Top, const float& width, const float& height,
+	    const float& minDepth, const float& maxDepth);
 };

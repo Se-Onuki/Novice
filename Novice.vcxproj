@@ -114,6 +114,8 @@
     <ClCompile Include="Header\Math\Polar.cpp" />
     <ClCompile Include="Header\Math\Vector2.cpp" />
     <ClCompile Include="Header\Math\Vector3.cpp" />
+    <ClCompile Include="Header\Object\Object.cpp" />
+    <ClCompile Include="Header\Object\Transform.cpp" />
     <ClCompile Include="Header\Render\Render.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -152,6 +154,8 @@
     <ClInclude Include="Header\Math\Vector2.h" />
     <ClInclude Include="Header\Math\Vector3.h" />
     <ClInclude Include="Header\Math\Vector4.h" />
+    <ClInclude Include="Header\Object\Object.h" />
+    <ClInclude Include="Header\Object\Transform.h" />
     <ClInclude Include="Header\Render\Render.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

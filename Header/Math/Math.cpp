@@ -47,6 +47,12 @@ Polar operator<<(Polar& Polar, const Vector2& vec2)  {
 }
 
 
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
+	return Vector3{
+	    v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
+	    v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
+	    v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]};
+}
 
 
 Matrix2x2 MakeRotateMatrix(const float& theta) {
@@ -110,28 +116,6 @@ Matrix3x3 MakeAffineMatrix(const Vector2 &scale, const float &theta, const Vecto
 	};
 }
 
-
-Vector2 Transform(const Vector2 &vector, const Matrix3x3 &matrix) {
-	Vector2 result;
-
-	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + 1.0f * matrix.m[2][0];
-	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
-	const float w = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
-	assert(w != 0.0f);
-	return result / w; // 演算子のオーバーライド
-}
-
-
-Vector3 Transform(const Vector3 &vector, const Matrix4x4 &matrix) {
-	Vector3 result;
-
-	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
-	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
-	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
-	const float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1.0f * matrix.m[3][3];
-	assert(w != 0.0f);
-	return result / w; // 演算子のオーバーライド
-}
 
 
 Matrix3x3 MakeOrthographicMatrix(const Vector2 &LeftTop, const Vector2 &RightBottom) {

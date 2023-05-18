@@ -32,12 +32,12 @@ Matrix4x4 Render::MakePerspectiveFovMatrix(
 }
 
 Matrix4x4 Render::MakeViewportMatrix(
-    const Vector2& LeftTop, const float& width, const float& height, const float& minDepth,
+    const float& Left, const float& Top, const float& width, const float& height, const float& minDepth,
     const float& maxDepth) {
 	return Matrix4x4{
 		width / 2, 0, 0, 0,
 		0, -height / 2, 0, 0,
 		0, 0, maxDepth - minDepth, 0,
-		LeftTop.x + width / 2, LeftTop.y + height / 2, minDepth, 1
+		Left + width / 2, Top + height / 2, minDepth, 1
 	};
 }
