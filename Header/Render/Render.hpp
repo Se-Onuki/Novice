@@ -27,7 +27,7 @@ public:
 	static Matrix4x4 MakePerspectiveFovMatrix(
 	    const float& fovY, const float& aspectRatio, const float& nearClip, const float& farClip);
 
-	static Matrix4x4 MakeViewportMarix(
+	static Matrix4x4 MakeViewportMatrix(
 	    const Vector2& LeftTop, const float& width, const float& height, const float& minDepth,
 	    const float& maxDepth);
 };

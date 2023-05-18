@@ -18,7 +18,7 @@ void Matrix4x4::Printf(const int& x, const int& y) const {
 	}
 }
 
-Matrix4x4 Matrix4x4::Inverse() {
+Matrix4x4 Matrix4x4::Inverse() const {
 	Matrix4x4 calc = *this;
 	Matrix4x4 out = Identity();
 
@@ -60,7 +60,7 @@ Matrix4x4 Matrix4x4::Inverse() {
 	        this->m[0][2] * this->m[1][1] * this->m[2][0]);*/
 }
 
-Matrix4x4 Matrix4x4::Transpose() {
+Matrix4x4 Matrix4x4::Transpose() const {
 	return Matrix4x4{
 	    this->m[0][0], this->m[1][0], this->m[2][0], this->m[3][0], this->m[0][1], this->m[1][1],
 	    this->m[2][1], this->m[3][1], this->m[0][2], this->m[1][2], this->m[2][2], this->m[3][2],

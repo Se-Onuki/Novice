@@ -33,11 +33,11 @@ struct Matrix4x4 final{
 
 	/// @brief 逆行列関数
 	/// @return 逆行列
-	Matrix4x4 Inverse();
+	Matrix4x4 Inverse() const;
 
 	/// @brief 転置行列関数
 	/// @return 転置行列
-	Matrix4x4 Transpose();
+	Matrix4x4 Transpose() const;
 
 	Matrix4x4 operator+(const Matrix4x4& Second) const;
 
@@ -57,7 +57,7 @@ struct Matrix4x4 final{
 	Matrix4x4 operator*=(const float& Second);
 	Matrix4x4 operator/=(const float& Second);
 
-	bool operator==(const Matrix4x4& Second) { return *this == Second; }
+	bool operator==(const Matrix4x4& Second) const { return *this == Second; }
 
 	static Matrix4x4 Affine(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 

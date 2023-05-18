@@ -4,7 +4,7 @@
 struct Matrix2x2;
 struct Matrix3x3;
 
-struct Vector2 {
+struct Vector2 final {
 	Vector2(float x = 0.f, float y = 0.f);
 
 	float x;
@@ -22,7 +22,7 @@ struct Vector2 {
 	/// </summary>
 	/// <param name="theta">回転角</param>
 	/// <returns>回転したベクトル</returns>
-	Vector2 Rotate(const float& theta) const;
+	_NODISCARD Vector2 Rotate(const float& theta) const;
 
 	/// <summary>
 	/// ゼロベクトル
@@ -33,35 +33,35 @@ struct Vector2 {
 	/// ベクトル長関数
 	/// </summary>
 	/// <returns>ベクトルの長さ</returns>
-	float Length() const;
+	_NODISCARD float Length() const;
 
 	/// <summary>
 	/// 正規化
 	/// </summary>
 	/// <returns>ベクトル長が1のベクトル</returns>
-	Vector2 Nomalize() const;
+	_NODISCARD Vector2 Nomalize() const;
 
-	Vector2 operator+(const Vector2& Second) const;
-	Vector2 operator-(const Vector2& Second) const;
+	_NODISCARD Vector2 operator+(const Vector2& Second) const;
+	_NODISCARD Vector2 operator-(const Vector2& Second) const;
 
 	void operator+=(const Vector2& Second);
 	void operator-=(const Vector2& Second);
 
-	Vector2 operator*(const float& Second) const;
-	Vector2 operator/(const float& Second) const;
+	_NODISCARD Vector2 operator*(const float& Second) const;
+	_NODISCARD Vector2 operator/(const float& Second) const;
 
 	void operator*=(const float& Second);
 	void operator/=(const float& Second);
 
-	Vector2 operator*(const Matrix2x2& Second) const;
+	_NODISCARD Vector2 operator*(const Matrix2x2& Second) const;
 
 	void operator*=(const Matrix2x2& Second);
 
-	Vector2 operator*(const Matrix3x3& Second) const;
+	_NODISCARD Vector2 operator*(const Matrix3x3& Second) const;
 
 	void operator*=(const Matrix3x3& Second);
 
-	inline float GetTheta() const {
+	_NODISCARD inline float GetTheta() const {
 		if (*this == Vector2{0, 0}) {
 			return 0;
 		}
@@ -69,22 +69,22 @@ struct Vector2 {
 	}
 
 	// 逆ベクトル
-	inline Vector2 operator-() const { return *this * -1; }
+	_NODISCARD inline Vector2 operator-() const { return *this * -1; }
 
 	// 内積
-	inline float operator*(const Vector2& v) const { return x * v.x + y * v.y; }
+	_NODISCARD inline float operator*(const Vector2& v) const { return x * v.x + y * v.y; }
 	// 外積
-	inline float operator^(const Vector2& v) const { return x * v.y - y * v.x; }
+	_NODISCARD inline float operator^(const Vector2& v) const { return x * v.y - y * v.x; }
 
-	inline static Vector2 zero() { return {0, 0}; }
+	_NODISCARD inline static Vector2 zero() { return {0.f, 0.f}; }
 
-	inline Vector2 Reflect(Vector2 normal) const {
+	_NODISCARD inline Vector2 Reflect(Vector2 normal) const {
 		return (*this) - normal * 2 * ((*this) * normal);
 
 		// return {this->x- 2}
 	}
 
-	inline bool operator==(const Vector2& vec) const {
+	_NODISCARD inline bool operator==(const Vector2& vec) const {
 		return (this->x == vec.x) && (this->y == vec.y);
 	}
 

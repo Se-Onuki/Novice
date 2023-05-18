@@ -21,13 +21,13 @@ struct Vector4 {
 	/// ベクトル長関数
 	/// </summary>
 	/// <returns>ベクトルの長さ</returns>
-	float Length() const { return sqrtf((*this) * (*this)); }
+	_NODISCARD float Length() const { return sqrtf((*this) * (*this)); }
 
 	/// <summary>
 	/// 正規化
 	/// </summary>
 	/// <returns>ベクトル長が1のベクトル</returns>
-	Vector4 Nomalize() const {
+	_NODISCARD Vector4 Nomalize() const {
 
 		float Length = this->Length();
 		if (Length != 0) {
@@ -37,11 +37,11 @@ struct Vector4 {
 		}
 	}
 
-	Vector4 operator+(const Vector4& Second) const {
+	_NODISCARD Vector4 operator+(const Vector4& Second) const {
 		return Vector4{
 		    this->x + Second.x, this->y + Second.y, this->z + Second.z, this->w + Second.w};
 	}
-	Vector4 operator-(const Vector4& Second) const {
+	_NODISCARD Vector4 operator-(const Vector4& Second) const {
 		return Vector4{
 		    this->x - Second.x, this->y - Second.y, this->z - Second.z, this->w - Second.w};
 	}
@@ -61,10 +61,10 @@ struct Vector4 {
 		return *this;
 	}
 
-	Vector4 operator*(const float& Second) const {
+	_NODISCARD Vector4 operator*(const float& Second) const {
 		return Vector4{this->x * Second, this->y * Second, this->z * Second, this->w * Second};
 	}
-	Vector4 operator/(const float& Second) const {
+	_NODISCARD Vector4 operator/(const float& Second) const {
 		return Vector4{this->x / Second, this->y / Second, this->z / Second, this->w / Second};
 	}
 
@@ -92,14 +92,16 @@ struct Vector4 {
 	// Vector4& operator*=(const Matrix4x4& Second);
 
 	// 逆ベクトル
-	inline Vector4 operator-() const { return *this * -1; }
+	_NODISCARD inline Vector4 operator-() const { return *this * -1; }
 
 	// 内積
-	inline float operator*(const Vector4& v) const { return x * v.x + y * v.y + z * v.z + w * v.w; }
+	_NODISCARD inline float operator*(const Vector4& v) const {
+		return x * v.x + y * v.y + z * v.z + w * v.w;
+	}
 	// 外積
 	// inline float operator^(const Vector3& v) const { return x * v.y - y * v.x; }
 
-	inline static Vector4 zero() { return Vector4{0, 0, 0, 0}; }
+	_NODISCARD inline static Vector4 zero() { return Vector4{0, 0, 0, 0}; }
 
 	// inline Vector4 Reflect(Vector4 normal) const {
 	//	return (*this) - normal * 2 * ((*this) * normal);
@@ -107,7 +109,7 @@ struct Vector4 {
 	//	// return {this->x- 2}
 	//}
 
-	inline bool operator==(const Vector4& vec) const {
+	_NODISCARD inline bool operator==(const Vector4& vec) const {
 		return (this->x == vec.x) && (this->y == vec.y) && (this->z == vec.z) && (this->w == vec.w);
 	}
 

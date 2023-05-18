@@ -105,7 +105,7 @@ void Vector2::operator*=(const Matrix3x3 &matrix) {
 	this->y = x * matrix.m[0][1] + y * matrix.m[1][1] + 1.0f * matrix.m[2][1];
 	const float w = x * matrix.m[0][2] + y * matrix.m[1][2] + 1.0f * matrix.m[2][2];
 	assert(w != 0.0f);
-	*this / w; // 演算子のオーバーライド
+	*this /= w; // 演算子のオーバーライド
 }
 
 
