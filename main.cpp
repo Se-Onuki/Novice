@@ -10,6 +10,7 @@
 #include <cmath>
 #include <numbers>
 
+#include "Header/Object/Object.h"
 #include "Header/Render/Render.hpp"
 
 const char kWindowTitle[] = "LE2A_03_オヌキ_セイヤ_MT3";
@@ -46,6 +47,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {-0.5f, -0.5f, 0}
     };
 
+	Triangle surface{kLocalVertices};
+	ModelClass model;
+	model.AddSurface(surface);
+	Object3d object{triangleTrans, &model};
+	Render render;
+	render.SetViewportMatrix(Render::MakeViewportMatrix(0, 0, 1280.f, 720.f, 0.f, 1.f));
+	Camera camera{Render::MakePerspectiveFovMatrix(0.45f, 1280.f / 720.f, 0.1f, 100.f)};
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -59,47 +68,32 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓更新処理ここから
 		///
 
+		Transform& transform = object.transform_;
+
 		if (keys[DIK_A]) {
-			triangleTrans.translate.x -= 0.01f;
+			transform.translate.x -= 0.01f;
 		}
 		if (keys[DIK_D]) {
-			triangleTrans.translate.x += 0.01f;
+			transform.translate.x += 0.01f;
 		}
 		if (keys[DIK_W]) {
-			triangleTrans.translate.z += 0.01f;
+			transform.translate.z += 0.01f;
 		}
 		if (keys[DIK_S]) {
-			triangleTrans.translate.z -= 0.01f;
+			transform.translate.z -= 0.01f;
 		}
 
-		triangleTrans.rotate.y += 0.05f;
+		transform.rotate.y += 0.05f;
 
 		if (keys[DIK_SPACE]) {
-			triangleTrans.rotate.y = 0.f;
+			transform.rotate.y = 0.f;
 		}
 
-		Matrix4x4 worldMatrix = triangleTrans.Affine();
-		Matrix4x4 cameraMatrix = cameraTrans.Affine();
+		object.UpdateMatrix();
+		camera.UpdateMatrix();
 
-		Matrix4x4 viewMatrix = cameraMatrix.Inverse();
-
-		Matrix4x4 projectonMatrix =
-		    Render::MakePerspectiveFovMatrix(0.45f, 1280.f / 720.f, 0.1f, 100.f);
-
-		Matrix4x4 worldViewProjectionMatrix = worldMatrix * viewMatrix * projectonMatrix;
-
-		Matrix4x4 viewportMatrix = Render::MakeViewportMatrix(0, 0, 1280.f, 720.f, 0.f, 1.f);
-
-		Vector3 screenVertices[3];
-		Vector3 ndcVertices[3];
-		for (uint32_t i = 0; i < 3; i++) {
-			ndcVertices[i] = (kLocalVertices[i] * worldViewProjectionMatrix);
-			screenVertices[i] = (ndcVertices[i] * viewportMatrix);
-		}
-		const Vector3& VecA = ndcVertices[1] - ndcVertices[0];
-		const Vector3& VecB = ndcVertices[2] - ndcVertices[1];
-
-		Vector3 cameraFacing = TransformNormal({0, 0, 1}, viewMatrix);
+		camera.CreateNDC(object,&render);
+		render.UpdateSurface();
 
 		///
 		/// ↑更新処理ここまで
@@ -109,20 +103,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓描画処理ここから
 		///
 
-		screenVertices[0].Printf(0, 0);
+		render.Draw();
 
-		worldViewProjectionMatrix.Printf(0, 100);
+		cross.Printf(0, 0);
+		transform.rotate.Printf(0, 70);
 
-		cross.Printf(0, 200);
-		triangleTrans.rotate.Printf(0, 260);
-
-		if (cameraFacing * (VecA ^ VecB) <= 0) {
-			Novice::DrawTriangle(
-			    static_cast<int>(screenVertices[0].x), static_cast<int>(screenVertices[0].y),
-			    static_cast<int>(screenVertices[1].x), static_cast<int>(screenVertices[1].y),
-			    static_cast<int>(screenVertices[2].x), static_cast<int>(screenVertices[2].y), RED,
-			    kFillModeSolid);
-		}
+		Novice::ScreenPrintf(
+		    0, 140, "Push Space || object.rotate.y == digree( %.2f )",
+		    (transform.rotate.y) / std::numbers::pi * 180.f);
 
 		///
 		/// ↑描画処理ここまで

@@ -1,22 +1,48 @@
 #include "Object.h"
+#include "Header/Render/Render.hpp"
 
 Triangle::Triangle(const Vector3 Vertices[3]) : vertices_{Vertices[0], Vertices[1], Vertices[2]} {}
 
 Triangle::~Triangle() {}
 
-// Triangle Triangle::GetWorldTriangle(const Matrix4x4& worldMatrix) const { return Triangle{}; }
+ModelClass::ModelClass() {}
 
-// Triangle Triangle::GetScreenTriangle() const { return Triangle{}; }
+ModelClass::~ModelClass() {}
 
+Object3d::Object3d(const Transform& transform, ModelClass* model)
+    : transform_(transform), model_(model) {}
 
-Object::Object(const Transform& transform) : transform_(transform) {}
+Object3d::~Object3d() {}
 
-Object::~Object() {}
-
-Camera::Camera(const Vector3& position, const Vector3& rotate)
+Camera::Camera(const Matrix4x4& projectonMatrix)
     : transform_{
           {1.f, 1.f, 1.f},
-          rotate, position
-} {}
+          {0.f, 0.f, 0.f},
+          {0.f, 0.f, 0.f}
+} {
+	viewMatrix_ = Matrix4x4::Identity();
+	projectonMatrix_ = projectonMatrix;
+}
 
 Camera::~Camera() {}
+
+const Matrix4x4 Camera::wvVpMatrix(const Object3d& object) const {
+	return object.worldMatrix_ * viewMatrix_ * projectonMatrix_;
+}
+
+void Camera::CreateNDC(const Object3d& object, Render* render) const {
+	const Matrix4x4 wvVpMatrix = Camera::wvVpMatrix(object);
+	const Vector3 facing = GetFacing();
+	for (const Triangle& localSurface : object.model_->surfaceList_) {
+		const Triangle buff = (localSurface * wvVpMatrix);
+		if (facing * buff.GetNormal() <= 0) {
+			render->ndcSurface_.emplace_back(buff);
+		}
+	}
+}
+
+void Camera::CreateNDC(const std::vector<Object3d>& objectList, Render* render) const {
+	for (const Object3d& object : objectList) {
+		CreateNDC(object,render);
+	}
+}

@@ -1,13 +1,19 @@
 #pragma once
-
+#include "Header/Math/Matrix4x4.h"
+#include <vector>
 struct Vector2;
-struct Matrix4x4;
-
+class Camera;
+class Triangle;
 
 class Render final {
+	Matrix4x4 viewportMatrix_;
+	
 public:
-	Render();
-	~Render();
+	std::vector<Triangle> ndcSurface_;
+	std::vector<Triangle> screenSurface_;
+
+	Render() {}
+	~Render() {}
 
 	/// @brief 正射影行列関数
 	/// @param LeftTop 左上
@@ -31,4 +37,10 @@ public:
 	static Matrix4x4 MakeViewportMatrix(
 	    const float& Left, const float& Top, const float& width, const float& height,
 	    const float& minDepth, const float& maxDepth);
+	
+	void SetViewportMatrix(const Matrix4x4& viewport);
+
+	void UpdateSurface();
+
+	void Draw() const;
 };
