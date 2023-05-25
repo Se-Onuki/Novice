@@ -5,6 +5,11 @@
 #include "Header/Object/Transform.h"
 #include <vector>
 
+struct Sphere {
+	Vector3 center;
+	float radius;
+};
+
 /// @brief 3角ポリゴン
 class Triangle {
 	// 頂点リスト(時計回り)

@@ -98,3 +98,19 @@ Matrix3x3 MakeOrthographicMatrix(const Vector2 &LeftTop, const Vector2 &RightBot
 /// <param name="RightBottom">右下</param>
 /// <returns>ビューポート行列</returns>
 Matrix3x3 MakeViewportMatrix(const Vector2 &LeftTop, const Vector2 &RightBottom);
+
+namespace Angle {
+
+struct Digree {
+	float digree;
+	float ToRadian();
+};
+
+struct Radian {
+	float radian;
+	float ToDigree();
+};
+
+// enum class
+
+} // namespace Angle

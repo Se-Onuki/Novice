@@ -1,8 +1,8 @@
 #pragma once
-
+#include <cmath>
 struct Vector2;
 struct Matrix4x4;
-
+struct Sphere;
 
 class Render final {
 public:
@@ -31,4 +31,12 @@ public:
 	static Matrix4x4 MakeViewportMatrix(
 	    const float& Left, const float& Top, const float& width, const float& height,
 	    const float& minDepth, const float& maxDepth);
+
+	static void DrawGrid(
+	    const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix,
+	    const float& radius = 2.f, const uint32_t& subdivision = 10u);
+
+	static void DrawSphere(
+	    const Sphere& sphere, const Matrix4x4& viewProjectionMatrix,
+	    const Matrix4x4& viewportMatrix, const uint32_t& subdivision = 10u, const uint32_t& color = 0xFFFFFFFF);
 };
