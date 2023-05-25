@@ -26,6 +26,10 @@ Camera::Camera(const Matrix4x4& projectonMatrix)
 
 Camera::~Camera() {}
 
+const Matrix4x4 Camera::wvVpMatrix(const Matrix4x4& worldMatrix) const {
+	return worldMatrix * viewMatrix_ * projectonMatrix_;
+}
+
 const Matrix4x4 Camera::wvVpMatrix(const Object3d& object) const {
 	return object.worldMatrix_ * viewMatrix_ * projectonMatrix_;
 }
@@ -35,7 +39,7 @@ void Camera::CreateNDC(const Object3d& object, Render* render) const {
 	const Vector3 facing = GetFacing();
 	for (const Triangle& localSurface : object.model_->surfaceList_) {
 		const Triangle buff = (localSurface * wvVpMatrix);
-		if (facing * buff.GetNormal() <= 0) {
+		if (facing * buff.GetNormal() <= 0 || object.fillMode_ == Object3d::FillMode::kFillModeWireFrame) {
 			render->ndcSurface_.emplace_back(buff);
 		}
 	}

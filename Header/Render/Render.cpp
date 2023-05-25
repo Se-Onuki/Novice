@@ -96,3 +96,20 @@ void Render::Draw() const {
 		    kFillModeSolid);
 	}
 }
+
+void Render::DrawGrid(
+    const Matrix4x4& viewProjectionMatrix, const float& radius, const uint32_t& subdivision) const {
+	const float kGridEvery = (radius * 2.f) / static_cast<float>(subdivision);
+
+	for (uint32_t xIndex = 0u; xIndex < subdivision; xIndex++) {
+		Segment line{
+		    Vector3{-radius + kGridEvery * xIndex, 0, -radius   },
+            Vector3{0,                             0, radius * 2}
+        };
+		Vector3 startScreen = line.origin * viewProjectionMatrix * viewportMatrix_;
+		Vector3 endScreen = (line.origin + line.diff) * viewProjectionMatrix * viewportMatrix_;
+		Novice::DrawLine(
+		    static_cast<int>(startScreen.x), static_cast<int>(startScreen.y),
+		    static_cast<int>(endScreen.x), static_cast<int>(endScreen.y), WHITE);
+	}
+}

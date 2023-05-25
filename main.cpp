@@ -26,19 +26,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	char preKeys[256] = {0};
 
 	// 変数
-	Vector3 v1{1.2f, -3.9f, 2.5f};
-	Vector3 v2{2.8f, 0.4f, -1.3f};
-	Vector3 cross = v1 ^ v2;
-
 	Transform triangleTrans{
 	    {1.f, 1.f, 1.f},
         {0.f, 0.f, 0.f},
         {0,   0,   5.f}
-    };
-	Transform cameraTrans{
-	    {1.f, 1.f, 1.f},
-        {0.f, 0.f, 0.f},
-        {0.f, 0.f, 0.f}
     };
 
 	Vector3 kLocalVertices[3]{
@@ -55,6 +46,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	render.SetViewportMatrix(Render::MakeViewportMatrix(0, 0, 1280.f, 720.f, 0.f, 1.f));
 	Camera camera{Render::MakePerspectiveFovMatrix(0.45f, 1280.f / 720.f, 0.1f, 100.f)};
 
+	Transform grid{
+	    {2.f, 2.f, 2.f},
+	    {0.f, 0.f, 0.f},
+	    {0.f, 0.f, 0.f},
+	};
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -68,7 +65,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓更新処理ここから
 		///
 
-		Transform& transform = object.transform_;
+		/*Transform& transform = object.transform_;
 
 		if (keys[DIK_A]) {
 			transform.translate.x -= 0.01f;
@@ -87,12 +84,37 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (keys[DIK_SPACE]) {
 			transform.rotate.y = 0.f;
+		}*/
+		Transform transform = camera.GetTransform();
+		if (keys[DIK_A]) {
+			transform.translate.x -= 0.01f;
+		}
+		if (keys[DIK_D]) {
+			transform.translate.x += 0.01f;
+		}
+		if (keys[DIK_SPACE]) {
+			transform.translate.y += 0.01f;
+		}
+		if (keys[DIK_LSHIFT]) {
+			transform.translate.y -= 0.01f;
+		}
+		if (keys[DIK_W]) {
+			transform.translate.z += 0.01f;
+		}
+		if (keys[DIK_S]) {
+			transform.translate.z -= 0.01f;
 		}
 
-		object.UpdateMatrix();
+		if (Novice::IsPressMouse(0)) {
+
+		}
+
+		camera.SetTransform(transform);
+
+		//object.UpdateMatrix();
 		camera.UpdateMatrix();
 
-		camera.CreateNDC(object,&render);
+		//camera.CreateNDC(object,&render);
 		render.UpdateSurface();
 
 		///
@@ -104,13 +126,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		///
 
 		render.Draw();
+		render.DrawGrid(camera.wvVpMatrix(grid.Affine()));
 
-		cross.Printf(0, 0);
-		transform.rotate.Printf(0, 70);
-
-		Novice::ScreenPrintf(
-		    0, 140, "Push Space || object.rotate.y == digree( %.2f )",
-		    (transform.rotate.y) / std::numbers::pi * 180.f);
+		camera.GetTransform().translate.Printf(0, 0);
+		//transform.rotate.Printf(0, 70);
 
 		///
 		/// ↑描画処理ここまで

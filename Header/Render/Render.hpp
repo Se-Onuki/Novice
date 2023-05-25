@@ -7,7 +7,7 @@ class Triangle;
 
 class Render final {
 	Matrix4x4 viewportMatrix_;
-	
+
 public:
 	std::vector<Triangle> ndcSurface_;
 	std::vector<Triangle> screenSurface_;
@@ -37,10 +37,12 @@ public:
 	static Matrix4x4 MakeViewportMatrix(
 	    const float& Left, const float& Top, const float& width, const float& height,
 	    const float& minDepth, const float& maxDepth);
-	
+
 	void SetViewportMatrix(const Matrix4x4& viewport);
 
 	void UpdateSurface();
 
 	void Draw() const;
+
+	void DrawGrid(const Matrix4x4& viewProjectionMatrix, const float& radius = 2.f, const uint32_t& subdivision = 10u) const;
 };

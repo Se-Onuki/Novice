@@ -49,6 +49,11 @@ struct Ray : public LineBase {};
 /// @brief 線分
 struct Segment : public LineBase {};
 
+struct Sphere {
+	Vector3 center;
+	float radius;
+};
+
 class ModelClass {
 public:
 	ModelClass();
@@ -66,6 +71,7 @@ public:
 	ModelClass* model_;
 	Transform transform_;
 	Matrix4x4 worldMatrix_;
+
 
 	void UpdateMatrix() { worldMatrix_ = transform_.Affine(); }
 
@@ -95,6 +101,7 @@ public:
 		return TransformNormal(Vector3{0.f, 0.f, 1.f}, viewMatrix_);
 	}
 
+	_NODISCARD const Matrix4x4 wvVpMatrix(const Matrix4x4& worldMatrix) const;
 	_NODISCARD const Matrix4x4 wvVpMatrix(const Object3d& object) const;
 	void CreateNDC(const Object3d& object, Render* render) const;
 	void CreateNDC(const std::vector<Object3d>& objectList, Render* render) const;
