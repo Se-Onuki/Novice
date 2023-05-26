@@ -27,15 +27,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// 変数
 
-	Segment segment;
-	segment.origin = {-2.f, -1.f, 0.f};
-	segment.diff = {3.f, 2.f, 2.f};
-
-	Sphere point{
-	    {-1.5f, 0.6f, 0.6f},
-        -0.01f
-    };
-
 	Render render;
 	render.SetViewportMatrix(Render::MakeViewportMatrix(0, 0, 1280.f, 720.f, 0.f, 1.f));
 
@@ -46,11 +37,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {0.f,   5.f, -15.f}
     });
 
-	Vector3 project{0, 0, 0};
-	Sphere closestPoint{
-	    {0, 0, 0},
-        0.01f
+	Sphere sphere[2]{
+	    {{0, 0, 0}, 2},
+        {{3, 2, 0}, 1}
     };
+
+	uint32_t sphereColor = WHITE;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -65,43 +57,42 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓更新処理ここから
 		///
 
-		Transform transform = camera.GetTransform();
+		Vector3& transform = sphere[0].center;
 
 		if (keys[DIK_A]) {
-			transform.translate.x -= 0.01f;
+			transform.x -= 0.01f;
 		}
 		if (keys[DIK_D]) {
-			transform.translate.x += 0.01f;
+			transform.x += 0.01f;
 		}
 		if (keys[DIK_W]) {
-			transform.translate.z += 0.01f;
+			transform.z += 0.01f;
 		}
 		if (keys[DIK_S]) {
-			transform.translate.z -= 0.01f;
+			transform.z -= 0.01f;
 		}
 
 		if (keys[DIK_SPACE]) {
-			transform.translate.y += 0.01f;
+			transform.y += 0.01f;
 		}
 		if (keys[DIK_LSHIFT]) {
-			transform.translate.y -= 0.01f;
+			transform.y -= 0.01f;
 		}
 
-		camera.SetTransform(transform);
+		if (sphere[0].IsCollision(sphere[1]))
+			sphereColor = RED;
+		else
+			sphereColor = WHITE;
 
 		camera.UpdateMatrix();
-
 		render.UpdateSurface();
 
-		project = segment.Project(point.center);
-		closestPoint.center = segment.ClosestPoint(point.center);
-
 		ImGui::Begin("window");
-		ImGui::DragFloat3("point", &point.center.x, 0.1f);
-		ImGui::DragFloat3("segmentOrigin", &segment.origin.x, 0.1f);
-		ImGui::DragFloat3("segmentDiff", &segment.diff.x, 0.1f);
-		ImGui::DragFloat3("Project", &segment.diff.x, 0.1f);
-		ImGui::DragFloat3("ClosestPoint", &closestPoint.center.x, 0.1f);
+		ImGui::DragFloat3("Sphere1", &sphere[0].center.x, 0.1f);
+		ImGui::DragFloat("Sphere1", &sphere[0].radius, 0.1f);
+		ImGui::DragFloat3("Sphere2", &sphere[1].center.x, 0.1f);
+		ImGui::DragFloat("Sphere2", &sphere[1].radius, 0.1f);
+		ImGui::Text("Distance: %f", (sphere[0].center - sphere[1].center).Length());
 		ImGui::End();
 
 		///
@@ -113,10 +104,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		///
 
 		render.Draw();
-
-		render.DrawLine(camera.GetViewProjection(), segment, GREEN);
-		render.DrawSphere(camera.GetViewProjection(), point, RED, 4);
-		render.DrawSphere(camera.GetViewProjection(), closestPoint, BLACK, 4);
+		render.DrawSphere(camera.GetViewProjection(), sphere[0], sphereColor, 8);
+		render.DrawSphere(camera.GetViewProjection(), sphere[1], WHITE, 8);
 		render.DrawGrid(camera.GetViewProjection());
 
 		///

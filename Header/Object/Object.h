@@ -44,6 +44,10 @@ public:
 struct Sphere {
 	Vector3 center;
 	float radius;
+
+	bool IsCollision(const Sphere& other) {
+		return (center - other.center).Length() <= radius + other.radius;
+	}
 };
 
 struct LineBase {
