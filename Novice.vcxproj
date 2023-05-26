@@ -107,6 +107,7 @@
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\TextureManager.cpp" />
     <ClCompile Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
+    <ClCompile Include="Header\Math\Lerp.cpp" />
     <ClCompile Include="Header\Math\Math.cpp" />
     <ClCompile Include="Header\Math\Matrix2x2.cpp" />
     <ClCompile Include="Header\Math\Matrix3x3.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\input\Input.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
+    <ClInclude Include="Header\Math\Lerp.h" />
     <ClInclude Include="Header\Math\Math.hpp" />
     <ClInclude Include="Header\Math\Matrix2x2.h" />
     <ClInclude Include="Header\Math\Matrix3x3.h" />

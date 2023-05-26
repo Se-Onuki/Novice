@@ -7,6 +7,12 @@
 
 class Render;
 
+class Vertices {
+public:
+	Vertices(const std::vector<Vector3>& vertices) : vertices_(vertices) {}
+	std::vector<Vector3> vertices_;
+};
+
 /// @brief 3角ポリゴン
 class Triangle {
 public:
@@ -20,7 +26,7 @@ public:
 	Triangle(const Triangle& other) { memcpy_s(this, sizeof(Triangle), &other, sizeof(Triangle)); }
 	~Triangle();
 
-	_NODISCARD const Triangle operator*(const Matrix4x4& matrix) const {
+	[[nodiscard]] const Triangle operator*(const Matrix4x4& matrix) const {
 		Triangle out{};
 		for (uint8_t i = 0; i < 3; i++) {
 			out.vertices_[i] = (vertices_[i] * matrix);
@@ -28,26 +34,49 @@ public:
 		return out;
 	}
 
-	_NODISCARD Vector3 GetNormal() const {
+	[[nodiscard]] Vector3 GetNormal() const {
 		const Vector3& VecA = vertices_[1] - vertices_[0]; // 0 から 1 に向けて
 		const Vector3& VecB = vertices_[2] - vertices_[1]; // 1 から 2 に向けて
 		return (VecA ^ VecB).Nomalize();
 	}
 };
 
+struct Sphere {
+	Vector3 center;
+	float radius;
+};
+
 struct LineBase {
 	Vector3 origin; // 始点
 	Vector3 diff;   // 終点へのベクトル
+
+	[[nodiscard]] Vector3 GetEnd() const { return origin + diff; }
+	[[nodiscard]] Vector3 GetProgress(const float& t) const;
+	[[nodiscard]] Vector3 Project(const Vector3& point) const;
+	[[nodiscard]] Vector3 ClosestPoint(const Vector3& point) const;
+
+protected:
+	[[nodiscard]] float ClosestProgress(const Vector3& point) const;
+	[[nodiscard]] virtual const float Clamp(const float& t) const = 0;
 };
 
 /// @brief 直線
-struct Line : public LineBase {};
+struct Line final : public LineBase {
+private:
+	[[nodiscard]] const float Clamp(const float& t) const override;
+};
 
 /// @brief 半直線
-struct Ray : public LineBase {};
+struct Ray final : public LineBase {
+private:
+	[[nodiscard]] const float Clamp(const float& t) const override;
+};
 
 /// @brief 線分
-struct Segment : public LineBase {};
+struct Segment final : public LineBase {
+private:
+	[[nodiscard]] const float Clamp(const float& t) const override;
+};
 
 class ModelClass {
 public:
@@ -87,15 +116,18 @@ public:
 	void UpdateMatrix() { viewMatrix_ = transform_.Affine().Inverse(); }
 
 	void SetTransform(const Transform& transform) { transform_ = transform; }
-	_NODISCARD Transform GetTransform() const { return transform_; }
+	[[nodiscard]] Transform GetTransform() const { return transform_; }
 
 	void SetProjection(const Matrix4x4& projectonMatrix) { projectonMatrix_ = projectonMatrix; }
 
-	_NODISCARD const Vector3 GetFacing() const {
+	[[nodiscard]] const Matrix4x4 GetViewProjection() const {
+		return viewMatrix_ * projectonMatrix_;
+	}
+	[[nodiscard]] const Vector3 GetFacing() const {
 		return TransformNormal(Vector3{0.f, 0.f, 1.f}, viewMatrix_);
 	}
 
-	_NODISCARD const Matrix4x4 wvVpMatrix(const Object3d& object) const;
+	[[nodiscard]] const Matrix4x4 wvVpMatrix(const Object3d& object) const;
 	void CreateNDC(const Object3d& object, Render* render) const;
 	void CreateNDC(const std::vector<Object3d>& objectList, Render* render) const;
 };

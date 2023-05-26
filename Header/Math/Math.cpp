@@ -1,7 +1,8 @@
 #include"Math.hpp"
 
 #define _USE_MATH_DEFINES
-#include<math.h>
+#include <math.h>
+#include <numbers>
 
 #include "Vector2.h"
 #include "Vector3.h"
@@ -135,3 +136,11 @@ Matrix3x3 MakeViewportMatrix(const Vector2 &LeftTop, const Vector2 &RightBottom)
 		(RightBottom.x - LeftTop.x) / 2.0f + LeftTop.x,(RightBottom.y - LeftTop.y) / 2.0f + LeftTop.y, 1
 	};
 }
+
+float Angle::Digree::ToRadian() { return digree * static_cast<float>(std::numbers::pi) / 180.f; }
+
+float Angle::Radian::ToDigree() { return radian * 180.f / static_cast<float>(std::numbers::pi); }
+//
+//Vector3 ClosestPoint(const Vector3& v1, const Vector3& v2) { 
+//	return Vector3();
+//}

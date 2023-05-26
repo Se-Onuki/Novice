@@ -26,34 +26,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	char preKeys[256] = {0};
 
 	// 変数
-	Vector3 v1{1.2f, -3.9f, 2.5f};
-	Vector3 v2{2.8f, 0.4f, -1.3f};
-	Vector3 cross = v1 ^ v2;
 
-	Transform triangleTrans{
-	    {1.f, 1.f, 1.f},
-        {0.f, 0.f, 0.f},
-        {0,   0,   5.f}
-    };
-	Transform cameraTrans{
-	    {1.f, 1.f, 1.f},
-        {0.f, 0.f, 0.f},
-        {0.f, 0.f, 0.f}
+	Segment segment;
+	segment.origin = {-2.f, -1.f, 0.f};
+	segment.diff = {3.f, 2.f, 2.f};
+
+	Sphere point{
+	    {-1.5f, 0.6f, 0.6f},
+        -0.01f
     };
 
-	Vector3 kLocalVertices[3]{
-	    {0,     0.75f, 0},
-        {0.5f,  -0.5f, 0},
-        {-0.5f, -0.5f, 0}
-    };
-
-	Triangle surface{kLocalVertices};
-	ModelClass model;
-	model.AddSurface(surface);
-	Object3d object{triangleTrans, &model};
 	Render render;
 	render.SetViewportMatrix(Render::MakeViewportMatrix(0, 0, 1280.f, 720.f, 0.f, 1.f));
+
 	Camera camera{Render::MakePerspectiveFovMatrix(0.45f, 1280.f / 720.f, 0.1f, 100.f)};
+	camera.SetTransform({
+	    {1.f,   1.f, 1.f  },
+        {0.25f, 0.f, 0.f  },
+        {0.f,   5.f, -15.f}
+    });
+
+	Vector3 project{0, 0, 0};
+	Sphere closestPoint{
+	    {0, 0, 0},
+        0.01f
+    };
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -68,7 +65,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓更新処理ここから
 		///
 
-		Transform& transform = object.transform_;
+		Transform transform = camera.GetTransform();
 
 		if (keys[DIK_A]) {
 			transform.translate.x -= 0.01f;
@@ -83,17 +80,29 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			transform.translate.z -= 0.01f;
 		}
 
-		transform.rotate.y += 0.05f;
-
 		if (keys[DIK_SPACE]) {
-			transform.rotate.y = 0.f;
+			transform.translate.y += 0.01f;
+		}
+		if (keys[DIK_LSHIFT]) {
+			transform.translate.y -= 0.01f;
 		}
 
-		object.UpdateMatrix();
+		camera.SetTransform(transform);
+
 		camera.UpdateMatrix();
 
-		camera.CreateNDC(object,&render);
 		render.UpdateSurface();
+
+		project = segment.Project(point.center);
+		closestPoint.center = segment.ClosestPoint(point.center);
+
+		ImGui::Begin("window");
+		ImGui::DragFloat3("point", &point.center.x, 0.1f);
+		ImGui::DragFloat3("segmentOrigin", &segment.origin.x, 0.1f);
+		ImGui::DragFloat3("segmentDiff", &segment.diff.x, 0.1f);
+		ImGui::DragFloat3("Project", &segment.diff.x, 0.1f);
+		ImGui::DragFloat3("ClosestPoint", &closestPoint.center.x, 0.1f);
+		ImGui::End();
 
 		///
 		/// ↑更新処理ここまで
@@ -105,12 +114,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 
-		cross.Printf(0, 0);
-		transform.rotate.Printf(0, 70);
-
-		Novice::ScreenPrintf(
-		    0, 140, "Push Space || object.rotate.y == digree( %.2f )",
-		    (transform.rotate.y) / std::numbers::pi * 180.f);
+		render.DrawLine(camera.GetViewProjection(), segment, GREEN);
+		render.DrawSphere(camera.GetViewProjection(), point, RED, 4);
+		render.DrawSphere(camera.GetViewProjection(), closestPoint, BLACK, 4);
+		render.DrawGrid(camera.GetViewProjection());
 
 		///
 		/// ↑描画処理ここまで

@@ -71,6 +71,9 @@
     <ClCompile Include="Header\Object\Transform.cpp">
       <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="Header\Math\Lerp.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -173,6 +176,9 @@
     </ClInclude>
     <ClInclude Include="Header\Object\Transform.h">
       <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Lerp.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

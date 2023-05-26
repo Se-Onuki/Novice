@@ -23,13 +23,13 @@ struct Vector3 {
 	/// ベクトル長関数
 	/// </summary>
 	/// <returns>ベクトルの長さ</returns>
-	_NODISCARD float Length() const { return sqrtf((*this) * (*this)); }
+	[[nodiscard]] float Length() const { return sqrtf((*this) * (*this)); }
 
 	/// <summary>
 	/// 正規化
 	/// </summary>
 	/// <returns>ベクトル長が1のベクトル</returns>
-	_NODISCARD Vector3 Nomalize() const {
+	[[nodiscard]] Vector3 Nomalize() const {
 
 		float Length = this->Length();
 		if (Length != 0) {
@@ -39,10 +39,10 @@ struct Vector3 {
 		}
 	}
 
-	_NODISCARD Vector3 operator+(const Vector3& Second) const {
+	[[nodiscard]] Vector3 operator+(const Vector3& Second) const {
 		return Vector3{this->x + Second.x, this->y + Second.y, this->z + Second.z};
 	}
-	_NODISCARD Vector3 operator-(const Vector3& Second) const {
+	[[nodiscard]] Vector3 operator-(const Vector3& Second) const {
 		return Vector3{this->x - Second.x, this->y - Second.y, this->z - Second.z};
 	}
 
@@ -59,10 +59,10 @@ struct Vector3 {
 		return *this;
 	}
 
-	_NODISCARD Vector3 operator*(const float& Second) const {
+	[[nodiscard]] Vector3 operator*(const float& Second) const {
 		return Vector3{this->x * Second, this->y * Second, this->z * Second};
 	}
-	_NODISCARD Vector3 operator/(const float& Second) const {
+	[[nodiscard]] Vector3 operator/(const float& Second) const {
 		return Vector3{this->x / Second, this->y / Second, this->z / Second};
 	}
 
@@ -83,33 +83,35 @@ struct Vector3 {
 
 	// Vector3 operator*=(const Matrix3x3& Second) {}
 
-	_NODISCARD Vector3 operator*(const Matrix4x4& Second) const;
+	[[nodiscard]] Vector3 operator*(const Matrix4x4& Second) const;
 
 	Vector3& operator*=(const Matrix4x4& Second);
 
 	// 逆ベクトル
-	_NODISCARD inline Vector3 operator-() const { return *this * -1; }
+	[[nodiscard]] inline Vector3 operator-() const { return *this * -1; }
 
 	// 内積
-	_NODISCARD inline float operator*(const Vector3& v) const {
+	[[nodiscard]] inline float operator*(const Vector3& v) const {
 		return x * v.x + y * v.y + z * v.z;
 	}
 	// 外積(クロス積)
-	_NODISCARD inline Vector3 operator^(const Vector3& v) const {
+	[[nodiscard]] inline Vector3 operator^(const Vector3& v) const {
 		return Vector3{y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x};
 	}
 
-	_NODISCARD inline static Vector3 zero() { return Vector3{0.f, 0.f, 0.f}; }
+	[[nodiscard]] inline static Vector3 zero() { return Vector3{0.f, 0.f, 0.f}; }
 
-	_NODISCARD inline Vector3 Reflect(Vector3 normal) const {
+	[[nodiscard]] inline Vector3 Reflect(Vector3 normal) const {
 		return (*this) - normal * 2 * ((*this) * normal);
 
 		// return {this->x- 2}
 	}
 
-	_NODISCARD inline bool operator==(const Vector3& vec) const {
+	[[nodiscard]] inline bool operator==(const Vector3& vec) const {
 		return (this->x == vec.x) && (this->y == vec.y) && (this->z == vec.z);
 	}
 
 private:
 };
+
+[[nodiscard]] inline Vector3 operator*(const float& left, const Vector3& right) { return right * left; }
