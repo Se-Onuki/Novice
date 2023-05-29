@@ -195,7 +195,34 @@ void Render::DrawLine(
 		element = element * viewProjectionMatrix * viewportMatrix_;
 	}
 
-	Novice::DrawLine( // a->b
+	Novice::DrawLine(
 	    static_cast<int>(vertex[0].x), static_cast<int>(vertex[0].y), static_cast<int>(vertex[1].x),
 	    static_cast<int>(vertex[1].y), color);
+}
+
+void Render::DrawPlane(
+    const Matrix4x4& viewProjectionMatrix, const Plane& plane, const uint32_t& color) const {
+	Vector3 centor = plane.distance * plane.normal;
+	Vector3 perpendiculars[4];
+	perpendiculars[0] = plane.normal.Perpendicular().Nomalize();
+	perpendiculars[1] = perpendiculars[0] * -1;
+	perpendiculars[2] = plane.normal ^ perpendiculars[0];
+	perpendiculars[3] = perpendiculars[2] * -1;
+
+	Vector3 vertex[4];
+	for (uint32_t i = 0; i < 4; i++) {
+		vertex[i] = (perpendiculars[i] * 2 + centor) * viewProjectionMatrix * viewportMatrix_; 
+	}
+	Novice::DrawLine(
+	    static_cast<int>(vertex[0].x), static_cast<int>(vertex[0].y), static_cast<int>(vertex[2].x),
+	    static_cast<int>(vertex[2].y), color);
+	Novice::DrawLine(
+	    static_cast<int>(vertex[0].x), static_cast<int>(vertex[0].y), static_cast<int>(vertex[3].x),
+	    static_cast<int>(vertex[3].y), color);
+	Novice::DrawLine(
+	    static_cast<int>(vertex[1].x), static_cast<int>(vertex[1].y), static_cast<int>(vertex[2].x),
+	    static_cast<int>(vertex[2].y), color);
+	Novice::DrawLine(
+	    static_cast<int>(vertex[1].x), static_cast<int>(vertex[1].y), static_cast<int>(vertex[3].x),
+	    static_cast<int>(vertex[3].y), color);
 }

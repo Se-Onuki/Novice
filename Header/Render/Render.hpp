@@ -4,6 +4,7 @@
 struct Vector2;
 struct Sphere;
 struct Segment;
+struct Plane;
 class Camera;
 class Triangle;
 
@@ -58,4 +59,7 @@ public:
 
 	void DrawLine(
 	    const Matrix4x4& viewProjectionMatrix, const Segment& segment, const uint32_t& color) const;
+
+	void DrawPlane(
+	    const Matrix4x4& viewProjectionMatrix, const Plane& plane, const uint32_t& color) const;
 };

@@ -37,10 +37,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {0.f,   5.f, -15.f}
     });
 
-	Sphere sphere[2]{
-	    {{0, 0, 0}, 2},
-        {{3, 2, 0}, 1}
+	Sphere sphere{
+	    {0, 0, 0},
+        2
     };
+
+	Plane plane = Plane::Create(Vector3{1, 0, 0}, Vector3{2.1f, 0, 0});
 
 	uint32_t sphereColor = WHITE;
 
@@ -57,7 +59,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓更新処理ここから
 		///
 
-		Vector3& transform = sphere[0].center;
+		Vector3& transform = sphere.center;
 
 		if (keys[DIK_A]) {
 			transform.x -= 0.01f;
@@ -79,7 +81,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			transform.y -= 0.01f;
 		}
 
-		if (sphere[0].IsCollision(sphere[1]))
+		if (sphere.IsCollision(plane))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -88,12 +90,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		ImGui::DragFloat3("Sphere1", &sphere[0].center.x, 0.1f);
-		ImGui::DragFloat("Sphere1", &sphere[0].radius, 0.1f);
-		ImGui::DragFloat3("Sphere2", &sphere[1].center.x, 0.1f);
-		ImGui::DragFloat("Sphere2", &sphere[1].radius, 0.1f);
-		ImGui::Text("Distance: %f", (sphere[0].center - sphere[1].center).Length());
+		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.1f);
+		ImGui::DragFloat("SphereRadius", &sphere.radius, 0.1f);
+		ImGui::DragFloat3("PlaneNormal", &plane.normal.x, 0.1f);
+		ImGui::DragFloat("PlaneDistance", &plane.distance, 0.1f);
 		ImGui::End();
+		plane.normal = plane.normal.Nomalize();
 
 		///
 		/// ↑更新処理ここまで
@@ -104,8 +106,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		///
 
 		render.Draw();
-		render.DrawSphere(camera.GetViewProjection(), sphere[0], sphereColor, 8);
-		render.DrawSphere(camera.GetViewProjection(), sphere[1], WHITE, 8);
+		render.DrawSphere(camera.GetViewProjection(), sphere, sphereColor, 8);
+		render.DrawPlane(camera.GetViewProjection(), plane, WHITE);
 		render.DrawGrid(camera.GetViewProjection());
 
 		///

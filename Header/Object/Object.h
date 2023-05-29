@@ -7,6 +7,23 @@
 
 class Render;
 
+struct Plane {
+	Vector3 normal;
+	float distance;
+
+	static Plane Create(const Vector3& Normal, const Vector3& Point) {
+		Plane out;
+		out.normal = Normal;
+		out.distance = Point * Normal;
+		return out;
+	}
+	static Plane Create(const Vector3 Vertex[3]) {
+		return Create(((Vertex[1] - Vertex[0]) ^ (Vertex[2] - Vertex[1])).Nomalize(), Vertex[0]);
+	}
+
+	float GetDistance(const Vector3& point) const { return normal * point - distance; }
+};
+
 class Vertices {
 public:
 	Vertices(const std::vector<Vector3>& vertices) : vertices_(vertices) {}
@@ -48,6 +65,7 @@ struct Sphere {
 	bool IsCollision(const Sphere& other) {
 		return (center - other.center).Length() <= radius + other.radius;
 	}
+	bool IsCollision(const Plane& plane) { return std::abs(plane.GetDistance(center)) <= radius; }
 };
 
 struct LineBase {

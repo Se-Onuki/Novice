@@ -107,6 +107,12 @@ struct Vector3 {
 		// return {this->x- 2}
 	}
 
+	inline Vector3 Perpendicular() const {
+		if (x != 0.f || y != 0.f)
+			return Vector3{-y, x, 0.f};
+		return Vector3{0.f, -z, y};
+	}
+
 	[[nodiscard]] inline bool operator==(const Vector3& vec) const {
 		return (this->x == vec.x) && (this->y == vec.y) && (this->z == vec.z);
 	}
@@ -114,4 +120,6 @@ struct Vector3 {
 private:
 };
 
-[[nodiscard]] inline Vector3 operator*(const float& left, const Vector3& right) { return right * left; }
+[[nodiscard]] inline Vector3 operator*(const float& left, const Vector3& right) {
+	return right * left;
+}
