@@ -186,7 +186,7 @@ void Render::DrawSphere(
 }
 
 void Render::DrawLine(
-    const Matrix4x4& viewProjectionMatrix, const Segment& segment, const uint32_t& color) const {
+    const Matrix4x4& viewProjectionMatrix, const LineBase& segment, const uint32_t& color) const {
 	Vector3 vertex[2];
 	vertex[0] = segment.origin;
 	vertex[1] = segment.GetEnd();

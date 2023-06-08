@@ -37,7 +37,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {0.f,   5.f, -15.f}
     });
 
-	Segment segment{
+	Line segment{
 	    {0, 0, 0},
         {1, 1, 0}
     };
@@ -90,8 +90,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		ImGui::DragFloat3("SphereCenter", &segment.origin.x, 0.1f);
-		ImGui::DragFloat("SphereRadius", &segment.origin.x, 0.1f);
+		ImGui::DragFloat3("SementOrigin", &segment.origin.x, 0.1f);
+		ImGui::DragFloat3("SegmentDiff", &segment.diff.x, 0.1f);
 		ImGui::DragFloat3("PlaneNormal", &plane.normal.x, 0.1f);
 		ImGui::DragFloat("PlaneDistance", &plane.distance, 0.1f);
 		ImGui::End();

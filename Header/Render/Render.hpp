@@ -3,6 +3,7 @@
 #include <vector>
 struct Vector2;
 struct Sphere;
+struct LineBase;
 struct Segment;
 struct Plane;
 class Camera;
@@ -58,7 +59,8 @@ public:
 	    const uint32_t& color = 0xFFFFFFFF, const uint32_t& subdivision = 10u) const;
 
 	void DrawLine(
-	    const Matrix4x4& viewProjectionMatrix, const Segment& segment, const uint32_t& color) const;
+	    const Matrix4x4& viewProjectionMatrix, const LineBase& segment,
+	    const uint32_t& color) const;
 
 	void DrawPlane(
 	    const Matrix4x4& viewProjectionMatrix, const Plane& plane, const uint32_t& color) const;
