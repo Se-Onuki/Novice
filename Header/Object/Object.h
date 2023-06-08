@@ -6,6 +6,7 @@
 #include <vector>
 
 class Render;
+struct LineBase;
 
 struct Plane {
 	Vector3 normal;
@@ -22,6 +23,7 @@ struct Plane {
 	}
 
 	float GetDistance(const Vector3& point) const { return normal * point - distance; }
+	bool IsCollision(const LineBase& other);
 };
 
 class Vertices {
@@ -69,6 +71,7 @@ struct Sphere {
 };
 
 struct LineBase {
+	LineBase(const Vector3& Origin, const Vector3& Diff) : origin(Origin), diff(Diff) {}
 	Vector3 origin; // 始点
 	Vector3 diff;   // 終点へのベクトル
 
@@ -76,27 +79,27 @@ struct LineBase {
 	[[nodiscard]] Vector3 GetProgress(const float& t) const;
 	[[nodiscard]] Vector3 Project(const Vector3& point) const;
 	[[nodiscard]] Vector3 ClosestPoint(const Vector3& point) const;
+	[[nodiscard]] virtual const float Clamp(const float& t) const = 0;
 
 protected:
 	[[nodiscard]] float ClosestProgress(const Vector3& point) const;
-	[[nodiscard]] virtual const float Clamp(const float& t) const = 0;
 };
 
 /// @brief 直線
 struct Line final : public LineBase {
-private:
+	using LineBase::LineBase;
 	[[nodiscard]] const float Clamp(const float& t) const override;
 };
 
 /// @brief 半直線
 struct Ray final : public LineBase {
-private:
+	using LineBase::LineBase;
 	[[nodiscard]] const float Clamp(const float& t) const override;
 };
 
 /// @brief 線分
 struct Segment final : public LineBase {
-private:
+	using LineBase::LineBase;
 	[[nodiscard]] const float Clamp(const float& t) const override;
 };
 

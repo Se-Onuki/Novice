@@ -37,9 +37,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {0.f,   5.f, -15.f}
     });
 
-	Sphere sphere{
+	Segment segment{
 	    {0, 0, 0},
-        2
+        {1, 1, 0}
     };
 
 	Plane plane = Plane::Create(Vector3{1, 0, 0}, Vector3{2.1f, 0, 0});
@@ -59,7 +59,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓更新処理ここから
 		///
 
-		Vector3& transform = sphere.center;
+		Vector3& transform = segment.origin;
 
 		if (keys[DIK_A]) {
 			transform.x -= 0.01f;
@@ -81,7 +81,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			transform.y -= 0.01f;
 		}
 
-		if (sphere.IsCollision(plane))
+		if (plane.IsCollision(segment))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -90,8 +90,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.1f);
-		ImGui::DragFloat("SphereRadius", &sphere.radius, 0.1f);
+		ImGui::DragFloat3("SphereCenter", &segment.origin.x, 0.1f);
+		ImGui::DragFloat("SphereRadius", &segment.origin.x, 0.1f);
 		ImGui::DragFloat3("PlaneNormal", &plane.normal.x, 0.1f);
 		ImGui::DragFloat("PlaneDistance", &plane.distance, 0.1f);
 		ImGui::End();
@@ -105,10 +105,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓描画処理ここから
 		///
 
-		render.Draw();
-		render.DrawSphere(camera.GetViewProjection(), sphere, sphereColor, 8);
-		render.DrawPlane(camera.GetViewProjection(), plane, WHITE);
 		render.DrawGrid(camera.GetViewProjection());
+		render.Draw();
+		render.DrawLine(camera.GetViewProjection(), segment, sphereColor);
+		render.DrawPlane(camera.GetViewProjection(), plane, WHITE);
 
 		///
 		/// ↑描画処理ここまで

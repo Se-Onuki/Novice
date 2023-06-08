@@ -1,6 +1,7 @@
 #include "Object.h"
 #include "Header/Math/Lerp.h"
 #include "Header/Render/Render.hpp"
+#include <algorithm>
 
 Triangle::Triangle(const Vector3 Vertices[3]) : vertices_{Vertices[0], Vertices[1], Vertices[2]} {}
 
@@ -66,4 +67,13 @@ const float Line::Clamp(const float& t) const { return t; }
 
 const float Ray::Clamp(const float& t) const { return (t > 0.f) ? t : 0.f; }
 
-const float Segment::Clamp(const float& t) const { return (t > 0.f) ? t : (t < 1.f) ? t : 1.f; }
+const float Segment::Clamp(const float& t) const { return std::clamp(t, 0.f, 1.f); }
+
+bool Plane::IsCollision(const LineBase& other) {
+	const float dot = normal * other.diff;
+	if (dot == 0.f)
+		return false;
+	const float t = (distance - (other.origin * normal)) / dot;
+	const float clampT = other.Clamp(t);
+	return clampT == t;
+}
