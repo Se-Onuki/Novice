@@ -7,6 +7,19 @@
 
 class Render;
 struct LineBase;
+struct Plane;
+struct Triangle;
+struct Sphere;
+struct AABB;
+
+namespace Collision {
+const bool IsHit(const LineBase& line, const Plane& plane);
+const bool IsHit(const Sphere& sphereA, const Sphere& sphereB);
+const bool IsHit(const Sphere& sphere, const Plane& plane);
+const bool IsHit(const LineBase& line, const Triangle& triangle);
+
+const Vector3 HitPoint(const LineBase& line, const Plane& plane);
+} // namespace Collision
 
 struct Plane {
 	Vector3 normal;
@@ -21,9 +34,10 @@ struct Plane {
 	static Plane Create(const Vector3 Vertex[3]) {
 		return Create(((Vertex[1] - Vertex[0]) ^ (Vertex[2] - Vertex[1])).Nomalize(), Vertex[0]);
 	}
+	static Plane Create(const Triangle& trinagle);
 
 	float GetDistance(const Vector3& point) const { return normal * point - distance; }
-	bool IsCollision(const LineBase& other);
+	const bool IsCollision(const LineBase& other) const;
 };
 
 class Vertices {
@@ -33,14 +47,15 @@ public:
 };
 
 /// @brief 3角ポリゴン
-class Triangle {
-public:
+struct Triangle {
 	// 頂点リスト(時計回り)
 	Vector3 vertices_[3];
 
 	Triangle() {}
 	/// @param LocalVertices 頂点リスト(時計回り)
 	Triangle(const Vector3 Vertices[3]);
+	Triangle(const Vector3& Vertice0, const Vector3& Vertice1, const Vector3& Vertice2)
+	    : vertices_{Vertice0, Vertice1, Vertice2} {}
 
 	Triangle(const Triangle& other) { memcpy_s(this, sizeof(Triangle), &other, sizeof(Triangle)); }
 	~Triangle();
@@ -58,16 +73,16 @@ public:
 		const Vector3& VecB = vertices_[2] - vertices_[1]; // 1 から 2 に向けて
 		return (VecA ^ VecB).Nomalize();
 	}
+
+	void ImGuiDebug();
 };
 
 struct Sphere {
 	Vector3 center;
 	float radius;
 
-	bool IsCollision(const Sphere& other) {
-		return (center - other.center).Length() <= radius + other.radius;
-	}
-	bool IsCollision(const Plane& plane) { return std::abs(plane.GetDistance(center)) <= radius; }
+	bool IsCollision(const Sphere& other) { return Collision::IsHit(*this, other); }
+	bool IsCollision(const Plane& plane) { return Collision::IsHit(*this, plane); }
 };
 
 struct LineBase {
@@ -80,6 +95,8 @@ struct LineBase {
 	[[nodiscard]] Vector3 Project(const Vector3& point) const;
 	[[nodiscard]] Vector3 ClosestPoint(const Vector3& point) const;
 	[[nodiscard]] virtual const float Clamp(const float& t) const = 0;
+
+	void ImGuiDebug();
 
 protected:
 	[[nodiscard]] float ClosestProgress(const Vector3& point) const;

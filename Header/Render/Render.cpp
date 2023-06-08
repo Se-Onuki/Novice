@@ -147,6 +147,24 @@ void Render::DrawGrid(
 	    static_cast<int>(yEndScreen.x), static_cast<int>(yEndScreen.y), BLACK);
 }
 
+void Render::DrawTriangle(
+    const Matrix4x4& viewProjectionMatrix, const Triangle& triangle, const uint32_t& color,
+    const FillMode& fillMode) const {
+	Triangle screenTriangle(triangle);
+	Matrix4x4 VPVp = viewProjectionMatrix * viewportMatrix_;
+	for (auto& vertex : screenTriangle.vertices_) {
+		vertex *= VPVp;
+	}
+
+	Novice::DrawTriangle(
+	    static_cast<int>(screenTriangle.vertices_[0].x),
+	    static_cast<int>(screenTriangle.vertices_[0].y),
+	    static_cast<int>(screenTriangle.vertices_[1].x),
+	    static_cast<int>(screenTriangle.vertices_[1].y),
+	    static_cast<int>(screenTriangle.vertices_[2].x),
+	    static_cast<int>(screenTriangle.vertices_[2].y), color, fillMode);
+}
+
 void Render::DrawSphere(
     const Matrix4x4& viewProjectionMatrix, const Sphere& sphere, const uint32_t& color,
     const uint32_t& subdivision) const {
@@ -211,7 +229,7 @@ void Render::DrawPlane(
 
 	Vector3 vertex[4];
 	for (uint32_t i = 0; i < 4; i++) {
-		vertex[i] = (perpendiculars[i] * 2 + centor) * viewProjectionMatrix * viewportMatrix_; 
+		vertex[i] = (perpendiculars[i] * 2 + centor) * viewProjectionMatrix * viewportMatrix_;
 	}
 	Novice::DrawLine(
 	    static_cast<int>(vertex[0].x), static_cast<int>(vertex[0].y), static_cast<int>(vertex[2].x),

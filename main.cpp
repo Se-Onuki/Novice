@@ -37,12 +37,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {0.f,   5.f, -15.f}
     });
 
-	Line segment{
-	    {0, 0, 0},
-        {1, 1, 0}
+	Segment segment{
+	    {0, 1, 0},
+        {0, 1, 1}
     };
 
-	Plane plane = Plane::Create(Vector3{1, 0, 0}, Vector3{2.1f, 0, 0});
+	// Plane plane = Plane::Create(Vector3{1, 0, 0}, Vector3{2.1f, 0, 0});
+	Triangle triangle{
+	    Vector3{-1, 1, 0},
+        Vector3{0,  2, 0},
+        Vector3{1,  1, 0}
+    };
 
 	uint32_t sphereColor = WHITE;
 
@@ -81,7 +86,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			transform.y -= 0.01f;
 		}
 
-		if (plane.IsCollision(segment))
+		if (Collision::IsHit(segment, triangle))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -90,12 +95,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		ImGui::DragFloat3("SementOrigin", &segment.origin.x, 0.1f);
-		ImGui::DragFloat3("SegmentDiff", &segment.diff.x, 0.1f);
-		ImGui::DragFloat3("PlaneNormal", &plane.normal.x, 0.1f);
-		ImGui::DragFloat("PlaneDistance", &plane.distance, 0.1f);
+		segment.ImGuiDebug();
+		triangle.ImGuiDebug();
 		ImGui::End();
-		plane.normal = plane.normal.Nomalize();
 
 		///
 		/// ↑更新処理ここまで
@@ -105,10 +107,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓描画処理ここから
 		///
 
-		render.DrawGrid(camera.GetViewProjection());
 		render.Draw();
+		render.DrawGrid(camera.GetViewProjection());
 		render.DrawLine(camera.GetViewProjection(), segment, sphereColor);
-		render.DrawPlane(camera.GetViewProjection(), plane, WHITE);
+		render.DrawTriangle(camera.GetViewProjection(), triangle, WHITE, kFillModeWireFrame);
 
 		///
 		/// ↑描画処理ここまで

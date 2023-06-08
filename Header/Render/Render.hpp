@@ -1,5 +1,6 @@
 #pragma once
 #include "Header/Math/Matrix4x4.h"
+#include <Novice.h>
 #include <vector>
 struct Vector2;
 struct Sphere;
@@ -7,7 +8,7 @@ struct LineBase;
 struct Segment;
 struct Plane;
 class Camera;
-class Triangle;
+struct Triangle;
 
 class Render final {
 	Matrix4x4 viewportMatrix_;
@@ -53,6 +54,10 @@ public:
 	void DrawGrid(
 	    const Matrix4x4& viewProjectionMatrix, const float& radius = 2.f,
 	    const uint32_t& subdivision = 10u) const;
+
+	void DrawTriangle(
+	    const Matrix4x4& viewProjectionMatrix, const Triangle& triangle, const uint32_t& color,
+	    const FillMode& fillMode) const;
 
 	void DrawSphere(
 	    const Matrix4x4& viewProjectionMatrix, const Sphere& sphere,

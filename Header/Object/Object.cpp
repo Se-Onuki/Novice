@@ -3,9 +3,17 @@
 #include "Header/Render/Render.hpp"
 #include <algorithm>
 
+#include <imgui.h>
+
 Triangle::Triangle(const Vector3 Vertices[3]) : vertices_{Vertices[0], Vertices[1], Vertices[2]} {}
 
 Triangle::~Triangle() {}
+
+void Triangle::ImGuiDebug() {
+	ImGui::DragFloat3("triangleVertex[0]", &vertices_[0].x, 0.1f);
+	ImGui::DragFloat3("triangleVertex[1]", &vertices_[1].x, 0.1f);
+	ImGui::DragFloat3("triangleVertex[2]", &vertices_[2].x, 0.1f);
+}
 
 ModelClass::ModelClass() {}
 
@@ -49,7 +57,7 @@ void Camera::CreateNDC(const std::vector<Object3d>& objectList, Render* render) 
 	}
 }
 
-Vector3 LineBase::GetProgress(const float& t) const { return Lerp(origin, GetEnd(), t); }
+Vector3 LineBase::GetProgress(const float& t) const { return origin + diff * t; }
 
 Vector3 LineBase::Project(const Vector3& point) const {
 	return (point - origin) - ClosestProgress(point) * diff;
@@ -57,6 +65,11 @@ Vector3 LineBase::Project(const Vector3& point) const {
 
 Vector3 LineBase::ClosestPoint(const Vector3& point) const {
 	return ClosestProgress(point) * diff + origin;
+}
+
+void LineBase::ImGuiDebug() {
+	ImGui::DragFloat3("SementOrigin", &origin.x, 0.1f);
+	ImGui::DragFloat3("SegmentDiff", &diff.x, 0.1f);
 }
 
 float LineBase::ClosestProgress(const Vector3& point) const {
@@ -69,11 +82,47 @@ const float Ray::Clamp(const float& t) const { return (t > 0.f) ? t : 0.f; }
 
 const float Segment::Clamp(const float& t) const { return std::clamp(t, 0.f, 1.f); }
 
-bool Plane::IsCollision(const LineBase& other) {
-	const float dot = normal * other.diff;
+Plane Plane::Create(const Triangle& trinagle) { return Create(trinagle.vertices_); }
+
+const bool Plane::IsCollision(const LineBase& other) const {
+	return Collision::IsHit(other, *this);
+}
+
+const bool Collision::IsHit(const LineBase& line, const Plane& plane) {
+	const float dot = plane.normal * line.diff;
 	if (dot == 0.f)
 		return false;
-	const float t = (distance - (other.origin * normal)) / dot;
-	const float clampT = other.Clamp(t);
+	const float t = (plane.distance - (line.origin * plane.normal)) / dot;
+	const float clampT = line.Clamp(t);
 	return clampT == t;
+}
+
+const bool Collision::IsHit(const Sphere& sphereA, const Sphere& sphereB) {
+	return (sphereA.center - sphereB.center).Length() <= sphereA.radius + sphereB.radius;
+}
+
+const bool Collision::IsHit(const Sphere& sphere, const Plane& plane) {
+	return std::abs(plane.GetDistance(sphere.center)) <= sphere.radius;
+}
+
+const bool Collision::IsHit(const LineBase& line, const Triangle& triangle) {
+	Plane plane = Plane::Create(triangle);
+	if (!IsHit(line, plane))
+		return false;
+	const Vector3 pos = HitPoint(line, plane);
+	const Vector3 closs[3] = {
+	    {(triangle.vertices_[1] - triangle.vertices_[0]) ^ (pos - triangle.vertices_[1])},
+	    {(triangle.vertices_[2] - triangle.vertices_[1]) ^ (pos - triangle.vertices_[2])},
+	    {(triangle.vertices_[0] - triangle.vertices_[2]) ^ (pos - triangle.vertices_[0])},
+	};
+	const Vector3& normal = triangle.GetNormal();
+	return ((normal * closs[0]) >= 0.f && (normal * closs[1]) >= 0.f && (normal * closs[2]) >= 0.f);
+}
+
+const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
+	const float dot = plane.normal * line.diff;
+	if (dot == 0.f)
+		return Vector3::zero(); // 平行
+	const float t = (plane.distance - (line.origin * plane.normal)) / dot;
+	return line.GetProgress(t);
 }
