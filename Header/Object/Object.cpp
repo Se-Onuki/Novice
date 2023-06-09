@@ -151,8 +151,8 @@ const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
 void AABB::ImGuiDebug(const std::string& group) {
 	if (ImGui::TreeNode(group.c_str())) {
 
-		ImGui::DragFloat3("Min", &min.x, 0.1f);
 		ImGui::DragFloat3("Max", &max.x, 0.1f);
+		ImGui::DragFloat3("Min", &min.x, 0.1f);
 		Swaping();
 
 		ImGui::TreePop();
