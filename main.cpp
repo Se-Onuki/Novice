@@ -44,9 +44,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Vector3 cameraDiff{0, 5.f, -15.f};
 	float cameraRadius = 15.f;
 
-	Sphere sphere{
-	    .center{2.f, 2.f, 2.f},
-        .radius{2.f}
+	// Sphere sphere{
+	//     .center{2.f, 2.f, 2.f},
+	//       .radius{2.f}
+	//   };
+
+	Segment line{
+	    {0, 0, 0},
+        {1, 1, 1}
     };
 
 	AABB aabb{
@@ -116,7 +121,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraDiff + cameraOrigin
         });
 
-		if (Collision::IsHit(aabb, sphere))
+		if (Collision::IsHit(aabb, line))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -126,7 +131,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("window");
 		aabb.ImGuiDebug("aabb");
-		sphere.ImGuiDebug("sphere");
+		line.ImGuiDebug("line");
 		ImGui::End();
 
 		///
@@ -140,7 +145,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection());
 		render.DrawAABB(camera.GetViewProjection(), aabb, sphereColor);
-		render.DrawSphere(camera.GetViewProjection(), sphere, WHITE);
+		render.DrawLine(camera.GetViewProjection(), line, WHITE);
 
 		///
 		/// ↑描画処理ここまで

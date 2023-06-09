@@ -102,7 +102,7 @@ struct LineBase {
 	[[nodiscard]] Vector3 ClosestPoint(const Vector3& point) const;
 	[[nodiscard]] virtual const float Clamp(const float& t) const = 0;
 
-	void ImGuiDebug(const std::string& group);
+	virtual void ImGuiDebug(const std::string& group);
 
 protected:
 	[[nodiscard]] float ClosestProgress(const Vector3& point) const;

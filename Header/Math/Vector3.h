@@ -7,7 +7,7 @@
 struct Matrix4x4;
 
 struct Vector3 {
-	Vector3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z) {}
+	// Vector3(float x = 0.f, float y = 0.f, float z = 0.f) : x(x), y(y), z(z) {}
 
 	float x;
 	float y;
@@ -114,8 +114,12 @@ struct Vector3 {
 		return Vector3{0.f, -z, y};
 	}
 
-	Vector3 Direction2Euler() {
-		return Vector3{std::atan2(-y, sqrt(x * x + z * z)), std::atan2(x, z), 0};
+	Vector3 Direction2Euler() const {
+		// return Vector3{std::atan2(-y, sqrt(x * x + z * z)), std::atan2(x, z), 0};
+		Vector3 out = zero();
+		out.y = std::atan2(x, z);
+		out.x = std::atan2(-y, std::sqrt(std::powf(x, 2) + std::powf(z, 2)));
+		return out;
 	}
 
 	[[nodiscard]] inline bool operator==(const Vector3& vec) const {

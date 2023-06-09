@@ -72,8 +72,8 @@ void LineBase::ImGuiDebug(const std::string& group) {
 
 		ImGui::DragFloat3("Origin", &origin.x, 0.1f);
 		ImGui::DragFloat3("Diff", &diff.x, 0.1f);
+		ImGui::TreePop();
 	}
-	ImGui::TreePop();
 }
 
 float LineBase::ClosestProgress(const Vector3& point) const {
@@ -138,7 +138,34 @@ const bool Collision::IsHit(const AABB& aabb, const Sphere& sphere) {
 	return ((clampPos - sphere.center).Length() <= sphere.radius);
 }
 
-const bool Collision::IsHit(const AABB&, const LineBase&) { return false; }
+const bool Collision::IsHit(const AABB& aabb, const LineBase& line) {
+	const Vector3 tMinVec{
+	    {(aabb.min.x - line.origin.x) / line.diff.x},
+	    {(aabb.min.y - line.origin.y) / line.diff.y},
+	    {(aabb.min.z - line.origin.z) / line.diff.z}};
+	const Vector3 tMaxVec{
+	    {(aabb.max.x - line.origin.x) / line.diff.x},
+	    {(aabb.max.y - line.origin.y) / line.diff.y},
+	    {(aabb.max.z - line.origin.z) / line.diff.z}};
+
+	const Vector3 tNear{
+	    min(tMinVec.x, tMaxVec.x), min(tMinVec.y, tMaxVec.y), min(tMinVec.z, tMaxVec.z)};
+	const Vector3 tFar{
+	    max(tMinVec.x, tMaxVec.x), max(tMinVec.y, tMaxVec.y), max(tMinVec.z, tMaxVec.z)};
+
+	const float tMin{max(max(tNear.x, tNear.y), tNear.z)};
+	const float tMax{min(min(tFar.x, tFar.y), tFar.z)};
+	if (tMin > 1.f && tMin != line.Clamp(tMin))
+		return false;
+	if (tMax < 0.f && tMax != line.Clamp(tMax))
+		return false;
+	/*if (tMin < 0.f && tMax > 0.f)
+	    true;
+	if (tMin < 0.f && tMax > 0.f)
+	    true;*/
+	// if ()
+	return tMin <= tMax;
+}
 
 const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
 	const float dot = plane.normal * line.diff;
