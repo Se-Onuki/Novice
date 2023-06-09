@@ -3,8 +3,8 @@
 #include "Header/Math/Matrix4x4.h"
 #include "Header/Math/Vector3.h"
 #include "Header/Object/Transform.h"
-#include <vector>
 #include <string>
+#include <vector>
 
 class Render;
 struct LineBase;
@@ -19,6 +19,7 @@ const bool IsHit(const Sphere& sphereA, const Sphere& sphereB);
 const bool IsHit(const Sphere& sphere, const Plane& plane);
 const bool IsHit(const LineBase& line, const Triangle& triangle);
 const bool IsHit(const AABB& a, const AABB& b);
+const bool IsHit(const AABB& aabb, const Sphere& sphere);
 
 const Vector3 HitPoint(const LineBase& line, const Plane& plane);
 } // namespace Collision
@@ -85,6 +86,8 @@ struct Sphere {
 
 	bool IsCollision(const Sphere& other) { return Collision::IsHit(*this, other); }
 	bool IsCollision(const Plane& plane) { return Collision::IsHit(*this, plane); }
+
+	void ImGuiDebug(const std::string& group);
 };
 
 struct LineBase {
@@ -98,7 +101,7 @@ struct LineBase {
 	[[nodiscard]] Vector3 ClosestPoint(const Vector3& point) const;
 	[[nodiscard]] virtual const float Clamp(const float& t) const = 0;
 
-	void ImGuiDebug();
+	void ImGuiDebug(const std::string& group);
 
 protected:
 	[[nodiscard]] float ClosestProgress(const Vector3& point) const;

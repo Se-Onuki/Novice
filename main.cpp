@@ -36,10 +36,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {0.25f, 0.f, 0.f  },
         {0.f,   5.f, -15.f}
     });
+	Sphere sphere{
+	    .center{2.f, 2.f, 2.f},
+        .radius{2.f}
+    };
 
-	AABB aabb[2]{
-	    {.min{-0.5f, -0.5f, -0.5f}, .max{0.f, 0.f, 0.f}},
-	    {.min{0.2f, 0.2f, 0.2f},    .max{1.f, 1.f, 1.f}}
+	AABB aabb{
+	    .min{-0.5f, -0.5f, -0.5f},
+        .max{0.f,   0.f,   0.f  }
     };
 
 	uint32_t sphereColor = WHITE;
@@ -79,7 +83,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//	transform.y -= 0.01f;
 		// }
 
-		if (Collision::IsHit(aabb[0], aabb[1]))
+		if (Collision::IsHit(aabb, sphere))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -88,8 +92,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		aabb[0].ImGuiDebug("aabb[0]");
-		aabb[1].ImGuiDebug("aabb[1]");
+		aabb.ImGuiDebug("aabb");
+		sphere.ImGuiDebug("sphere");
 		ImGui::End();
 
 		///
@@ -102,8 +106,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection());
-		render.DrawAABB(camera.GetViewProjection(), aabb[0], sphereColor);
-		render.DrawAABB(camera.GetViewProjection(), aabb[1], WHITE);
+		render.DrawAABB(camera.GetViewProjection(), aabb, sphereColor);
+		render.DrawSphere(camera.GetViewProjection(), sphere, WHITE);
 
 		///
 		/// ↑描画処理ここまで

@@ -67,9 +67,13 @@ Vector3 LineBase::ClosestPoint(const Vector3& point) const {
 	return ClosestProgress(point) * diff + origin;
 }
 
-void LineBase::ImGuiDebug() {
-	ImGui::DragFloat3("SementOrigin", &origin.x, 0.1f);
-	ImGui::DragFloat3("SegmentDiff", &diff.x, 0.1f);
+void LineBase::ImGuiDebug(const std::string& group) {
+	if (ImGui::TreeNode(group.c_str())) {
+
+		ImGui::DragFloat3("Origin", &origin.x, 0.1f);
+		ImGui::DragFloat3("Diff", &diff.x, 0.1f);
+	}
+	ImGui::TreePop();
 }
 
 float LineBase::ClosestProgress(const Vector3& point) const {
@@ -125,6 +129,15 @@ const bool Collision::IsHit(const AABB& a, const AABB& b) {
 	    (a.min.z <= b.max.z && a.max.z >= b.min.z));
 }
 
+const bool Collision::IsHit(const AABB& aabb, const Sphere& sphere) {
+	Vector3 clampPos{
+	    std::clamp(sphere.center.x, aabb.min.x, aabb.max.x),
+	    std::clamp(sphere.center.y, aabb.min.y, aabb.max.y),
+	    std::clamp(sphere.center.z, aabb.min.z, aabb.max.z),
+	};
+	return ((clampPos - sphere.center).Length() <= sphere.radius);
+}
+
 const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
 	const float dot = plane.normal * line.diff;
 	if (dot == 0.f)
@@ -136,8 +149,8 @@ const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
 void AABB::ImGuiDebug(const std::string& group) {
 	if (ImGui::TreeNode(group.c_str())) {
 
-		ImGui::DragFloat3("min", &min.x, 0.1f);
-		ImGui::DragFloat3("max", &max.x, 0.1f);
+		ImGui::DragFloat3("Min", &min.x, 0.1f);
+		ImGui::DragFloat3("Max", &max.x, 0.1f);
 		Swaping();
 
 		ImGui::TreePop();
@@ -153,5 +166,16 @@ void AABB::Swaping() {
 	}
 	if (min.z > max.z) {
 		std::swap(min.z, max.z);
+	}
+}
+
+void Sphere::ImGuiDebug(const std::string& group) {
+
+	if (ImGui::TreeNode(group.c_str())) {
+
+		ImGui::DragFloat3("Centor", &center.x, 0.1f);
+		ImGui::DragFloat("Radius", &radius, 0.1f);
+
+		ImGui::TreePop();
 	}
 }
