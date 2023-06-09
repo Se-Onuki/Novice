@@ -37,16 +37,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {0.f,   5.f, -15.f}
     });
 
-	Segment segment{
-	    {0, 1, 0},
-        {0, 1, 1}
-    };
-
-	// Plane plane = Plane::Create(Vector3{1, 0, 0}, Vector3{2.1f, 0, 0});
-	Triangle triangle{
-	    Vector3{-1, 1, 0},
-        Vector3{0,  2, 0},
-        Vector3{1,  1, 0}
+	AABB aabb[2]{
+	    {.min{-0.5f, -0.5f, -0.5f}, .max{0.f, 0.f, 0.f}},
+	    {.min{0.2f, 0.2f, 0.2f},    .max{1.f, 1.f, 1.f}}
     };
 
 	uint32_t sphereColor = WHITE;
@@ -64,29 +57,29 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓更新処理ここから
 		///
 
-		Vector3& transform = segment.origin;
+		// Vector3& transform = segment.origin;
 
-		if (keys[DIK_A]) {
-			transform.x -= 0.01f;
-		}
-		if (keys[DIK_D]) {
-			transform.x += 0.01f;
-		}
-		if (keys[DIK_W]) {
-			transform.z += 0.01f;
-		}
-		if (keys[DIK_S]) {
-			transform.z -= 0.01f;
-		}
+		// if (keys[DIK_A]) {
+		//	transform.x -= 0.01f;
+		// }
+		// if (keys[DIK_D]) {
+		//	transform.x += 0.01f;
+		// }
+		// if (keys[DIK_W]) {
+		//	transform.z += 0.01f;
+		// }
+		// if (keys[DIK_S]) {
+		//	transform.z -= 0.01f;
+		// }
 
-		if (keys[DIK_SPACE]) {
-			transform.y += 0.01f;
-		}
-		if (keys[DIK_LSHIFT]) {
-			transform.y -= 0.01f;
-		}
+		// if (keys[DIK_SPACE]) {
+		//	transform.y += 0.01f;
+		// }
+		// if (keys[DIK_LSHIFT]) {
+		//	transform.y -= 0.01f;
+		// }
 
-		if (Collision::IsHit(segment, triangle))
+		if (Collision::IsHit(aabb[0], aabb[1]))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -95,8 +88,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		segment.ImGuiDebug();
-		triangle.ImGuiDebug();
+		aabb[0].ImGuiDebug("aabb[0]");
+		aabb[1].ImGuiDebug("aabb[1]");
 		ImGui::End();
 
 		///
@@ -109,8 +102,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection());
-		render.DrawLine(camera.GetViewProjection(), segment, sphereColor);
-		render.DrawTriangle(camera.GetViewProjection(), triangle, WHITE, kFillModeWireFrame);
+		render.DrawAABB(camera.GetViewProjection(), aabb[0], sphereColor);
+		render.DrawAABB(camera.GetViewProjection(), aabb[1], WHITE);
 
 		///
 		/// ↑描画処理ここまで

@@ -119,10 +119,39 @@ const bool Collision::IsHit(const LineBase& line, const Triangle& triangle) {
 	return ((normal * closs[0]) >= 0.f && (normal * closs[1]) >= 0.f && (normal * closs[2]) >= 0.f);
 }
 
+const bool Collision::IsHit(const AABB& a, const AABB& b) {
+	return (
+	    (a.min.x <= b.max.x && a.max.x >= b.min.x) && (a.min.y <= b.max.y && a.max.y >= b.min.y) &&
+	    (a.min.z <= b.max.z && a.max.z >= b.min.z));
+}
+
 const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
 	const float dot = plane.normal * line.diff;
 	if (dot == 0.f)
 		return Vector3::zero(); // 平行
 	const float t = (plane.distance - (line.origin * plane.normal)) / dot;
 	return line.GetProgress(t);
+}
+
+void AABB::ImGuiDebug(const std::string& group) {
+	if (ImGui::TreeNode(group.c_str())) {
+
+		ImGui::DragFloat3("min", &min.x, 0.1f);
+		ImGui::DragFloat3("max", &max.x, 0.1f);
+		Swaping();
+
+		ImGui::TreePop();
+	}
+}
+
+void AABB::Swaping() {
+	if (min.x > max.x) {
+		std::swap(min.x, max.x);
+	}
+	if (min.y > max.y) {
+		std::swap(min.y, max.y);
+	}
+	if (min.z > max.z) {
+		std::swap(min.z, max.z);
+	}
 }

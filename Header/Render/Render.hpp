@@ -9,6 +9,7 @@ struct Segment;
 struct Plane;
 class Camera;
 struct Triangle;
+struct AABB;
 
 class Render final {
 	Matrix4x4 viewportMatrix_;
@@ -69,4 +70,7 @@ public:
 
 	void DrawPlane(
 	    const Matrix4x4& viewProjectionMatrix, const Plane& plane, const uint32_t& color) const;
+
+	void DrawAABB(
+	    const Matrix4x4& viewProjectionMatrix, const AABB& aabb, const uint32_t& color) const;
 };

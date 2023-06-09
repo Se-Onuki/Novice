@@ -4,6 +4,7 @@
 #include "Header/Math/Vector3.h"
 #include "Header/Object/Transform.h"
 #include <vector>
+#include <string>
 
 class Render;
 struct LineBase;
@@ -17,6 +18,7 @@ const bool IsHit(const LineBase& line, const Plane& plane);
 const bool IsHit(const Sphere& sphereA, const Sphere& sphereB);
 const bool IsHit(const Sphere& sphere, const Plane& plane);
 const bool IsHit(const LineBase& line, const Triangle& triangle);
+const bool IsHit(const AABB& a, const AABB& b);
 
 const Vector3 HitPoint(const LineBase& line, const Plane& plane);
 } // namespace Collision
@@ -118,6 +120,14 @@ struct Ray final : public LineBase {
 struct Segment final : public LineBase {
 	using LineBase::LineBase;
 	[[nodiscard]] const float Clamp(const float& t) const override;
+};
+
+struct AABB {
+	Vector3 min;
+	Vector3 max;
+
+	void ImGuiDebug(const std::string& group);
+	void Swaping();
 };
 
 class ModelClass {

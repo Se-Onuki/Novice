@@ -244,3 +244,37 @@ void Render::DrawPlane(
 	    static_cast<int>(vertex[1].x), static_cast<int>(vertex[1].y), static_cast<int>(vertex[3].x),
 	    static_cast<int>(vertex[3].y), color);
 }
+
+void Render::DrawAABB(
+    const Matrix4x4& viewProjectionMatrix, const AABB& aabb, const uint32_t& color) const {
+	Vector3 lower[4]{
+	    {aabb.min.x, aabb.min.y, aabb.min.z},
+	    {aabb.min.x, aabb.min.y, aabb.max.z},
+	    {aabb.max.x, aabb.min.y, aabb.max.z},
+	    {aabb.max.x, aabb.min.y, aabb.min.z},
+	};
+	Vector3 higher[4]{
+	    {aabb.min.x, aabb.max.y, aabb.min.z},
+	    {aabb.min.x, aabb.max.y, aabb.max.z},
+	    {aabb.max.x, aabb.max.y, aabb.max.z},
+	    {aabb.max.x, aabb.max.y, aabb.min.z},
+	};
+	const Matrix4x4 VPVp = viewProjectionMatrix * viewportMatrix_;
+	for (uint8_t i = 0; i < 4; i++) {
+		lower[i] *= VPVp;
+		higher[i] *= VPVp;
+	}
+	for (uint8_t i = 0; i < 4; i++) {
+		uint8_t k = (i + 1) % 4;
+		Novice::DrawLine(
+		    static_cast<int>(lower[i].x), static_cast<int>(lower[i].y),
+		    static_cast<int>(lower[k].x), static_cast<int>(lower[k].y), color);
+		Novice::DrawLine(
+		    static_cast<int>(higher[i].x), static_cast<int>(higher[i].y),
+		    static_cast<int>(higher[k].x), static_cast<int>(higher[k].y), color);
+
+		Novice::DrawLine(
+		    static_cast<int>(lower[i].x), static_cast<int>(lower[i].y),
+		    static_cast<int>(higher[i].x), static_cast<int>(higher[i].y), color);
+	}
+}
