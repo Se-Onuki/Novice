@@ -2,6 +2,7 @@
 // #include "Matrix3x3.hpp"
 
 #include <cmath>
+#include <numbers>
 
 struct Matrix4x4;
 
@@ -111,6 +112,10 @@ struct Vector3 {
 		if (x != 0.f || y != 0.f)
 			return Vector3{-y, x, 0.f};
 		return Vector3{0.f, -z, y};
+	}
+
+	Vector3 Direction2Euler() {
+		return Vector3{std::atan2(-y, sqrt(x * x + z * z)), std::atan2(x, z), 0};
 	}
 
 	[[nodiscard]] inline bool operator==(const Vector3& vec) const {

@@ -24,6 +24,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
+	IntVector2 mouse{};
+	IntVector2 preMouse{};
+	Vector2 mouseDiff{};
 
 	// 変数
 
@@ -36,6 +39,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         {0.25f, 0.f, 0.f  },
         {0.f,   5.f, -15.f}
     });
+
+	Vector3 cameraOrigin{0, 0, 0};
+	Vector3 cameraDiff{0, 5.f, -15.f};
+	float cameraRadius = 15.f;
+
 	Sphere sphere{
 	    .center{2.f, 2.f, 2.f},
         .radius{2.f}
@@ -57,31 +65,56 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		memcpy(preKeys, keys, 256);
 		Novice::GetHitKeyStateAll(keys);
 
+		preMouse = mouse;
+		Novice::GetMousePosition(&mouse.x, &mouse.y);
+		mouseDiff.x = (float)mouse.x - preMouse.x;
+		mouseDiff.y = (float)mouse.y - preMouse.y;
+
 		///
 		/// ↓更新処理ここから
 		///
 
-		// Vector3& transform = segment.origin;
+		Vector3 transform = Vector3::zero();
 
-		// if (keys[DIK_A]) {
-		//	transform.x -= 0.01f;
-		// }
-		// if (keys[DIK_D]) {
-		//	transform.x += 0.01f;
-		// }
-		// if (keys[DIK_W]) {
-		//	transform.z += 0.01f;
-		// }
-		// if (keys[DIK_S]) {
-		//	transform.z -= 0.01f;
-		// }
+		if (keys[DIK_A]) {
+			transform.x -= 0.01f;
+		}
+		if (keys[DIK_D]) {
+			transform.x += 0.01f;
+		}
+		if (keys[DIK_W]) {
+			transform.z += 0.01f;
+		}
+		if (keys[DIK_S]) {
+			transform.z -= 0.01f;
+		}
 
-		// if (keys[DIK_SPACE]) {
-		//	transform.y += 0.01f;
-		// }
-		// if (keys[DIK_LSHIFT]) {
-		//	transform.y -= 0.01f;
-		// }
+		if (keys[DIK_SPACE]) {
+			transform.y += 0.01f;
+		}
+		if (keys[DIK_LSHIFT]) {
+			transform.y -= 0.01f;
+		}
+
+		cameraRadius -= Novice::GetWheel() / 120.f;
+		if (cameraRadius <= 0.f) {
+			cameraRadius = 0.1f;
+		}
+
+		if (Novice::IsPressMouse(0)) {
+			cameraDiff *=
+			    Matrix4x4::EulerRotate(Matrix4x4::Yaw, mouseDiff.x * Angle::Dig2Rad * 0.1f);
+			cameraDiff *=
+			    Matrix4x4::EulerRotate(Matrix4x4::Pitch, mouseDiff.y * Angle::Dig2Rad * 0.1f);
+		}
+		cameraDiff = cameraDiff.Nomalize() * cameraRadius;
+		Vector3 cameraRotate = (-cameraDiff).Direction2Euler();
+		transform *= Matrix4x4::EulerRotate(Matrix4x4::Yaw, cameraRotate.y);
+		cameraOrigin += transform;
+		camera.SetTransform({
+		    {1.f, 1.f, 1.f},
+            cameraRotate, cameraDiff + cameraOrigin
+        });
 
 		if (Collision::IsHit(aabb, sphere))
 			sphereColor = RED;

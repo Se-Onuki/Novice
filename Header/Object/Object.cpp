@@ -138,6 +138,8 @@ const bool Collision::IsHit(const AABB& aabb, const Sphere& sphere) {
 	return ((clampPos - sphere.center).Length() <= sphere.radius);
 }
 
+const bool Collision::IsHit(const AABB&, const LineBase&) { return false; }
+
 const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
 	const float dot = plane.normal * line.diff;
 	if (dot == 0.f)
