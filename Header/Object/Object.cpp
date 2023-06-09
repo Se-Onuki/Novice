@@ -159,11 +159,6 @@ const bool Collision::IsHit(const AABB& aabb, const LineBase& line) {
 		return false;
 	if (tMax < 0.f && tMax != line.Clamp(tMax))
 		return false;
-	/*if (tMin < 0.f && tMax > 0.f)
-	    true;
-	if (tMin < 0.f && tMax > 0.f)
-	    true;*/
-	// if ()
 	return tMin <= tMax;
 }
 
