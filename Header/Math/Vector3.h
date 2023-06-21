@@ -96,18 +96,18 @@ struct Vector3 {
 		return x * v.x + y * v.y + z * v.z;
 	}
 	// 外積(クロス積)
-	[[nodiscard]] inline Vector3 operator^(const Vector3& v) const {
+	[[nodiscard]] inline Vector3 cross(const Vector3& v) const {
 		return Vector3{y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x};
 	}
 
-	[[nodiscard]] inline static Vector3 zero() { return Vector3{0.f, 0.f, 0.f}; }
+	//[[nodiscard]] inline Vector3 Reflect(Vector3 normal) const {
+	//	return (*this) - normal * 2 * ((*this) * normal);
 
-	[[nodiscard]] inline Vector3 Reflect(Vector3 normal) const {
-		return (*this) - normal * 2 * ((*this) * normal);
+	//	// return {this->x- 2}
+	//}
 
-		// return {this->x- 2}
-	}
-
+	/// @brief 垂直ベクトル
+	/// @return 90度回転したベクトル
 	inline Vector3 Perpendicular() const {
 		if (x != 0.f || y != 0.f)
 			return Vector3{-y, x, 0.f};
@@ -122,7 +122,19 @@ struct Vector3 {
 		return out;
 	}
 
-	[[nodiscard]] inline bool operator==(const Vector3& vec) const {
+	inline static Vector3 zero() { return Vector3{0.f, 0.f, 0.f}; }
+
+	static Vector3 up() { return Vector3{0, 1, 0}; }
+	static Vector3 down() { return Vector3{0, -1, 0}; }
+
+	static Vector3 front() { return Vector3{0, 0, 1}; }
+	static Vector3 back() { return Vector3{0, 0, -1}; }
+
+	static Vector3 right() { return Vector3{1, 0, 0}; }
+	static Vector3 left() { return Vector3{-1, 0, 0}; }
+
+	//inline operator bool() const { return x || y || z; }
+	inline bool operator==(const Vector3& vec) const {
 		return (this->x == vec.x) && (this->y == vec.y) && (this->z == vec.z);
 	}
 

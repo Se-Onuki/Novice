@@ -25,6 +25,11 @@ const bool IsHit(const AABB& aabb, const LineBase& line);
 const Vector3 HitPoint(const LineBase& line, const Plane& plane);
 } // namespace Collision
 
+// struct OBB {
+//	Vector3 centor;
+//	Vector3 ori;
+// };
+
 struct Plane {
 	Vector3 normal;
 	float distance;
@@ -36,7 +41,7 @@ struct Plane {
 		return out;
 	}
 	static Plane Create(const Vector3 Vertex[3]) {
-		return Create(((Vertex[1] - Vertex[0]) ^ (Vertex[2] - Vertex[1])).Nomalize(), Vertex[0]);
+		return Create(((Vertex[1] - Vertex[0]).cross(Vertex[2] - Vertex[1])).Nomalize(), Vertex[0]);
 	}
 	static Plane Create(const Triangle& trinagle);
 
@@ -53,7 +58,7 @@ public:
 /// @brief 3角ポリゴン
 struct Triangle {
 	// 頂点リスト(時計回り)
-	Vector3 vertices_[3];
+	Vector3 vertices_[3] = {};
 
 	Triangle() {}
 	/// @param LocalVertices 頂点リスト(時計回り)
@@ -75,7 +80,7 @@ struct Triangle {
 	[[nodiscard]] Vector3 GetNormal() const {
 		const Vector3& VecA = vertices_[1] - vertices_[0]; // 0 から 1 に向けて
 		const Vector3& VecB = vertices_[2] - vertices_[1]; // 1 から 2 に向けて
-		return (VecA ^ VecB).Nomalize();
+		return (VecA.cross(VecB)).Nomalize();
 	}
 
 	void ImGuiDebug();

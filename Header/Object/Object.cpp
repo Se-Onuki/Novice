@@ -115,9 +115,9 @@ const bool Collision::IsHit(const LineBase& line, const Triangle& triangle) {
 		return false;
 	const Vector3 pos = HitPoint(line, plane);
 	const Vector3 closs[3] = {
-	    {(triangle.vertices_[1] - triangle.vertices_[0]) ^ (pos - triangle.vertices_[1])},
-	    {(triangle.vertices_[2] - triangle.vertices_[1]) ^ (pos - triangle.vertices_[2])},
-	    {(triangle.vertices_[0] - triangle.vertices_[2]) ^ (pos - triangle.vertices_[0])},
+	    {(triangle.vertices_[1] - triangle.vertices_[0]).cross(pos - triangle.vertices_[1])},
+	    {(triangle.vertices_[2] - triangle.vertices_[1]).cross(pos - triangle.vertices_[2])},
+	    {(triangle.vertices_[0] - triangle.vertices_[2]).cross(pos - triangle.vertices_[0])},
 	};
 	const Vector3& normal = triangle.GetNormal();
 	return ((normal * closs[0]) >= 0.f && (normal * closs[1]) >= 0.f && (normal * closs[2]) >= 0.f);

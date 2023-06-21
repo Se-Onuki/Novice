@@ -224,7 +224,7 @@ void Render::DrawPlane(
 	Vector3 perpendiculars[4];
 	perpendiculars[0] = plane.normal.Perpendicular().Nomalize();
 	perpendiculars[1] = perpendiculars[0] * -1;
-	perpendiculars[2] = plane.normal ^ perpendiculars[0];
+	perpendiculars[2] = plane.normal.cross(perpendiculars[0]);
 	perpendiculars[3] = perpendiculars[2] * -1;
 
 	Vector3 vertex[4];

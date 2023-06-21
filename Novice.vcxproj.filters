@@ -74,6 +74,12 @@
     <ClCompile Include="Header\Math\Lerp.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="Header\Math\Quaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Header\Math\Euler.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -178,6 +184,12 @@
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Header\Math\Lerp.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Quaternion.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Header\Math\Euler.h">
       <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,8 +1,9 @@
 #pragma once
 #include <cmath>
-
 struct Matrix2x2;
 struct Matrix3x3;
+
+struct Vector3;
 
 struct Vector2 final {
 	Vector2(float x = 0.f, float y = 0.f);
@@ -15,7 +16,7 @@ struct Vector2 final {
 	/// </summary>
 	/// <param name="x">x座標</param>
 	/// <param name="y">y座標</param>
-	//void Printf(int x, int y) const;
+	// void Printf(int x, int y) const;
 
 	/// <summary>
 	/// ベクトルを回転させる
@@ -74,7 +75,7 @@ struct Vector2 final {
 	// 内積
 	_NODISCARD inline float operator*(const Vector2& v) const { return x * v.x + y * v.y; }
 	// 外積
-	_NODISCARD inline float operator^(const Vector2& v) const { return x * v.y - y * v.x; }
+	_NODISCARD inline float cross(const Vector2& v) const { return x * v.y - y * v.x; }
 
 	_NODISCARD inline static Vector2 zero() { return {0.f, 0.f}; }
 
@@ -83,6 +84,7 @@ struct Vector2 final {
 
 		// return {this->x- 2}
 	}
+	Vector3 Convert() const;
 
 	_NODISCARD inline bool operator==(const Vector2& vec) const {
 		return (this->x == vec.x) && (this->y == vec.y);

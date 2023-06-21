@@ -41,7 +41,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     });
 
 	Vector3 cameraOrigin{0, 0, 0};
-	Vector3 cameraDiff{0, 5.f, -15.f};
+	Vector3 cameraEuler{-30.f * Angle::Dig2Rad, 0, 0};
+	// Vector3 cameraDiff{0, 5.f, -15.f};
 	float cameraRadius = 15.f;
 
 	// Sphere sphere{
@@ -106,19 +107,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			cameraRadius = 0.1f;
 		}
 
+		Vector3 cameraPos = Vector3::back() * cameraRadius;
 		if (Novice::IsPressMouse(0)) {
-			cameraDiff *=
-			    Matrix4x4::EulerRotate(Matrix4x4::Yaw, mouseDiff.x * Angle::Dig2Rad * 0.1f);
-			cameraDiff *=
-			    Matrix4x4::EulerRotate(Matrix4x4::Pitch, mouseDiff.y * Angle::Dig2Rad * 0.1f);
+			cameraEuler.x += mouseDiff.y * Angle::Dig2Rad * 20.f;
+			cameraEuler.y += mouseDiff.x * Angle::Dig2Rad * 20.f;
 		}
-		cameraDiff = cameraDiff.Nomalize() * cameraRadius;
-		Vector3 cameraRotate = (-cameraDiff).Direction2Euler();
+
+		cameraPos *=
+		    Matrix4x4::EulerRotate(Matrix4x4::Pitch, cameraEuler.x * Angle::Dig2Rad * 0.1f);
+		cameraPos *= Matrix4x4::EulerRotate(Matrix4x4::Yaw, cameraEuler.y * Angle::Dig2Rad * 0.1f);
+
+		cameraPos = cameraPos.Nomalize() * cameraRadius;
+		Vector3 cameraRotate = (-cameraPos).Direction2Euler();
 		transform *= Matrix4x4::EulerRotate(Matrix4x4::Yaw, cameraRotate.y);
 		cameraOrigin += transform;
 		camera.SetTransform({
 		    {1.f, 1.f, 1.f},
-            cameraRotate, cameraDiff + cameraOrigin
+            cameraRotate, cameraPos + cameraOrigin
         });
 
 		if (Collision::IsHit(aabb, line))
@@ -132,6 +137,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::Begin("window");
 		aabb.ImGuiDebug("aabb");
 		line.ImGuiDebug("line");
+		ImGui::InputFloat3("angle", &cameraEuler.x);
 		ImGui::End();
 
 		///
