@@ -12,6 +12,7 @@
 
 #include "Header/Object/Object.h"
 #include "Header/Render/Render.hpp"
+#include <algorithm>
 
 const char kWindowTitle[] = "LE2A_03_オヌキ_セイヤ_MT3";
 
@@ -41,7 +42,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     });
 
 	Vector3 cameraOrigin{0, 0, 0};
-	Vector3 cameraEuler{-30.f * Angle::Dig2Rad, 0, 0};
+	Vector3 cameraEuler{20.f * Angle::Dig2Rad, 0, 0};
 	// Vector3 cameraDiff{0, 5.f, -15.f};
 	float cameraRadius = 15.f;
 
@@ -109,13 +110,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		Vector3 cameraPos = Vector3::back() * cameraRadius;
 		if (Novice::IsPressMouse(0)) {
-			cameraEuler.x += mouseDiff.y * Angle::Dig2Rad * 20.f;
-			cameraEuler.y += mouseDiff.x * Angle::Dig2Rad * 20.f;
+			cameraEuler.x += mouseDiff.y * Angle::Dig2Rad * 0.1f;
+			cameraEuler.x =
+			    std::clamp(cameraEuler.x, -(Angle::PI / 2 - 0.1f), (Angle::PI / 2 - 0.1f));
+			cameraEuler.y += mouseDiff.x * Angle::Dig2Rad * 0.1f;
 		}
 
-		cameraPos *=
-		    Matrix4x4::EulerRotate(Matrix4x4::Pitch, cameraEuler.x * Angle::Dig2Rad * 0.1f);
-		cameraPos *= Matrix4x4::EulerRotate(Matrix4x4::Yaw, cameraEuler.y * Angle::Dig2Rad * 0.1f);
+		cameraPos *= Matrix4x4::EulerRotate(cameraEuler);
 
 		cameraPos = cameraPos.Nomalize() * cameraRadius;
 		Vector3 cameraRotate = (-cameraPos).Direction2Euler();
@@ -138,6 +139,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		aabb.ImGuiDebug("aabb");
 		line.ImGuiDebug("line");
 		ImGui::InputFloat3("angle", &cameraEuler.x);
+		ImGui::SameLine();
+		if (ImGui::Button("reset")) {
+			cameraEuler = Vector3{20 * Angle::Dig2Rad, 0, 0};
+		}
 		ImGui::End();
 
 		///

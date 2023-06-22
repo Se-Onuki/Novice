@@ -73,4 +73,7 @@ public:
 
 	void DrawAABB(
 	    const Matrix4x4& viewProjectionMatrix, const AABB& aabb, const uint32_t& color) const;
+
+	void DrawAxis(
+	    const Matrix4x4& viewProjectionMatrix) const;
 };

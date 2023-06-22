@@ -278,3 +278,5 @@ void Render::DrawAABB(
 		    static_cast<int>(higher[i].x), static_cast<int>(higher[i].y), color);
 	}
 }
+
+void Render::DrawAxis(const Matrix4x4& viewProjectionMatrix) const { viewProjectionMatrix; }
