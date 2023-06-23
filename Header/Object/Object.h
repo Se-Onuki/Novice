@@ -23,7 +23,6 @@ const bool IsHit(const LineBase& line, const Triangle& triangle);
 const bool IsHit(const AABB& a, const AABB& b);
 const bool IsHit(const AABB& aabb, const Sphere& sphere);
 const bool IsHit(const AABB& aabb, const LineBase& line);
-const bool IsHit(const AABB& aabb, const LineBase& line, const LineBase& clampF);
 
 const bool IsHit(const OBB& obb, const Sphere& sphere);
 const bool IsHit(const OBB& obb, const LineBase& line);
@@ -112,39 +111,24 @@ struct Sphere {
 	void ImGuiDebug(const std::string& group);
 };
 
-struct LineBase {
-	LineBase(const Vector3& Origin, const Vector3& Diff) : origin(Origin), diff(Diff) {}
+struct LineBase final {
+	enum class LineType { Line, Ray, Segment };
+	// LineBase(const Vector3& Origin, const Vector3& Diff) : origin(Origin), diff(Diff) {}
 	Vector3 origin; // 始点
 	Vector3 diff;   // 終点へのベクトル
+	LineType lineType = LineType::Segment;
 
 	[[nodiscard]] Vector3 GetEnd() const { return origin + diff; }
 	[[nodiscard]] Vector3 GetProgress(const float& t) const;
 	[[nodiscard]] Vector3 Project(const Vector3& point) const;
 	[[nodiscard]] Vector3 ClosestPoint(const Vector3& point) const;
-	[[nodiscard]] virtual const float Clamp(const float& t) const = 0;
+	[[nodiscard]] const float Clamp(const float& t) const;
 
-	virtual void ImGuiDebug(const std::string& group);
+	void ImGuiDebug(const std::string& group);
 
-protected:
+private:
 	[[nodiscard]] float ClosestProgress(const Vector3& point) const;
-};
-
-/// @brief 直線
-struct Line final : public LineBase {
-	using LineBase::LineBase;
-	[[nodiscard]] const float Clamp(const float& t) const override;
-};
-
-/// @brief 半直線
-struct Ray final : public LineBase {
-	using LineBase::LineBase;
-	[[nodiscard]] const float Clamp(const float& t) const override;
-};
-
-/// @brief 線分
-struct Segment final : public LineBase {
-	using LineBase::LineBase;
-	[[nodiscard]] const float Clamp(const float& t) const override;
+	static const char* typeList[3];
 };
 
 struct AABB {

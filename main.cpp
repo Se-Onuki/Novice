@@ -46,9 +46,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	    .radius{2.f}
 	};*/
 
-	Ray line{
-	    {0, 0, 0},
-        {1, 1, 1}
+	LineBase line{
+	    .origin{0, 0, 0},
+        .diff{1, 1, 1},
+        .lineType{LineBase::LineType::Line}
     };
 
 	/*AABB aabb{
@@ -138,7 +139,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("window");
 		obb.ImGuiDebug("obb", rotate);
-		line.ImGuiDebug("sphere");
+		line.ImGuiDebug("line");
 		ImGui::DragFloat3("angle", &cameraEuler.x);
 		ImGui::SameLine();
 		if (ImGui::Button("reset")) {

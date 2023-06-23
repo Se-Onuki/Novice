@@ -67,11 +67,39 @@ Vector3 LineBase::ClosestPoint(const Vector3& point) const {
 	return ClosestProgress(point) * diff + origin;
 }
 
+const float LineBase::Clamp(const float& t) const {
+	switch (lineType) {
+	case LineBase::LineType::Line:
+		return t;
+		break;
+	case LineBase::LineType::Ray:
+		return (t > 0.f) ? t : 0.f;
+		break;
+	case LineBase::LineType::Segment:
+		return std::clamp(t, 0.f, 1.f);
+		break;
+	default:
+		return 0.f;
+		break;
+	}
+}
+const char* LineBase::typeList[3] = {"Line", "Ray", "Segment"};
+
 void LineBase::ImGuiDebug(const std::string& group) {
 	if (ImGui::TreeNode(group.c_str())) {
 
 		ImGui::DragFloat3("Origin", &origin.x, 0.1f);
 		ImGui::DragFloat3("Diff", &diff.x, 0.1f);
+		if (ImGui::BeginCombo("LineType", typeList[(uint8_t)lineType])) {
+
+			for (uint8_t i = 0u; i < 3u; i++) {
+				if (ImGui::Selectable(typeList[i])) {
+					lineType = (LineType)i;
+					break;
+				}
+			}
+			ImGui::EndCombo();
+		}
 		ImGui::TreePop();
 	}
 }
@@ -79,12 +107,6 @@ void LineBase::ImGuiDebug(const std::string& group) {
 float LineBase::ClosestProgress(const Vector3& point) const {
 	return Clamp(((point - origin) * diff) / std::powf(diff.Length(), 2));
 }
-
-const float Line::Clamp(const float& t) const { return t; }
-
-const float Ray::Clamp(const float& t) const { return (t > 0.f) ? t : 0.f; }
-
-const float Segment::Clamp(const float& t) const { return std::clamp(t, 0.f, 1.f); }
 
 Plane Plane::Create(const Triangle& trinagle) { return Create(trinagle.vertices_); }
 
@@ -140,10 +162,6 @@ const bool Collision::IsHit(const AABB& aabb, const Sphere& sphere) {
 
 const bool Collision::IsHit(const AABB& aabb, const LineBase& line) {
 
-	return IsHit(aabb, line, line);
-}
-
-const bool Collision::IsHit(const AABB& aabb, const LineBase& line, const LineBase& clampF) {
 	const Vector3 tMinVec{
 	    {(aabb.min.x - line.origin.x) / line.diff.x},
 	    {(aabb.min.y - line.origin.y) / line.diff.y},
@@ -160,9 +178,9 @@ const bool Collision::IsHit(const AABB& aabb, const LineBase& line, const LineBa
 
 	const float tMin{max(max(tNear.x, tNear.y), tNear.z)};
 	const float tMax{min(min(tFar.x, tFar.y), tFar.z)};
-	if (tMin > 1.f && tMin != clampF.Clamp(tMin))
+	if (tMin > 1.f && tMin != line.Clamp(tMin))
 		return false;
-	if (tMax < 0.f && tMax != clampF.Clamp(tMax))
+	if (tMax < 0.f && tMax != line.Clamp(tMax))
 		return false;
 	return tMin <= tMax;
 }
@@ -180,9 +198,10 @@ const bool Collision::IsHit(const OBB& obb, const LineBase& line) {
 	const Vector3& localOrigin = line.origin * obb.GetInverseMatrix();
 	const Vector3& localEnd = line.GetEnd() * obb.GetInverseMatrix();
 
-	auto localLine = Segment{localOrigin, localEnd - localOrigin};
+	LineBase localLine{
+	    .origin = localOrigin, .diff = localEnd - localOrigin, .lineType = line.lineType};
 
-	return IsHit(localOBB, localLine, line);
+	return IsHit(localOBB, localLine);
 }
 
 const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
