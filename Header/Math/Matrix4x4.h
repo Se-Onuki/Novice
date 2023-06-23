@@ -1,8 +1,8 @@
 #pragma once
-
+#include "Header/Math/Vector4.h"
 struct Vector3;
 
-struct Matrix4x4 final{
+struct Matrix4x4 final {
 	enum EulerAngle {
 		Pitch, // x軸
 		Yaw,   // y軸
@@ -26,6 +26,12 @@ struct Matrix4x4 final{
               {I, J, K, L},
               {M, N, O, P}
     } {}
+	inline Matrix4x4(const Vector4& A, const Vector4& B, const Vector4& C, const Vector4& D) {
+		std::memcpy(m[0], &A, sizeof(Vector4));
+		std::memcpy(m[1], &B, sizeof(Vector4));
+		std::memcpy(m[2], &C, sizeof(Vector4));
+		std::memcpy(m[3], &D, sizeof(Vector4));
+	}
 
 	float m[4][4];
 
@@ -34,6 +40,10 @@ struct Matrix4x4 final{
 	/// @brief 逆行列関数
 	/// @return 逆行列
 	Matrix4x4 Inverse() const;
+
+	/// @brief スケーリング無効の逆行列
+	/// @return 逆行列
+	Matrix4x4 InverseRT() const;
 
 	/// @brief 転置行列関数
 	/// @return 転置行列

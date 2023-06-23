@@ -12,6 +12,7 @@ struct Plane;
 struct Triangle;
 struct Sphere;
 struct AABB;
+struct OBB;
 
 namespace Collision {
 const bool IsHit(const LineBase& line, const Plane& plane);
@@ -22,13 +23,24 @@ const bool IsHit(const AABB& a, const AABB& b);
 const bool IsHit(const AABB& aabb, const Sphere& sphere);
 const bool IsHit(const AABB& aabb, const LineBase& line);
 
+const bool IsHit(const OBB& obb, const Sphere& sphere);
+
 const Vector3 HitPoint(const LineBase& line, const Plane& plane);
 } // namespace Collision
 
-// struct OBB {
-//	Vector3 centor;
-//	Vector3 ori;
-// };
+struct OBB {
+	Vector3 centor; // 中心点
+	Vector3 orientations[3u] = {
+	    Vector3::right(), Vector3::up(), Vector3::front()}; // ローカル座標軸。正規化、直交必須
+	Vector3 size;                                           // 中心点からの各軸の半径
+
+	void SetRotate(const Vector3& euler);
+
+	const Matrix4x4 GetWorldMatrix() const;
+	const Matrix4x4 GetInverseMatrix() const;
+
+	void ImGuiDebug(const std::string& group, Vector3& rotate);
+};
 
 struct Plane {
 	Vector3 normal;
@@ -87,7 +99,7 @@ struct Triangle {
 };
 
 struct Sphere {
-	Vector3 center;
+	Vector3 centor;
 	float radius;
 
 	bool IsCollision(const Sphere& other) { return Collision::IsHit(*this, other); }
@@ -174,7 +186,7 @@ public:
 	Camera(const Matrix4x4& projectonMatrix);
 	~Camera();
 
-	void UpdateMatrix() { viewMatrix_ = transform_.Affine().Inverse(); }
+	void UpdateMatrix() { viewMatrix_ = transform_.Affine().InverseRT(); }
 
 	void SetTransform(const Transform& transform) { transform_ = transform; }
 	[[nodiscard]] Transform GetTransform() const { return transform_; }

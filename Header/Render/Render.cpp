@@ -189,9 +189,9 @@ void Render::DrawSphere(
 			     sphere.radius * std::sin(lat),
 			     sphere.radius * std::cos(lat) * std::sin(lon + kLonEvery)};
 			Vector3 screenVertex[3]{
-			    (a + sphere.center) * viewProjectionMatrix * viewportMatrix_,
-			    (b + sphere.center) * viewProjectionMatrix * viewportMatrix_,
-			    (c + sphere.center) * viewProjectionMatrix * viewportMatrix_};
+			    (a + sphere.centor) * viewProjectionMatrix * viewportMatrix_,
+			    (b + sphere.centor) * viewProjectionMatrix * viewportMatrix_,
+			    (c + sphere.centor) * viewProjectionMatrix * viewportMatrix_};
 
 			Novice::DrawLine( // a->b
 			    static_cast<int>(screenVertex[0].x), static_cast<int>(screenVertex[0].y),
@@ -263,6 +263,40 @@ void Render::DrawAABB(
 	for (uint8_t i = 0; i < 4; i++) {
 		lower[i] *= VPVp;
 		higher[i] *= VPVp;
+	}
+	for (uint8_t i = 0; i < 4; i++) {
+		uint8_t k = (i + 1) % 4;
+		Novice::DrawLine(
+		    static_cast<int>(lower[i].x), static_cast<int>(lower[i].y),
+		    static_cast<int>(lower[k].x), static_cast<int>(lower[k].y), color);
+		Novice::DrawLine(
+		    static_cast<int>(higher[i].x), static_cast<int>(higher[i].y),
+		    static_cast<int>(higher[k].x), static_cast<int>(higher[k].y), color);
+
+		Novice::DrawLine(
+		    static_cast<int>(lower[i].x), static_cast<int>(lower[i].y),
+		    static_cast<int>(higher[i].x), static_cast<int>(higher[i].y), color);
+	}
+}
+
+void Render::DrawOBB(
+    const Matrix4x4& viewProjectionMatrix, const OBB& obb, const uint32_t& color) const {
+	Vector3 lower[4]{
+	    {-obb.size.x, -obb.size.y, -obb.size.z},
+	    {-obb.size.x, -obb.size.y, +obb.size.z},
+	    {+obb.size.x, -obb.size.y, +obb.size.z},
+	    {+obb.size.x, -obb.size.y, -obb.size.z},
+	};
+	Vector3 higher[4]{
+	    {-obb.size.x, +obb.size.y, -obb.size.z},
+	    {-obb.size.x, +obb.size.y, +obb.size.z},
+	    {+obb.size.x, +obb.size.y, +obb.size.z},
+	    {+obb.size.x, +obb.size.y, -obb.size.z},
+	};
+	const Matrix4x4& wVPVp = obb.GetWorldMatrix() * viewProjectionMatrix * viewportMatrix_;
+	for (uint8_t i = 0; i < 4; i++) {
+		lower[i] *= wVPVp;
+		higher[i] *= wVPVp;
 	}
 	for (uint8_t i = 0; i < 4; i++) {
 		uint8_t k = (i + 1) % 4;

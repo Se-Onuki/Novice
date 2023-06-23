@@ -102,11 +102,11 @@ const bool Collision::IsHit(const LineBase& line, const Plane& plane) {
 }
 
 const bool Collision::IsHit(const Sphere& sphereA, const Sphere& sphereB) {
-	return (sphereA.center - sphereB.center).Length() <= sphereA.radius + sphereB.radius;
+	return (sphereA.centor - sphereB.centor).Length() <= sphereA.radius + sphereB.radius;
 }
 
 const bool Collision::IsHit(const Sphere& sphere, const Plane& plane) {
-	return std::abs(plane.GetDistance(sphere.center)) <= sphere.radius;
+	return std::abs(plane.GetDistance(sphere.centor)) <= sphere.radius;
 }
 
 const bool Collision::IsHit(const LineBase& line, const Triangle& triangle) {
@@ -131,11 +131,11 @@ const bool Collision::IsHit(const AABB& a, const AABB& b) {
 
 const bool Collision::IsHit(const AABB& aabb, const Sphere& sphere) {
 	Vector3 clampPos{
-	    std::clamp(sphere.center.x, aabb.min.x, aabb.max.x),
-	    std::clamp(sphere.center.y, aabb.min.y, aabb.max.y),
-	    std::clamp(sphere.center.z, aabb.min.z, aabb.max.z),
+	    std::clamp(sphere.centor.x, aabb.min.x, aabb.max.x),
+	    std::clamp(sphere.centor.y, aabb.min.y, aabb.max.y),
+	    std::clamp(sphere.centor.z, aabb.min.z, aabb.max.z),
 	};
-	return ((clampPos - sphere.center).Length() <= sphere.radius);
+	return ((clampPos - sphere.centor).Length() <= sphere.radius);
 }
 
 const bool Collision::IsHit(const AABB& aabb, const LineBase& line) {
@@ -160,6 +160,13 @@ const bool Collision::IsHit(const AABB& aabb, const LineBase& line) {
 	if (tMax < 0.f && tMax != line.Clamp(tMax))
 		return false;
 	return tMin <= tMax;
+}
+
+const bool Collision::IsHit(const OBB& obb, const Sphere& sphere) {
+	Sphere localSphere = {
+	    .centor = sphere.centor * obb.GetInverseMatrix(), .radius = sphere.radius};
+	AABB localOBB{.min = -obb.size, .max = obb.size};
+	return IsHit(localOBB, localSphere);
 }
 
 const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
@@ -197,9 +204,42 @@ void Sphere::ImGuiDebug(const std::string& group) {
 
 	if (ImGui::TreeNode(group.c_str())) {
 
-		ImGui::DragFloat3("Centor", &center.x, 0.1f);
+		ImGui::DragFloat3("Centor", &centor.x, 0.1f);
 		ImGui::DragFloat("Radius", &radius, 0.1f);
 
 		ImGui::TreePop();
 	}
+}
+
+const Matrix4x4 OBB::GetWorldMatrix() const {
+	return Matrix4x4{
+	    {orientations[0].x, orientations[0].y, orientations[0].z, 0.f},
+	    {orientations[1].x, orientations[1].y, orientations[1].z, 0.f},
+	    {orientations[2].x, orientations[2].y, orientations[2].z, 0.f},
+	    {centor.x,          centor.y,          centor.z,          1.f}
+    };
+}
+
+const Matrix4x4 OBB::GetInverseMatrix() const { return GetWorldMatrix().InverseRT(); }
+
+void OBB::ImGuiDebug(const std::string& group, Vector3& rotate) {
+
+	if (ImGui::TreeNode(group.c_str())) {
+
+		ImGui::DragFloat3("Centor", &centor.x, 0.1f);
+		ImGui::DragFloat3("Size", &size.x, 0.1f);
+
+		if (ImGui::DragFloat3("Rotate", &rotate.x, Angle::Dig2Rad)) {
+			SetRotate(rotate);
+		}
+
+		ImGui::TreePop();
+	}
+}
+
+void OBB::SetRotate(const Vector3& euler) {
+	const Matrix4x4& rotateMat = Matrix4x4::EulerRotate(euler);
+	std::memcpy(&orientations[0], &rotateMat.m[0], sizeof(Vector3));
+	std::memcpy(&orientations[1], &rotateMat.m[1], sizeof(Vector3));
+	std::memcpy(&orientations[2], &rotateMat.m[2], sizeof(Vector3));
 }

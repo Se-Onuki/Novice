@@ -35,31 +35,32 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	render.SetViewportMatrix(Render::MakeViewportMatrix(0, 0, 1280.f, 720.f, 0.f, 1.f));
 
 	Camera camera{Render::MakePerspectiveFovMatrix(0.45f, 1280.f / 720.f, 0.1f, 100.f)};
-	camera.SetTransform({
-	    {1.f,   1.f, 1.f  },
-        {0.25f, 0.f, 0.f  },
-        {0.f,   5.f, -15.f}
-    });
 
 	Vector3 cameraOrigin{0, 0, 0};
 	Vector3 cameraEuler{20.f * Angle::Dig2Rad, 0, 0};
 	// Vector3 cameraDiff{0, 5.f, -15.f};
 	float cameraRadius = 15.f;
 
-	// Sphere sphere{
-	//     .center{2.f, 2.f, 2.f},
-	//       .radius{2.f}
-	//   };
-
-	Segment line{
-	    {0, 0, 0},
-        {1, 1, 1}
+	Sphere sphere{
+	    .centor{2.f, 2.f, 2.f},
+        .radius{2.f}
     };
 
-	AABB aabb{
+	// Segment line{
+	//     {0, 0, 0},
+	//     {1, 1, 1}
+	// };
+
+	/*AABB aabb{
 	    .min{-0.5f, -0.5f, -0.5f},
-        .max{0.f,   0.f,   0.f  }
+	    .max{0.f,   0.f,   0.f  }
+	};*/
+
+	OBB obb{
+	    .centor{0.f, 0.f, 0.f},
+        .size{1.f, 1.f, 1.f}
     };
+	Vector3 rotate = Vector3::zero();
 
 	uint32_t sphereColor = WHITE;
 
@@ -127,7 +128,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
-		if (Collision::IsHit(aabb, line))
+		if (Collision::IsHit(obb, sphere))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -136,12 +137,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		aabb.ImGuiDebug("aabb");
-		line.ImGuiDebug("line");
-		ImGui::InputFloat3("angle", &cameraEuler.x);
+		obb.ImGuiDebug("obb", rotate);
+		sphere.ImGuiDebug("sphere");
+		ImGui::DragFloat3("angle", &cameraEuler.x);
 		ImGui::SameLine();
 		if (ImGui::Button("reset")) {
 			cameraEuler = Vector3{20 * Angle::Dig2Rad, 0, 0};
+			cameraRadius = 15.f;
 		}
 		ImGui::End();
 
@@ -155,8 +157,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection());
-		render.DrawAABB(camera.GetViewProjection(), aabb, sphereColor);
-		render.DrawLine(camera.GetViewProjection(), line, WHITE);
+		render.DrawOBB(camera.GetViewProjection(), obb, sphereColor);
+		render.DrawSphere(camera.GetViewProjection(), sphere, WHITE);
 
 		///
 		/// ↑描画処理ここまで

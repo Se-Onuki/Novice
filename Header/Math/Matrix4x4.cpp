@@ -60,83 +60,72 @@ Matrix4x4 Matrix4x4::Inverse() const {
 	        this->m[0][2] * this->m[1][1] * this->m[2][0]);*/
 }
 
+Matrix4x4 Matrix4x4::InverseRT() const {
+	return Matrix4x4{
+	    {m[0][0],	                                                m[1][0], m[2][0], 0.f},
+	    {m[0][1],	                                                m[1][1], m[2][1], 0.f},
+	    {m[0][2],	                                                m[1][2], m[2][2], 0.f},
+	    {-m[3][0] * m[0][0] - m[3][1] * m[0][1] - m[3][2] * m[0][2],
+	     -m[3][0] * m[1][0] - m[3][1] * m[1][1] - m[3][2] * m[1][2],
+	     -m[3][0] * m[2][0] - m[3][1] * m[2][1] - m[3][2] * m[2][2],                   1.f}
+    };
+};
+
 Matrix4x4 Matrix4x4::Transpose() const {
 	return Matrix4x4{
-	    this->m[0][0], this->m[1][0], this->m[2][0], this->m[3][0], this->m[0][1], this->m[1][1],
-	    this->m[2][1], this->m[3][1], this->m[0][2], this->m[1][2], this->m[2][2], this->m[3][2],
-	    this->m[0][3], this->m[1][3], this->m[2][3], this->m[3][3],
-	};
+	    {m[0][0], m[1][0], m[2][0], m[3][0]},
+	    {m[0][1], m[1][1], m[2][1], m[3][1]},
+	    {m[0][2], m[1][2], m[2][2], m[3][2]},
+	    {m[0][3], m[1][3], m[2][3], m[3][3]}
+    };
 }
 
 Matrix4x4 Matrix4x4::Affine(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 	return Matrix4x4{
-	    scale.x * (std::cos(rotate.y) * std::cos(rotate.z)),
-	    scale.x * (std::cos(rotate.y) * std::sin(rotate.z)),
-	    scale.x * (-std::sin(rotate.y)),
-	    0,
+	    {scale.x * (std::cos(rotate.y) * std::cos(rotate.z)),
+	     scale.x * (std::cos(rotate.y) * std::sin(rotate.z)),                       scale.x * (-std::sin(rotate.y)), 0.f},
 
-	    scale.y * (std::sin(rotate.x) * std::sin(rotate.y) * std::cos(rotate.z) -
-	               std::cos(rotate.x) * std::sin(rotate.z)),
-	    scale.y * (std::sin(rotate.x) * std::sin(rotate.y) * std::sin(rotate.z) +
-	               std::cos(rotate.x) * std::cos(rotate.z)),
-	    scale.y * (std::sin(rotate.x) * std::cos(rotate.y)),
-	    0,
+	    {scale.y * (std::sin(rotate.x) * std::sin(rotate.y) * std::cos(rotate.z) -
+	                std::cos(rotate.x) * std::sin(rotate.z)),
+	     scale.y * (std::sin(rotate.x) * std::sin(rotate.y) * std::sin(rotate.z) +
+	                std::cos(rotate.x) * std::cos(rotate.z)),
+	     scale.y * (std::sin(rotate.x) * std::cos(rotate.y)),                                                        0.f},
 
-	    scale.z * (std::cos(rotate.x) * std::sin(rotate.y) * std::cos(rotate.z) +
-	               std::sin(rotate.x) * std::sin(rotate.z)),
-	    scale.z * (std::cos(rotate.x) * std::sin(rotate.y) * std::sin(rotate.z) -
-	               std::sin(rotate.x) * std::cos(rotate.z)),
-	    scale.z * (std::cos(rotate.x) * std::cos(rotate.y)),
-	    0,
+	    {scale.z * (std::cos(rotate.x) * std::sin(rotate.y) * std::cos(rotate.z) +
+	                std::sin(rotate.x) * std::sin(rotate.z)),
+	     scale.z * (std::cos(rotate.x) * std::sin(rotate.y) * std::sin(rotate.z) -
+	                std::sin(rotate.x) * std::cos(rotate.z)),
+	     scale.z * (std::cos(rotate.x) * std::cos(rotate.y)),                                                        0.f},
 
-	    translate.x,
-	    translate.y,
-	    translate.z,
-	    1};
+	    {translate.x,	                                              translate.y, translate.z,                     1.f}
+    };
 }
 
 Matrix4x4 Matrix4x4::EulerRotate(EulerAngle eulerAngle, float angle) {
 	switch (eulerAngle) {
 	case Matrix4x4::Pitch:
-		return Matrix4x4{1,
-		                 0,
-		                 0,
-		                 0,
-		                 0,
-		                 std::cos(angle),
-		                 std::sin(angle),
-		                 0,
-		                 0,
-		                 -std::sin(angle),
-		                 std::cos(angle),
-		                 0,
-		                 0,
-		                 0,
-		                 0,
-		                 1};
+		return Matrix4x4{
+		    {1.f, 0.f,              0.f,             0.f},
+		    {0.f, std::cos(angle),  std::sin(angle), 0.f},
+		    {0.f, -std::sin(angle), std::cos(angle), 0.f},
+		    {0.f, 0.f,              0.f,             1.f}
+        };
 		break;
 	case Matrix4x4::Yaw:
-		return Matrix4x4{std::cos(angle), 0, -std::sin(angle), 0, 0, 1, 0, 0,
-		                 std::sin(angle), 0, std::cos(angle),  0, 0, 0, 0, 1};
+		return Matrix4x4{
+		    {std::cos(angle), 0.f, -std::sin(angle), 0.f},
+		    {0.f,             1.f, 0.f,              0.f},
+		    {std::sin(angle), 0,   std::cos(angle),  0.f},
+		    {0.f,             0.f, 0.f,              1.f}
+        };
 		break;
 	case Matrix4x4::Roll:
 		return Matrix4x4{
-		    std::cos(angle),
-		    std::sin(angle),
-		    0,
-		    0,
-		    -std::sin(angle),
-		    std::cos(angle),
-		    0,
-		    0,
-		    0,
-		    0,
-		    1,
-		    0,
-		    0,
-		    0,
-		    0,
-		    1};
+		    {std::cos(angle),  std::sin(angle), 0.f, 0.f},
+		    {-std::sin(angle), std::cos(angle), 0.f, 0.f},
+		    {0.f,              0.f,             1.f, 0.f},
+		    {0.f,              0.f,             0.f, 1.f}
+        };
 		break;
 	default:
 		return Identity();

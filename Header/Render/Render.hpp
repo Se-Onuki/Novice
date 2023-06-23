@@ -10,6 +10,7 @@ struct Plane;
 class Camera;
 struct Triangle;
 struct AABB;
+struct OBB;
 
 class Render final {
 	Matrix4x4 viewportMatrix_;
@@ -74,6 +75,8 @@ public:
 	void DrawAABB(
 	    const Matrix4x4& viewProjectionMatrix, const AABB& aabb, const uint32_t& color) const;
 
-	void DrawAxis(
-	    const Matrix4x4& viewProjectionMatrix) const;
+	void
+	    DrawOBB(const Matrix4x4& viewProjectionMatrix, const OBB& obb, const uint32_t& color) const;
+
+	void DrawAxis(const Matrix4x4& viewProjectionMatrix) const;
 };
