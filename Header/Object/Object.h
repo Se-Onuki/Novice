@@ -3,6 +3,7 @@
 #include "Header/Math/Matrix4x4.h"
 #include "Header/Math/Vector3.h"
 #include "Header/Object/Transform.h"
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -22,10 +23,13 @@ const bool IsHit(const LineBase& line, const Triangle& triangle);
 const bool IsHit(const AABB& a, const AABB& b);
 const bool IsHit(const AABB& aabb, const Sphere& sphere);
 const bool IsHit(const AABB& aabb, const LineBase& line);
+const bool IsHit(const AABB& aabb, const LineBase& line, const LineBase& clampF);
 
 const bool IsHit(const OBB& obb, const Sphere& sphere);
+const bool IsHit(const OBB& obb, const LineBase& line);
 
 const Vector3 HitPoint(const LineBase& line, const Plane& plane);
+
 } // namespace Collision
 
 struct OBB {

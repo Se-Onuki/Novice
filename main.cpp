@@ -41,15 +41,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// Vector3 cameraDiff{0, 5.f, -15.f};
 	float cameraRadius = 15.f;
 
-	Sphere sphere{
+	/*Sphere sphere{
 	    .centor{2.f, 2.f, 2.f},
-        .radius{2.f}
-    };
+	    .radius{2.f}
+	};*/
 
-	// Segment line{
-	//     {0, 0, 0},
-	//     {1, 1, 1}
-	// };
+	Ray line{
+	    {0, 0, 0},
+        {1, 1, 1}
+    };
 
 	/*AABB aabb{
 	    .min{-0.5f, -0.5f, -0.5f},
@@ -128,7 +128,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
-		if (Collision::IsHit(obb, sphere))
+		if (Collision::IsHit(obb, line))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -138,7 +138,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("window");
 		obb.ImGuiDebug("obb", rotate);
-		sphere.ImGuiDebug("sphere");
+		line.ImGuiDebug("sphere");
 		ImGui::DragFloat3("angle", &cameraEuler.x);
 		ImGui::SameLine();
 		if (ImGui::Button("reset")) {
@@ -158,7 +158,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection());
 		render.DrawOBB(camera.GetViewProjection(), obb, sphereColor);
-		render.DrawSphere(camera.GetViewProjection(), sphere, WHITE);
+		render.DrawLine(camera.GetViewProjection(), line, WHITE);
 
 		///
 		/// ↑描画処理ここまで

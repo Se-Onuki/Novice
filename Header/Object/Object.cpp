@@ -139,6 +139,11 @@ const bool Collision::IsHit(const AABB& aabb, const Sphere& sphere) {
 }
 
 const bool Collision::IsHit(const AABB& aabb, const LineBase& line) {
+
+	return IsHit(aabb, line, line);
+}
+
+const bool Collision::IsHit(const AABB& aabb, const LineBase& line, const LineBase& clampF) {
 	const Vector3 tMinVec{
 	    {(aabb.min.x - line.origin.x) / line.diff.x},
 	    {(aabb.min.y - line.origin.y) / line.diff.y},
@@ -155,9 +160,9 @@ const bool Collision::IsHit(const AABB& aabb, const LineBase& line) {
 
 	const float tMin{max(max(tNear.x, tNear.y), tNear.z)};
 	const float tMax{min(min(tFar.x, tFar.y), tFar.z)};
-	if (tMin > 1.f && tMin != line.Clamp(tMin))
+	if (tMin > 1.f && tMin != clampF.Clamp(tMin))
 		return false;
-	if (tMax < 0.f && tMax != line.Clamp(tMax))
+	if (tMax < 0.f && tMax != clampF.Clamp(tMax))
 		return false;
 	return tMin <= tMax;
 }
@@ -167,6 +172,17 @@ const bool Collision::IsHit(const OBB& obb, const Sphere& sphere) {
 	    .centor = sphere.centor * obb.GetInverseMatrix(), .radius = sphere.radius};
 	AABB localOBB{.min = -obb.size, .max = obb.size};
 	return IsHit(localOBB, localSphere);
+}
+
+const bool Collision::IsHit(const OBB& obb, const LineBase& line) {
+	AABB localOBB{.min = -obb.size, .max = obb.size};
+
+	const Vector3& localOrigin = line.origin * obb.GetInverseMatrix();
+	const Vector3& localEnd = line.GetEnd() * obb.GetInverseMatrix();
+
+	auto localLine = Segment{localOrigin, localEnd - localOrigin};
+
+	return IsHit(localOBB, localLine, line);
 }
 
 const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
