@@ -46,22 +46,30 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	    .radius{2.f}
 	};*/
 
-	LineBase line{
-	    .origin{0, 0, 0},
-        .diff{1, 1, 1},
-        .lineType{LineBase::LineType::Line}
-    };
+	// LineBase line{
+	//     .origin{0, 0, 0},
+	//    .diff{1, 1, 1},
+	//    .lineType{LineBase::LineType::Line}
+	//};
 
 	/*AABB aabb{
 	    .min{-0.5f, -0.5f, -0.5f},
 	    .max{0.f,   0.f,   0.f  }
 	};*/
 
-	OBB obb{
+	OBB obbA{
 	    .centor{0.f, 0.f, 0.f},
         .size{1.f, 1.f, 1.f}
     };
-	Vector3 rotate = Vector3::zero();
+	OBB obbB{
+	    .centor{2.9f, 0.f, 0.f},
+        .size{1.3f, 1.f, 1.f}
+    };
+
+	Vector3 rotateA = Vector3::zero();
+	Vector3 rotateB = {0.314f, 0.401f, 0.576f};
+
+	obbB.SetRotate(rotateB);
 
 	uint32_t sphereColor = WHITE;
 
@@ -129,7 +137,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
-		if (Collision::IsHit(obb, line))
+		if (Collision::IsHit(obbA, obbB))
 			sphereColor = RED;
 		else
 			sphereColor = WHITE;
@@ -138,8 +146,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		obb.ImGuiDebug("obb", rotate);
-		line.ImGuiDebug("line");
+		obbA.ImGuiDebug("obbA", rotateA);
+		obbB.ImGuiDebug("obbB", rotateB);
 		ImGui::DragFloat3("angle", &cameraEuler.x);
 		ImGui::SameLine();
 		if (ImGui::Button("reset")) {
@@ -158,8 +166,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection());
-		render.DrawOBB(camera.GetViewProjection(), obb, sphereColor);
-		render.DrawLine(camera.GetViewProjection(), line, WHITE);
+		render.DrawOBB(camera.GetViewProjection(), obbA, sphereColor);
+		render.DrawOBB(camera.GetViewProjection(), obbB, WHITE);
 
 		///
 		/// ↑描画処理ここまで

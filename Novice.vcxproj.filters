@@ -78,7 +78,7 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Header\Math\Euler.cpp">
-      <Filter>KamataEngine</Filter>
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

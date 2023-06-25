@@ -27,7 +27,13 @@ const bool IsHit(const AABB& aabb, const LineBase& line);
 const bool IsHit(const OBB& obb, const Sphere& sphere);
 const bool IsHit(const OBB& obb, const LineBase& line);
 
+const bool IsHit(const OBB& obbA, const OBB& obbB);
+
+const bool IsHitAxis(const Vector3& axis, const Vector3 vertexA[8], const Vector3 vertexB[8]);
+
 const Vector3 HitPoint(const LineBase& line, const Plane& plane);
+
+// const bool
 
 } // namespace Collision
 

@@ -204,6 +204,93 @@ const bool Collision::IsHit(const OBB& obb, const LineBase& line) {
 	return IsHit(localOBB, localLine);
 }
 
+const bool Collision::IsHit(const OBB& obbA, const OBB& obbB) {
+	Vector3 objA[8]{
+  // lower
+	    {-obbA.size.x, -obbA.size.y, -obbA.size.z},
+	    {-obbA.size.x, -obbA.size.y, +obbA.size.z},
+	    {+obbA.size.x, -obbA.size.y, +obbA.size.z},
+	    {+obbA.size.x, -obbA.size.y, -obbA.size.z},
+ // higher
+	    {-obbA.size.x, +obbA.size.y, -obbA.size.z},
+	    {-obbA.size.x, +obbA.size.y, +obbA.size.z},
+	    {+obbA.size.x, +obbA.size.y, +obbA.size.z},
+	    {+obbA.size.x, +obbA.size.y, -obbA.size.z},
+	};
+	const Matrix4x4& worldA = obbA.GetWorldMatrix();
+	for (uint8_t i = 0; i < 8u; i++) {
+		objA[i] *= worldA;
+	}
+
+	Vector3 objB[8]{
+  // lower
+	    {-obbB.size.x, -obbB.size.y, -obbB.size.z},
+	    {-obbB.size.x, -obbB.size.y, +obbB.size.z},
+	    {+obbB.size.x, -obbB.size.y, +obbB.size.z},
+	    {+obbB.size.x, -obbB.size.y, -obbB.size.z},
+ // higher
+	    {-obbB.size.x, +obbB.size.y, -obbB.size.z},
+	    {-obbB.size.x, +obbB.size.y, +obbB.size.z},
+	    {+obbB.size.x, +obbB.size.y, +obbB.size.z},
+	    {+obbB.size.x, +obbB.size.y, -obbB.size.z},
+	};
+	const Matrix4x4& worldB = obbB.GetWorldMatrix();
+	for (uint8_t i = 0; i < 8u; i++) {
+		objB[i] *= worldB;
+	}
+
+	return IsHitAxis(obbA.orientations[0].Nomalize(), objA, objB) &&
+	       IsHitAxis(obbA.orientations[1].Nomalize(), objA, objB) &&
+	       IsHitAxis(obbA.orientations[2].Nomalize(), objA, objB) &&
+
+	       IsHitAxis(obbB.orientations[0].Nomalize(), objA, objB) &&
+	       IsHitAxis(obbB.orientations[1].Nomalize(), objA, objB) &&
+	       IsHitAxis(obbB.orientations[2].Nomalize(), objA, objB) &&
+
+	       IsHitAxis(obbA.orientations[0].cross(obbB.orientations[0]).Nomalize(), objA, objB) &&
+	       IsHitAxis(obbA.orientations[0].cross(obbB.orientations[1]).Nomalize(), objA, objB) &&
+	       IsHitAxis(obbA.orientations[0].cross(obbB.orientations[2]).Nomalize(), objA, objB) &&
+
+	       IsHitAxis(obbA.orientations[1].cross(obbB.orientations[0]).Nomalize(), objA, objB) &&
+	       IsHitAxis(obbA.orientations[1].cross(obbB.orientations[1]).Nomalize(), objA, objB) &&
+	       IsHitAxis(obbA.orientations[1].cross(obbB.orientations[2]).Nomalize(), objA, objB) &&
+
+	       IsHitAxis(obbA.orientations[2].cross(obbB.orientations[0]).Nomalize(), objA, objB) &&
+	       IsHitAxis(obbA.orientations[2].cross(obbB.orientations[1]).Nomalize(), objA, objB) &&
+	       IsHitAxis(obbA.orientations[2].cross(obbB.orientations[2]).Nomalize(), objA, objB);
+}
+
+const bool
+    Collision::IsHitAxis(const Vector3& axis, const Vector3 vertexA[8], const Vector3 vertexB[8]) {
+
+	float minA = 0.f, maxA = 0.f;
+	float minB = 0.f, maxB = 0.f;
+	for (uint8_t i = 0u; i < 8u; i++) {
+		const float A = axis * vertexA[i];
+		if (i == 0u) {
+			minA = A;
+			maxA = A;
+		} else {
+			minA = min(minA, A);
+			maxA = max(maxA, A);
+		}
+
+		const float B = axis * vertexB[i];
+		if (i == 0u) {
+			minB = B;
+			maxB = B;
+		} else {
+			minB = min(minB, B);
+			maxB = max(maxB, B);
+		}
+	}
+	const float diffA = maxA - minA;
+	const float diffB = maxB - minB;
+
+	const float diffAll = max(maxA, maxB) - min(minA, minB);
+	return diffAll <= diffA + diffB;
+}
+
 const Vector3 Collision::HitPoint(const LineBase& line, const Plane& plane) {
 	const float dot = plane.normal * line.diff;
 	if (dot == 0.f)
