@@ -9,10 +9,15 @@ Triangle::Triangle(const Vector3 Vertices[3]) : vertices_{Vertices[0], Vertices[
 
 Triangle::~Triangle() {}
 
-void Triangle::ImGuiDebug() {
-	ImGui::DragFloat3("triangleVertex[0]", &vertices_[0].x, 0.1f);
-	ImGui::DragFloat3("triangleVertex[1]", &vertices_[1].x, 0.1f);
-	ImGui::DragFloat3("triangleVertex[2]", &vertices_[2].x, 0.1f);
+void Triangle::ImGuiDebug(const std::string& group) {
+	if (ImGui::TreeNode(group.c_str())) {
+
+		ImGui::DragFloat3("triangleVertex[0]", &vertices_[0].x, 0.1f);
+		ImGui::DragFloat3("triangleVertex[1]", &vertices_[1].x, 0.1f);
+		ImGui::DragFloat3("triangleVertex[2]", &vertices_[2].x, 0.1f);
+
+		ImGui::TreePop();
+	}
 }
 
 ModelClass::ModelClass() {}
@@ -108,6 +113,21 @@ float LineBase::ClosestProgress(const Vector3& point) const {
 	return Clamp(((point - origin) * diff) / std::powf(diff.Length(), 2));
 }
 
+Plane Plane::Create(const Vector3& Normal, const Vector3& Point) {
+	Plane out;
+
+	LineBase line{.origin = Vector3::zero(), .diff = Normal, .lineType = LineBase::LineType::Line};
+	Vector3 centor = line.ClosestPoint(Point);
+	if (centor != Vector3::zero()) {
+		out.normal = centor.Nomalize();
+		out.distance = centor.Length();
+	} else {
+		out.normal = Normal;
+		out.distance = Point * Normal;
+	}
+
+	return out;
+}
 Plane Plane::Create(const Triangle& trinagle) { return Create(trinagle.vertices_); }
 
 const bool Plane::IsCollision(const LineBase& other) const {

@@ -55,12 +55,7 @@ struct Plane {
 	Vector3 normal;
 	float distance;
 
-	static Plane Create(const Vector3& Normal, const Vector3& Point) {
-		Plane out;
-		out.normal = Normal;
-		out.distance = Point * Normal;
-		return out;
-	}
+	static Plane Create(const Vector3& Normal, const Vector3& Point);
 	static Plane Create(const Vector3 Vertex[3]) {
 		return Create(((Vertex[1] - Vertex[0]).cross(Vertex[2] - Vertex[1])).Nomalize(), Vertex[0]);
 	}
@@ -104,7 +99,7 @@ struct Triangle {
 		return (VecA.cross(VecB)).Nomalize();
 	}
 
-	void ImGuiDebug();
+	void ImGuiDebug(const std::string& group);
 };
 
 struct Sphere {

@@ -47,11 +47,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	    .radius{2.f}
 	};*/
 
-	// LineBase line{
-	//     .origin{0, 0, 0},
-	//    .diff{1, 1, 1},
-	//    .lineType{LineBase::LineType::Line}
-	//};
+	LineBase line{
+	    .origin{0, 0, 0},
+        .diff{1, 1, 1},
+        .lineType{LineBase::LineType::Line}
+    };
+
+	Triangle triangle{
+	    {3.f,  0.f, 0.f},
+        {0.f,  3.f, 0.f},
+        {-3.f, 0.f, 0.f}
+    };
 
 	/*AABB aabb{
 	    .min{-0.5f, -0.5f, -0.5f},
@@ -78,7 +84,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// obbB.SetRotate(rotateB);
 
-	// uint32_t sphereColor = WHITE;
+	uint32_t sphereColor = WHITE;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -144,10 +150,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
-		/*if (Collision::IsHit(obbA, obbB))
-		    sphereColor = RED;
+		if (Collision::IsHit(line, triangle))
+			sphereColor = RED;
 		else
-		    sphereColor = WHITE;*/
+			sphereColor = WHITE;
 
 		camera.UpdateMatrix();
 		render.UpdateSurface();
@@ -168,6 +174,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 		bezier.ImGuiDebug("bezier");
+
+		triangle.ImGuiDebug("triangle");
+		line.ImGuiDebug("line");
 		ImGui::End();
 
 		///
@@ -181,6 +190,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection(), 5);
 		render.DrawCurve(camera.GetViewProjection(), bezier);
+
+		render.DrawTriangle(camera.GetViewProjection(), triangle, WHITE, kFillModeWireFrame);
+		render.DrawLine(camera.GetViewProjection(), line, sphereColor);
+
 		/*render.DrawOBB(camera.GetViewProjection(), obbA, sphereColor);
 		render.DrawOBB(camera.GetViewProjection(), obbB, WHITE);*/
 
