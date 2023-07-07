@@ -4,6 +4,7 @@
 
 #include <imgui.h>
 
+#include "Header/Math/Lerp.h"
 #include "Header/Math/Math.hpp"
 #include "Header/Math/Matrix4x4.h"
 #include "Header/Object/Transform.h"
@@ -57,21 +58,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	    .max{0.f,   0.f,   0.f  }
 	};*/
 
-	OBB obbA{
+	/*OBB obbA{
 	    .centor{0.f, 0.f, 0.f},
-        .size{1.f, 1.f, 1.f}
-    };
+	    .size{1.f, 1.f, 1.f}
+	};
 	OBB obbB{
 	    .centor{2.9f, 0.f, 0.f},
-        .size{1.3f, 1.f, 1.f}
-    };
+	    .size{1.3f, 1.f, 1.f}
+	};*/
 
 	Vector3 rotateA = Vector3::zero();
-	Vector3 rotateB = {0.314f, 0.401f, 0.576f};
+	Vector3 rotateB = {0.314f, 0.4f, 0.576f};
 
-	obbB.SetRotate(rotateB);
+	Bezier bezier({
+	    Vector3{0.f, 0.f, 0.f },
+        Vector3{1.f, 1.f, 0.f },
+        Vector3{1.f, 0.f, -3.f}
+    });
 
-	uint32_t sphereColor = WHITE;
+	// obbB.SetRotate(rotateB);
+
+	// uint32_t sphereColor = WHITE;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -119,7 +126,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 		Vector3 cameraPos = Vector3::back() * cameraRadius;
-		if (Novice::IsPressMouse(0)) {
+		if (Novice::IsPressMouse(2)) {
 			cameraEuler.x += mouseDiff.y * Angle::Dig2Rad * 0.1f;
 			cameraEuler.x =
 			    std::clamp(cameraEuler.x, -(Angle::PI / 2 - 0.1f), (Angle::PI / 2 - 0.1f));
@@ -137,23 +144,30 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
-		if (Collision::IsHit(obbA, obbB))
-			sphereColor = RED;
+		/*if (Collision::IsHit(obbA, obbB))
+		    sphereColor = RED;
 		else
-			sphereColor = WHITE;
+		    sphereColor = WHITE;*/
 
 		camera.UpdateMatrix();
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-		obbA.ImGuiDebug("obbA", rotateA);
-		obbB.ImGuiDebug("obbB", rotateB);
+
+		/*obbA.ImGuiDebug("obbA", rotateA);
+		obbB.ImGuiDebug("obbB", rotateB);*/
+
+		ImGui::Text("While Click	  : CameraRotate");
+		ImGui::Text("While Rotate	  : ZoomIn / Out");
+		ImGui::Text("WASD Space Shift : CameraMove");
 		ImGui::DragFloat3("angle", &cameraEuler.x);
 		ImGui::SameLine();
 		if (ImGui::Button("reset")) {
 			cameraEuler = Vector3{20 * Angle::Dig2Rad, 0, 0};
 			cameraRadius = 15.f;
 		}
+
+		bezier.ImGuiDebug("bezier");
 		ImGui::End();
 
 		///
@@ -165,9 +179,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		///
 
 		render.Draw();
-		render.DrawGrid(camera.GetViewProjection());
-		render.DrawOBB(camera.GetViewProjection(), obbA, sphereColor);
-		render.DrawOBB(camera.GetViewProjection(), obbB, WHITE);
+		render.DrawGrid(camera.GetViewProjection(), 5);
+		render.DrawCurve(camera.GetViewProjection(), bezier);
+		/*render.DrawOBB(camera.GetViewProjection(), obbA, sphereColor);
+		render.DrawOBB(camera.GetViewProjection(), obbB, WHITE);*/
 
 		///
 		/// ↑描画処理ここまで

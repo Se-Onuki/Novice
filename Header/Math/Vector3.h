@@ -133,7 +133,9 @@ struct Vector3 {
 	static Vector3 right() { return Vector3{1, 0, 0}; }
 	static Vector3 left() { return Vector3{-1, 0, 0}; }
 
-	//inline operator bool() const { return x || y || z; }
+	static Vector3 one() { return Vector3{1.f, 1.f, 1.f}; }
+
+	// inline operator bool() const { return x || y || z; }
 	inline bool operator==(const Vector3& vec) const {
 		return (this->x == vec.x) && (this->y == vec.y) && (this->z == vec.z);
 	}

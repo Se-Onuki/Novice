@@ -6,6 +6,8 @@
 #include "Header/Math/Vector3.h"
 #include "Header/Object/Object.h"
 
+#include "Header/Math/Lerp.h"
+
 #include <Novice.h>
 
 #include <cmath>
@@ -310,6 +312,30 @@ void Render::DrawOBB(
 		Novice::DrawLine(
 		    static_cast<int>(lower[i].x), static_cast<int>(lower[i].y),
 		    static_cast<int>(higher[i].x), static_cast<int>(higher[i].y), color);
+	}
+}
+
+void Render::DrawCurve(
+    const Matrix4x4& viewProjectionMatrix, const Bezier& bezier, const uint32_t& color,
+    const uint32_t& subdivision) const {
+
+	const Matrix4x4& VPVp = viewProjectionMatrix * viewportMatrix_;
+	std::vector<Vector3> posList_;
+	posList_.reserve(subdivision + 1);
+	for (uint32_t i = 0; i < subdivision + 1; i++) {
+		posList_.push_back(bezier.GetPosition(float(i) / subdivision) * VPVp);
+	}
+	for (uint32_t i = 0; i < subdivision; i++) {
+		Novice::DrawLine(
+		    static_cast<int>(posList_[i].x), static_cast<int>(posList_[i].y),
+		    static_cast<int>(posList_[i + 1].x), static_cast<int>(posList_[i + 1].y), color);
+	}
+	for (auto& pos : bezier.GetPointList()) {
+		const Vector3& position = pos * VPVp;
+		const int32_t radius = 2;
+		Novice::DrawBox(
+		    static_cast<int>(position.x) - radius, static_cast<int>(position.y) - radius,
+		    radius * 2, radius * 2, 0.f, 0xFF0000FF, kFillModeSolid);
 	}
 }
 

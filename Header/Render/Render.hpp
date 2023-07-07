@@ -12,6 +12,9 @@ struct Triangle;
 struct AABB;
 struct OBB;
 
+class Bezier;
+class Catmull;
+
 class Render final {
 	Matrix4x4 viewportMatrix_;
 
@@ -70,13 +73,20 @@ public:
 	    const uint32_t& color) const;
 
 	void DrawPlane(
-	    const Matrix4x4& viewProjectionMatrix, const Plane& plane, const uint32_t& color) const;
+	    const Matrix4x4& viewProjectionMatrix, const Plane& plane,
+	    const uint32_t& color = 0xFFFFFFFF) const;
 
 	void DrawAABB(
-	    const Matrix4x4& viewProjectionMatrix, const AABB& aabb, const uint32_t& color) const;
+	    const Matrix4x4& viewProjectionMatrix, const AABB& aabb,
+	    const uint32_t& color = 0xFFFFFFFF) const;
 
-	void
-	    DrawOBB(const Matrix4x4& viewProjectionMatrix, const OBB& obb, const uint32_t& color) const;
+	void DrawOBB(
+	    const Matrix4x4& viewProjectionMatrix, const OBB& obb,
+	    const uint32_t& color = 0xFFFFFFFF) const;
+
+	void DrawCurve(
+	    const Matrix4x4& viewProjectionMatrix, const Bezier& bezier,
+	    const uint32_t& color = 0xFFFFFFFF, const uint32_t& subdivision = 10u) const;
 
 	void DrawAxis(const Matrix4x4& viewProjectionMatrix) const;
 };
