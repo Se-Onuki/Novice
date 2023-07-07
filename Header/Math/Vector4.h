@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cmath>
+#include <immintrin.h>
 
 struct Vector4 {
-	Vector4(float x = 0.f, float y = 0.f, float z = 0.f, float w = 0.f) : x(x), y(y), z(z), w(w) {}
 
 	float x;
 	float y;
@@ -37,49 +37,59 @@ struct Vector4 {
 		}
 	}
 
-	_NODISCARD Vector4 operator+(const Vector4& Second) const {
-		return Vector4{
-		    this->x + Second.x, this->y + Second.y, this->z + Second.z, this->w + Second.w};
+	_NODISCARD Vector4 operator+(const Vector4& v) const {
+		__m128 self = _mm_set_ps(w, z, y, x);
+		__m128 other = _mm_set_ps(v.w, v.z, v.y, v.x);
+		__m128 result = _mm_add_ps(self, other);
+
+		return *reinterpret_cast<Vector4*>(&result);
 	}
-	_NODISCARD Vector4 operator-(const Vector4& Second) const {
-		return Vector4{
-		    this->x - Second.x, this->y - Second.y, this->z - Second.z, this->w - Second.w};
+	_NODISCARD Vector4 operator-(const Vector4& v) const {
+		__m128 self = _mm_set_ps(w, z, y, x);
+		__m128 other = _mm_set_ps(v.w, v.z, v.y, v.x);
+		__m128 result = _mm_sub_ps(self, other);
+
+		return *reinterpret_cast<Vector4*>(&result);
 	}
 
-	Vector4& operator+=(const Vector4& Second) {
-		this->x += Second.x;
-		this->y += Second.y;
-		this->z += Second.z;
-		this->w += Second.w;
+	Vector4& operator+=(const Vector4& value) {
+		Vector4 buff = *this + value;
+		std::memcpy(this, &buff, 4);
 		return *this;
 	}
-	Vector4& operator-=(const Vector4& Second) {
-		this->x -= Second.x;
-		this->y -= Second.y;
-		this->z -= Second.z;
-		this->w -= Second.w;
+	Vector4& operator-=(const Vector4& value) {
+		Vector4 buff = *this - value;
+		std::memcpy(this, &buff, 4);
 		return *this;
 	}
 
-	_NODISCARD Vector4 operator*(const float& Second) const {
-		return Vector4{this->x * Second, this->y * Second, this->z * Second, this->w * Second};
+	_NODISCARD Vector4 operator*(const float& value) const {
+		const __m128 self = _mm_set_ps(w, z, y, x); // floatが4つの { x, y, z, 0.f } に変換
+		const __m128 other = _mm_set_ps1(value); // スカラを { value, value, value, value } に変換
+		const __m128 result = _mm_mul_ps(self, other); // ベクタとスカラの各要素を乗算
+
+		return *reinterpret_cast<const Vector4*>(&result);
+		// float{ 0, 1, 2, 3 } の順序で構成される__m128型を、
+		// float{ x, y, z, w } で構成されるVector4に解釈して変換
 	}
-	_NODISCARD Vector4 operator/(const float& Second) const {
-		return Vector4{this->x / Second, this->y / Second, this->z / Second, this->w / Second};
+	_NODISCARD Vector4 operator/(const float& value) const {
+		const __m128 self = _mm_set_ps(w, z, y, x); // floatが4つの { x, y, z, 0.f } に変換
+		const __m128 other = _mm_set_ps1(value); // スカラを { value, value, value, value } に変換
+		const __m128 result = _mm_div_ps(self, other); // ベクタとスカラの各要素を乗算
+
+		return *reinterpret_cast<const Vector4*>(&result);
+		// float{ 0, 1, 2, 3 } の順序で構成される__m128型を、
+		// float{ x, y, z, w } で構成されるVector4に解釈して変換
 	}
 
-	Vector4& operator*=(const float& Second) {
-		this->x *= Second;
-		this->y *= Second;
-		this->z *= Second;
-		this->w *= Second;
+	Vector4& operator*=(const float& value) {
+		Vector4 buff = *this * value;
+		std::memcpy(this, &buff, 4);
 		return *this;
 	}
-	Vector4& operator/=(const float& Second) {
-		this->x /= Second;
-		this->y /= Second;
-		this->z /= Second;
-		this->w /= Second;
+	Vector4& operator/=(const float& value) {
+		Vector4 buff = *this / value;
+		std::memcpy(this, &buff, 4);
 		return *this;
 	}
 
@@ -96,7 +106,12 @@ struct Vector4 {
 
 	// 内積
 	_NODISCARD inline float operator*(const Vector4& v) const {
-		return x * v.x + y * v.y + z * v.z + w * v.w;
+
+		const __m128 self = _mm_set_ps(w, z, y, x);
+		const __m128 other = _mm_set_ps(v.w, v.z, v.y, v.x);
+		const __m128 result = _mm_dp_ps(self, other, 0x71);
+
+		return _mm_cvtss_f32(result);
 	}
 	// 外積
 	// inline float operator^(const Vector3& v) const { return x * v.y - y * v.x; }

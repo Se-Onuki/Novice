@@ -4,6 +4,8 @@
 #include <cmath>
 #include <numbers>
 
+#include <immintrin.h>
+
 struct Matrix4x4;
 
 struct Vector3 {
@@ -26,6 +28,10 @@ struct Vector3 {
 	/// <returns>ベクトルの長さ</returns>
 	[[nodiscard]] float Length() const { return sqrtf((*this) * (*this)); }
 
+	/// @brief 2乗ベクトル長関数
+	/// @return ベクトル長
+	[[nodiscard]] float LengthSQ() const { return (*this) * (*this); }
+
 	/// <summary>
 	/// 正規化
 	/// </summary>
@@ -40,43 +46,59 @@ struct Vector3 {
 		}
 	}
 
-	[[nodiscard]] Vector3 operator+(const Vector3& Second) const {
-		return Vector3{this->x + Second.x, this->y + Second.y, this->z + Second.z};
+	[[nodiscard]] Vector3 operator+(const Vector3& v) const {
+		__m128 self = _mm_set_ps(0.0f, z, y, x);
+		__m128 other = _mm_set_ps(0.0f, v.z, v.y, v.x);
+		__m128 result = _mm_add_ps(self, other);
+
+		return *reinterpret_cast<Vector3*>(&result);
 	}
-	[[nodiscard]] Vector3 operator-(const Vector3& Second) const {
-		return Vector3{this->x - Second.x, this->y - Second.y, this->z - Second.z};
+	[[nodiscard]] Vector3 operator-(const Vector3& v) const {
+		__m128 self = _mm_set_ps(0.0f, z, y, x);
+		__m128 other = _mm_set_ps(0.0f, v.z, v.y, v.x);
+		__m128 result = _mm_sub_ps(self, other);
+
+		return *reinterpret_cast<Vector3*>(&result);
 	}
 
-	Vector3& operator+=(const Vector3& Second) {
-		this->x += Second.x;
-		this->y += Second.y;
-		this->z += Second.z;
+	Vector3& operator+=(const Vector3& v) {
+		Vector3 buff = *this + v;
+		std::memcpy(this, &buff, 3);
 		return *this;
 	}
-	Vector3& operator-=(const Vector3& Second) {
-		this->x -= Second.x;
-		this->y -= Second.y;
-		this->z -= Second.z;
+	Vector3& operator-=(const Vector3& v) {
+		Vector3 buff = *this - v;
+		std::memcpy(this, &buff, 3);
 		return *this;
 	}
 
-	[[nodiscard]] Vector3 operator*(const float& Second) const {
-		return Vector3{this->x * Second, this->y * Second, this->z * Second};
+	[[nodiscard]] Vector3 operator*(const float& value) const {
+		const __m128 self = _mm_set_ps(0.0f, z, y, x); // floatが4つの { x, y, z, 0.f } に変換
+		const __m128 other = _mm_set_ps1(value); // スカラを { value, value, value, value } に変換
+		const __m128 result = _mm_mul_ps(self, other); // ベクタとスカラの各要素を乗算
+
+		return *reinterpret_cast<const Vector3*>(&result);
+		// float{ 0, 1, 2, 3 } の順序で構成される__m128型を、
+		// float{ x, y, z } で構成されるVector3に解釈して変換
 	}
-	[[nodiscard]] Vector3 operator/(const float& Second) const {
-		return Vector3{this->x / Second, this->y / Second, this->z / Second};
+	[[nodiscard]] Vector3 operator/(const float& value) const {
+		const __m128 self = _mm_set_ps(0.0f, z, y, x); // floatが4つの { x, y, z, 0.f } に変換
+		const __m128 other = _mm_set_ps1(value); // スカラを { value, value, value, value } に変換
+		const __m128 result = _mm_div_ps(self, other); // ベクタとスカラの各要素を除算
+
+		return *reinterpret_cast<const Vector3*>(&result);
+		// float{ x, y, z, 0.f } の順序で構成される__m128型を、
+		// float{ x, y, z } で構成されるVector3に解釈して変換
 	}
 
-	Vector3& operator*=(const float& Second) {
-		this->x *= Second;
-		this->y *= Second;
-		this->z *= Second;
+	Vector3& operator*=(const float& value) {
+		Vector3 buff = *this * value;
+		std::memcpy(this, &buff, 3);
 		return *this;
 	}
-	Vector3& operator/=(const float& Second) {
-		this->x /= Second;
-		this->y /= Second;
-		this->z /= Second;
+	Vector3& operator/=(const float& value) {
+		Vector3 buff = *this / value;
+		std::memcpy(this, &buff, 3);
 		return *this;
 	}
 
@@ -93,7 +115,12 @@ struct Vector3 {
 
 	// 内積
 	[[nodiscard]] inline float operator*(const Vector3& v) const {
-		return x * v.x + y * v.y + z * v.z;
+
+		const __m128 self = _mm_set_ps(0.f, z, y, x);
+		const __m128 other = _mm_set_ps(0.f, v.z, v.y, v.x);
+		const __m128 result = _mm_dp_ps(self, other, 0x71);
+
+		return _mm_cvtss_f32(result);
 	}
 	// 外積(クロス積)
 	[[nodiscard]] inline Vector3 cross(const Vector3& v) const {

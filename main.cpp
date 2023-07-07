@@ -15,6 +15,8 @@
 #include "Header/Render/Render.hpp"
 #include <algorithm>
 
+// #include <DirectXMath.h >
+
 const char kWindowTitle[] = "LE2A_03_オヌキ_セイヤ_MT3";
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -159,9 +161,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.UpdateSurface();
 
 		ImGui::Begin("window");
-
-		/*obbA.ImGuiDebug("obbA", rotateA);
-		obbB.ImGuiDebug("obbB", rotateB);*/
 
 		ImGui::Text("While Click	  : CameraRotate");
 		ImGui::Text("While Rotate	  : ZoomIn / Out");

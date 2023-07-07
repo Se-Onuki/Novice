@@ -339,4 +339,30 @@ void Render::DrawCurve(
 	}
 }
 
+void Render::DrawCurve(
+    const Matrix4x4& viewProjectionMatrix, const Catmull& catmull, const uint32_t& color,
+    const uint32_t& subdivision) const {
+
+	const Matrix4x4& VPVp = viewProjectionMatrix * viewportMatrix_;
+	std::vector<Vector3> posList_;
+	posList_.reserve(subdivision + 1);
+	for (uint32_t i = 0; i < subdivision + 1; i++) {
+		posList_.push_back(
+		    catmull.GetStructPosition(float(i) / subdivision * catmull.GetPointList().size()) *
+		    VPVp);
+	}
+	for (uint32_t i = 0; i < subdivision; i++) {
+		Novice::DrawLine(
+		    static_cast<int>(posList_[i].x), static_cast<int>(posList_[i].y),
+		    static_cast<int>(posList_[i + 1].x), static_cast<int>(posList_[i + 1].y), color);
+	}
+	for (auto& pos : catmull.GetPointList()) {
+		const Vector3& position = pos * VPVp;
+		const int32_t radius = 2;
+		Novice::DrawBox(
+		    static_cast<int>(position.x) - radius, static_cast<int>(position.y) - radius,
+		    radius * 2, radius * 2, 0.f, 0xFF0000FF, kFillModeSolid);
+	}
+}
+
 void Render::DrawAxis(const Matrix4x4& viewProjectionMatrix) const { viewProjectionMatrix; }

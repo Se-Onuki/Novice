@@ -6,7 +6,6 @@ struct Matrix3x3;
 struct Vector3;
 
 struct Vector2 final {
-	Vector2(float x = 0.f, float y = 0.f);
 
 	float x;
 	float y;

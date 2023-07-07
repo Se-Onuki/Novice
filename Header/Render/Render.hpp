@@ -88,5 +88,9 @@ public:
 	    const Matrix4x4& viewProjectionMatrix, const Bezier& bezier,
 	    const uint32_t& color = 0xFFFFFFFF, const uint32_t& subdivision = 10u) const;
 
+	void DrawCurve(
+	    const Matrix4x4& viewProjectionMatrix, const Catmull& catmull,
+	    const uint32_t& color = 0xFFFFFFFF, const uint32_t& subdivision = 10u) const;
+
 	void DrawAxis(const Matrix4x4& viewProjectionMatrix) const;
 };
