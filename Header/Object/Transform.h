@@ -13,4 +13,6 @@ struct Transform {
 	/// @brief スケーリング無効アフィン変換
 	/// @return RT行列
 	_NODISCARD Matrix4x4 AffineRT() const;
+
+	Matrix4x4 AffineInv() const;
 };

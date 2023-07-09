@@ -100,5 +100,3 @@ void Vector2::operator*=(const Matrix3x3& matrix) {
 }
 
 Vector3 Vector2::Convert() const { return Vector3{x, y, 0}; }
-
-Vector2::Vector2(float x, float y) : x(x), y(y) {}

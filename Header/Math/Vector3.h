@@ -46,31 +46,13 @@ struct Vector3 {
 		}
 	}
 
-	[[nodiscard]] Vector3 operator+(const Vector3& v) const {
-		__m128 self = _mm_set_ps(0.0f, z, y, x);
-		__m128 other = _mm_set_ps(0.0f, v.z, v.y, v.x);
-		__m128 result = _mm_add_ps(self, other);
+	[[nodiscard]] Vector3 operator+(const Vector3& v) const { return {x + v.x, y + v.y, z + v.z}; }
 
-		return *reinterpret_cast<Vector3*>(&result);
-	}
-	[[nodiscard]] Vector3 operator-(const Vector3& v) const {
-		__m128 self = _mm_set_ps(0.0f, z, y, x);
-		__m128 other = _mm_set_ps(0.0f, v.z, v.y, v.x);
-		__m128 result = _mm_sub_ps(self, other);
+	[[nodiscard]] Vector3 operator-(const Vector3& v) const { return {x - v.x, y - v.y, z - v.z}; }
 
-		return *reinterpret_cast<Vector3*>(&result);
-	}
+	Vector3& operator+=(const Vector3& v) { return *this = {x + v.x, y + v.y, z + v.z}; }
 
-	Vector3& operator+=(const Vector3& v) {
-		Vector3 buff = *this + v;
-		std::memcpy(this, &buff, 3);
-		return *this;
-	}
-	Vector3& operator-=(const Vector3& v) {
-		Vector3 buff = *this - v;
-		std::memcpy(this, &buff, 3);
-		return *this;
-	}
+	Vector3& operator-=(const Vector3& v) { return *this = {x - v.x, y - v.y, z - v.z}; }
 
 	[[nodiscard]] Vector3 operator*(const float& value) const {
 		const __m128 self = _mm_set_ps(0.0f, z, y, x); // floatが4つの { x, y, z, 0.f } に変換

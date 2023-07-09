@@ -32,9 +32,12 @@ struct Matrix4x4 final {
 		std::memcpy(m[2], &C, sizeof(Vector4));
 		std::memcpy(m[3], &D, sizeof(Vector4));
 	}
-
-	float m[4][4];
-
+	union {
+		float m[4][4];
+		__m128 mVec[4];
+		__m256 mHalf[2];
+		__m512 mAll;
+	};
 	void Printf(const int& x, const int& y) const;
 
 	/// @brief 逆行列関数
@@ -44,6 +47,8 @@ struct Matrix4x4 final {
 	/// @brief スケーリング無効の逆行列
 	/// @return 逆行列
 	Matrix4x4 InverseRT() const;
+
+	Matrix4x4 InverseSRT() const;
 
 	/// @brief 転置行列関数
 	/// @return 転置行列

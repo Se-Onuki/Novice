@@ -7,5 +7,7 @@ Transform::Transform(const Vector3& scale, const Vector3& rotate, const Vector3&
 Matrix4x4 Transform::Affine() const { return Matrix4x4::Affine(scale, rotate, translate); }
 
 Matrix4x4 Transform::AffineRT() const {
-	return Matrix4x4::Affine({1.f, 1.f, 1.f}, rotate, translate);
+	return Matrix4x4::Affine(Vector3::one(), rotate, translate);
 }
+
+Matrix4x4 Transform::AffineInv() const { return Matrix4x4(); }
