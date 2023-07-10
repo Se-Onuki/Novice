@@ -21,7 +21,7 @@ struct Vector4 {
 	/// ベクトル長関数
 	/// </summary>
 	/// <returns>ベクトルの長さ</returns>
-	_NODISCARD float Length() const { return sqrtf((*this) * (*this)); }
+	_NODISCARD float Length() const { return std::sqrt((*this) * (*this)); }
 
 	/// <summary>
 	/// 正規化
@@ -88,8 +88,7 @@ struct Vector4 {
 
 	// 内積
 	_NODISCARD inline float operator*(const Vector4& v) const {
-		const __m128 result = _mm_dp_ps(*(__m128*)this, *(__m128*)&v, 0xFF);
-		return _mm_cvtss_f32(result);
+		return _mm_cvtss_f32(_mm_dp_ps(*(__m128*)this, *(__m128*)&v, 0xFF));
 	}
 	// 外積
 	// inline float operator^(const Vector3& v) const { return x * v.y - y * v.x; }

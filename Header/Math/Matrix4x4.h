@@ -1,5 +1,6 @@
 #pragma once
 #include "Header/Math/Vector4.h"
+#include <array>
 struct Vector3;
 
 struct Matrix4x4 final {
@@ -32,12 +33,13 @@ struct Matrix4x4 final {
 		std::memcpy(m[2], &C, sizeof(Vector4));
 		std::memcpy(m[3], &D, sizeof(Vector4));
 	}
-	union {
-		float m[4][4];
-		__m128 mVec[4];
-		__m256 mHalf[2];
-		__m512 mAll;
-	};
+
+	inline Matrix4x4(const std::array<Vector4, 4u>& arr) {
+		std::memcpy(m, arr.data(), sizeof(Matrix4x4));
+	}
+
+	float m[4][4];
+
 	void Printf(const int& x, const int& y) const;
 
 	/// @brief 逆行列関数
@@ -48,6 +50,8 @@ struct Matrix4x4 final {
 	/// @return 逆行列
 	Matrix4x4 InverseRT() const;
 
+	/// @brief [未実装] Transform逆行列
+	/// @return 逆行列
 	Matrix4x4 InverseSRT() const;
 
 	/// @brief 転置行列関数
@@ -85,3 +89,5 @@ struct Matrix4x4 final {
 		return Matrix4x4{1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
 	}
 };
+
+Vector4 operator*(const Vector4& fir, const Matrix4x4& sec);

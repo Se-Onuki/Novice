@@ -41,67 +41,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	Vector3 cameraOrigin{0, 0, 0};
 	Vector3 cameraEuler{20.f * Angle::Dig2Rad, 0, 0};
-	// Vector3 cameraDiff{0, 5.f, -15.f};
+
 	float cameraRadius = 15.f;
 
-	Matrix4x4 m1 = {
-	    {3.2f, 0.7f, 9.6f, 4.4f},
-	    {5.5f, 1.3f, 7.8f, 2.1f},
-	    {6.9f, 8.f,  2.6f, 1.f },
-	    {0.5f, 7.2f, 5.1f, 3.3f}
-    };
-	Matrix4x4 m2 = {
-	    {4.1f, 6.5f, 3.3f, 2.2f},
-	    {8.8f, 0.6f, 9.9f, 7.7f},
-	    {1.1f, 5.5f, 6.6f, 0.0f},
-	    {3.3f, 9.9f, 8.8f, 2.2f}
-    };
-
-	Matrix4x4 result = m1 * m2;
-
-	/*Sphere sphere{
-	    .centor{2.f, 2.f, 2.f},
-	    .radius{2.f}
-	};*/
-
-	LineBase line{
-	    .origin{0, 0, 0},
-        .diff{1, 1, 1},
-        .lineType{LineBase::LineType::Line}
-    };
-
-	Triangle triangle{
-	    {3.f,  0.f, 0.f},
-        {0.f,  3.f, 0.f},
-        {-3.f, 0.f, 0.f}
-    };
-
-	/*AABB aabb{
-	    .min{-0.5f, -0.5f, -0.5f},
-	    .max{0.f,   0.f,   0.f  }
-	};*/
-
-	/*OBB obbA{
-	    .centor{0.f, 0.f, 0.f},
-	    .size{1.f, 1.f, 1.f}
-	};
-	OBB obbB{
-	    .centor{2.9f, 0.f, 0.f},
-	    .size{1.3f, 1.f, 1.f}
-	};*/
-
-	Vector3 rotateA = Vector3::zero();
-	Vector3 rotateB = {0.314f, 0.4f, 0.576f};
-
-	Bezier bezier({
-	    Vector3{0.f, 0.f, 0.f },
-        Vector3{1.f, 1.f, 0.f },
-        Vector3{1.f, 0.f, -3.f}
+	Catmull catmull({
+	    Vector3{0.f,  0.f, 0.f },
+        Vector3{1.f,  1.f, 0.f },
+        Vector3{1.f,  0.f, -3.f},
+	    Vector3{-2.f, 1.f, -3.f}
     });
 
-	// obbB.SetRotate(rotateB);
-
-	uint32_t sphereColor = WHITE;
+	// uint32_t sphereColor = WHITE;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -167,10 +117,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
-		if (Collision::IsHit(line, triangle))
-			sphereColor = RED;
-		else
-			sphereColor = WHITE;
+		// if (Collision::IsHit(line, triangle))
+		//	sphereColor = RED;
+		// else
+		//	sphereColor = WHITE;
 
 		camera.UpdateMatrix();
 		render.UpdateSurface();
@@ -187,10 +137,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			cameraRadius = 15.f;
 		}
 
-		bezier.ImGuiDebug("bezier");
+		catmull.ImGuiDebug("catmull");
 
-		triangle.ImGuiDebug("triangle");
-		line.ImGuiDebug("line");
 		ImGui::End();
 
 		///
@@ -203,15 +151,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection(), 5);
-		render.DrawCurve(camera.GetViewProjection(), bezier);
-
-		render.DrawTriangle(camera.GetViewProjection(), triangle, WHITE, kFillModeWireFrame);
-		render.DrawLine(camera.GetViewProjection(), line, sphereColor);
-
-		result.Printf(0, 0);
-
-		/*render.DrawOBB(camera.GetViewProjection(), obbA, sphereColor);
-		render.DrawOBB(camera.GetViewProjection(), obbB, WHITE);*/
+		render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
 
 		///
 		/// ↑描画処理ここまで

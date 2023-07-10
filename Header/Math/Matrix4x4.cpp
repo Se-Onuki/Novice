@@ -40,25 +40,6 @@ Matrix4x4 Matrix4x4::Inverse() const {
 		}
 	}
 	return out;
-
-	/*return Matrix4x4{
-	           this->m[1][1] * this->m[2][2] - this->m[1][2] * this->m[2][1],
-	           this->m[0][2] * this->m[2][1] - this->m[0][1] * this->m[2][2],
-	           this->m[0][1] * this->m[1][2] - this->m[0][2] * this->m[1][1],
-
-	           this->m[1][2] * this->m[2][0] - this->m[1][0] * this->m[2][2],
-	           this->m[0][0] * this->m[2][2] - this->m[0][2] * this->m[2][0],
-	           this->m[0][2] * this->m[1][0] - this->m[0][0] * this->m[1][2],
-
-	           this->m[1][0] * this->m[2][1] - this->m[1][1] * this->m[2][0],
-	           this->m[0][1] * this->m[2][0] - this->m[0][0] * this->m[2][1],
-	           this->m[0][0] * this->m[1][1] - this->m[0][1] * this->m[1][0]} /
-	       (this->m[0][0] * this->m[1][1] * this->m[2][2] +
-	        this->m[0][1] * this->m[1][2] * this->m[2][0] +
-	        this->m[0][2] * this->m[1][0] * this->m[2][1] -
-	        this->m[0][0] * this->m[1][2] * this->m[2][1] -
-	        this->m[0][1] * this->m[1][0] * this->m[2][2] -
-	        this->m[0][2] * this->m[1][1] * this->m[2][0]);*/
 }
 
 Matrix4x4 Matrix4x4::InverseRT() const {
@@ -74,12 +55,28 @@ Matrix4x4 Matrix4x4::InverseRT() const {
 	    {m[0][0], m[1][0], m[2][0], 0.f},
 	    {m[0][1], m[1][1], m[2][1], 0.f},
 	    {m[0][2], m[1][2], m[2][2], 0.f},
-	    {-_mm_cvtss_f32(_mm_dp_ps(mVec[3], mVec[0], 0x71)),
-	     -_mm_cvtss_f32(_mm_dp_ps(mVec[3], mVec[1], 0x71)),
-	     -_mm_cvtss_f32(_mm_dp_ps(mVec[3], mVec[2], 0x71)), 1.f}
+	    {-_mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[3]), _mm_load_ps(m[0]), 0x71)),
+	     -_mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[3]), _mm_load_ps(m[1]), 0x71)),
+	     -_mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[3]), _mm_load_ps(m[2]), 0x71)), 1.f}
     };
 }
-Matrix4x4 Matrix4x4::InverseSRT() const { return Matrix4x4(); };
+Matrix4x4 Matrix4x4::InverseSRT() const {
+	const Vector4 vecX2 =
+	    *(Vector4*)&m[0] / _mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[0]), _mm_load_ps(m[0]), 0x71));
+	const Vector4 vecY2 =
+	    *(Vector4*)&m[1] / _mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[1]), _mm_load_ps(m[1]), 0x71));
+	const Vector4 vecZ2 =
+	    *(Vector4*)&m[2] / _mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[2]), _mm_load_ps(m[2]), 0x71));
+
+	return Matrix4x4{
+	    {vecX2.x, vecY2.x, vecZ2.x, 0.f},
+	    {vecX2.y, vecY2.y, vecZ2.y, 0.f},
+	    {vecX2.z, vecY2.z, vecZ2.z, 0.f},
+	    {-_mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[3]), *(__m128*)&vecX2, 0x71)),
+	     -_mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[3]), *(__m128*)&vecY2, 0x71)),
+	     -_mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[3]), *(__m128*)&vecZ2, 0x71)), 1.f}
+    };
+};
 
 Matrix4x4 Matrix4x4::Transpose() const {
 	return Matrix4x4{
@@ -184,15 +181,15 @@ Matrix4x4 Matrix4x4::operator+(const Matrix4x4& Second) const {
 	    this->m[3][0] + Second.m[3][0], this->m[3][1] + Second.m[3][1],
 	    this->m[3][2] + Second.m[3][2], this->m[3][3] + Second.m[3][3]});*/
 	Matrix4x4 result;
-	result.mHalf[0] = _mm256_add_ps(mHalf[0], Second.mHalf[0]);
-	result.mHalf[1] = _mm256_add_ps(mHalf[1], Second.mHalf[1]);
+	*(__m256*)&result.m[0] = _mm256_add_ps(_mm256_load_ps(m[0]), _mm256_load_ps(Second.m[0]));
+	*(__m256*)&result.m[1] = _mm256_add_ps(_mm256_load_ps(m[2]), _mm256_load_ps(Second.m[2]));
 	return result;
 }
 
 Matrix4x4 Matrix4x4::operator-(const Matrix4x4& Second) const {
 	Matrix4x4 result;
-	result.mHalf[0] = _mm256_sub_ps(mHalf[0], Second.mHalf[0]);
-	result.mHalf[1] = _mm256_sub_ps(mHalf[1], Second.mHalf[1]);
+	*(__m256*)&result.m[0] = _mm256_sub_ps(_mm256_load_ps(m[0]), _mm256_load_ps(Second.m[0]));
+	*(__m256*)&result.m[1] = _mm256_sub_ps(_mm256_load_ps(m[2]), _mm256_load_ps(Second.m[2]));
 	return result;
 }
 
@@ -201,161 +198,43 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& sec) const {
 	for (unsigned char i = 0; i < 4; i++) {
 		__m128 vecB = _mm_set_ps(sec.m[3][i], sec.m[2][i], sec.m[1][i], sec.m[0][i]);
 		for (unsigned char j = 0; j < 4; j++) {
-			result.m[j][i] = _mm_cvtss_f32(_mm_dp_ps(mVec[j], vecB, 0xFF));
+			result.m[j][i] = _mm_cvtss_f32(_mm_dp_ps(_mm_load_ps(m[j]), vecB, 0xFF));
 		}
 	}
 	return result;
 }
 
-Matrix4x4 Matrix4x4::operator*(const float& Second) const {
-	return (Matrix4x4{
-	    this->m[0][0] * Second, this->m[0][1] * Second, this->m[0][2] * Second,
-	    this->m[0][3] * Second,
-
-	    this->m[1][0] * Second, this->m[1][1] * Second, this->m[1][2] * Second,
-	    this->m[1][3] * Second,
-
-	    this->m[2][0] * Second, this->m[2][1] * Second, this->m[2][2] * Second,
-	    this->m[2][3] * Second,
-
-	    this->m[3][0] * Second, this->m[3][1] * Second, this->m[3][2] * Second,
-	    this->m[3][3] * Second});
+Matrix4x4 Matrix4x4::operator*(const float& scalar) const {
+	Matrix4x4 result;
+	__m256 value = _mm256_set1_ps(scalar);
+	*(__m256*)&result.m[0] = _mm256_mul_ps(_mm256_load_ps(m[0]), value);
+	*(__m256*)&result.m[1] = _mm256_mul_ps(_mm256_load_ps(m[2]), value);
+	return result;
 }
 
-Matrix4x4 Matrix4x4::operator/(const float& Second) const {
-	return (Matrix4x4{
-	    this->m[0][0] / Second, this->m[0][1] / Second, this->m[0][2] / Second,
-	    this->m[0][3] / Second,
-
-	    this->m[1][0] / Second, this->m[1][1] / Second, this->m[1][2] / Second,
-	    this->m[1][3] / Second,
-
-	    this->m[2][0] / Second, this->m[2][1] / Second, this->m[2][2] / Second,
-	    this->m[2][3] / Second,
-
-	    this->m[3][0] / Second, this->m[3][1] / Second, this->m[3][2] / Second,
-	    this->m[3][3] / Second});
+Matrix4x4 Matrix4x4::operator/(const float& scalar) const {
+	Matrix4x4 result;
+	__m256 value = _mm256_set1_ps(scalar);
+	*(__m256*)&result.m[0] = _mm256_div_ps(_mm256_load_ps(m[0]), value);
+	*(__m256*)&result.m[1] = _mm256_div_ps(_mm256_load_ps(m[2]), value);
+	return result;
 }
 
-Matrix4x4 Matrix4x4::operator+=(const Matrix4x4& Second) {
+Matrix4x4 Matrix4x4::operator+=(const Matrix4x4& Second) { return *this = *this + Second; }
 
-	this->m[0][0] += Second.m[0][0], this->m[0][1] += Second.m[0][1];
-	this->m[0][2] += Second.m[0][2], this->m[0][3] += Second.m[0][3];
+Matrix4x4 Matrix4x4::operator-=(const Matrix4x4& Second) { return *this = *this - Second; }
 
-	this->m[1][0] += Second.m[1][0], this->m[1][1] += Second.m[1][1];
-	this->m[1][2] += Second.m[1][2], this->m[1][3] += Second.m[1][3];
+Matrix4x4 Matrix4x4::operator*=(const Matrix4x4& Second) { return *this = *this * Second; }
 
-	this->m[2][0] += Second.m[2][0], this->m[2][1] += Second.m[2][1];
-	this->m[2][2] += Second.m[2][2], this->m[2][3] += Second.m[2][3];
+Matrix4x4 Matrix4x4::operator*=(const float& Second) { return *this = *this * Second; }
 
-	this->m[3][0] += Second.m[3][0], this->m[3][1] += Second.m[3][1];
-	this->m[3][2] += Second.m[3][2], this->m[3][3] += Second.m[3][3];
+Matrix4x4 Matrix4x4::operator/=(const float& Second) { return *this = *this / Second; }
 
-	return *this;
-}
-
-Matrix4x4 Matrix4x4::operator-=(const Matrix4x4& Second) {
-
-	this->m[0][0] -= Second.m[0][0], this->m[0][1] -= Second.m[0][1];
-	this->m[0][2] -= Second.m[0][2], this->m[0][3] -= Second.m[0][3];
-
-	this->m[1][0] -= Second.m[1][0], this->m[1][1] -= Second.m[1][1];
-	this->m[1][2] -= Second.m[1][2], this->m[1][3] -= Second.m[1][3];
-
-	this->m[2][0] -= Second.m[2][0], this->m[2][1] -= Second.m[2][1];
-	this->m[2][2] -= Second.m[2][2], this->m[2][3] -= Second.m[2][3];
-
-	this->m[3][0] -= Second.m[3][0], this->m[3][1] -= Second.m[3][1];
-	this->m[3][2] -= Second.m[3][2], this->m[3][3] -= Second.m[3][3];
-
-	return *this;
-}
-
-Matrix4x4 Matrix4x4::operator*=(const Matrix4x4& Second) {
-
-	return *this = Matrix4x4{
-	           this->m[0][0] * Second.m[0][0] + this->m[0][1] * Second.m[1][0] +
-	               this->m[0][2] * Second.m[2][0] + this->m[0][3] * Second.m[3][0],
-	           this->m[0][0] * Second.m[0][1] + this->m[0][1] * Second.m[1][1] +
-	               this->m[0][2] * Second.m[2][1] + this->m[0][3] * Second.m[3][1],
-	           this->m[0][0] * Second.m[0][2] + this->m[0][1] * Second.m[1][2] +
-	               this->m[0][2] * Second.m[2][2] + this->m[0][3] * Second.m[3][2],
-	           this->m[0][0] * Second.m[0][3] + this->m[0][1] * Second.m[1][3] +
-	               this->m[0][2] * Second.m[2][3] + this->m[0][3] * Second.m[3][3],
-
-	           this->m[1][0] * Second.m[0][0] + this->m[1][1] * Second.m[1][0] +
-	               this->m[1][2] * Second.m[2][0] + this->m[1][3] * Second.m[3][0],
-	           this->m[1][0] * Second.m[0][1] + this->m[1][1] * Second.m[1][1] +
-	               this->m[1][2] * Second.m[2][1] + this->m[1][3] * Second.m[3][1],
-	           this->m[1][0] * Second.m[0][2] + this->m[1][1] * Second.m[1][2] +
-	               this->m[1][2] * Second.m[2][2] + this->m[1][3] * Second.m[3][2],
-	           this->m[1][0] * Second.m[0][3] + this->m[1][1] * Second.m[1][3] +
-	               this->m[1][2] * Second.m[2][3] + this->m[1][3] * Second.m[3][3],
-
-	           this->m[2][0] * Second.m[0][0] + this->m[2][1] * Second.m[1][0] +
-	               this->m[2][2] * Second.m[2][0] + this->m[2][3] * Second.m[3][0],
-	           this->m[2][0] * Second.m[0][1] + this->m[2][1] * Second.m[1][1] +
-	               this->m[2][2] * Second.m[2][1] + this->m[2][3] * Second.m[3][1],
-	           this->m[2][0] * Second.m[0][2] + this->m[2][1] * Second.m[1][2] +
-	               this->m[2][2] * Second.m[2][2] + this->m[2][3] * Second.m[3][2],
-	           this->m[2][0] * Second.m[0][3] + this->m[2][1] * Second.m[1][3] +
-	               this->m[2][2] * Second.m[2][3] + this->m[2][3] * Second.m[3][3],
-
-	           this->m[3][0] * Second.m[0][0] + this->m[3][1] * Second.m[1][0] +
-	               this->m[3][2] * Second.m[2][0] + this->m[3][3] * Second.m[3][0],
-	           this->m[3][0] * Second.m[0][1] + this->m[3][1] * Second.m[1][1] +
-	               this->m[3][2] * Second.m[2][1] + this->m[3][3] * Second.m[3][1],
-	           this->m[3][0] * Second.m[0][2] + this->m[3][1] * Second.m[1][2] +
-	               this->m[3][2] * Second.m[2][2] + this->m[3][3] * Second.m[3][2],
-	           this->m[3][0] * Second.m[0][3] + this->m[3][1] * Second.m[1][3] +
-	               this->m[3][2] * Second.m[2][3] + this->m[3][3] * Second.m[3][3],
-	       };
-}
-Matrix4x4 Matrix4x4::operator*=(const float& Second) {
-
-	this->m[0][0] *= Second;
-	this->m[0][1] *= Second;
-	this->m[0][2] *= Second;
-	this->m[0][3] *= Second;
-
-	this->m[1][0] *= Second;
-	this->m[1][1] *= Second;
-	this->m[1][2] *= Second;
-	this->m[1][3] *= Second;
-
-	this->m[2][0] *= Second;
-	this->m[2][1] *= Second;
-	this->m[2][2] *= Second;
-	this->m[2][3] *= Second;
-
-	this->m[3][0] *= Second;
-	this->m[3][1] *= Second;
-	this->m[3][2] *= Second;
-	this->m[3][3] *= Second;
-
-	return *this;
-}
-
-Matrix4x4 Matrix4x4::operator/=(const float& Second) {
-
-	this->m[0][0] /= Second;
-	this->m[0][1] /= Second;
-	this->m[0][2] /= Second;
-	this->m[0][3] /= Second;
-
-	this->m[1][0] /= Second;
-	this->m[1][1] /= Second;
-	this->m[1][2] /= Second;
-	this->m[1][3] /= Second;
-
-	this->m[2][0] /= Second;
-	this->m[2][1] /= Second;
-	this->m[2][2] /= Second;
-	this->m[2][3] /= Second;
-
-	this->m[3][0] /= Second;
-	this->m[3][1] /= Second;
-	this->m[3][2] /= Second;
-	this->m[3][3] /= Second;
-	return *this;
+Vector4 operator*(const Vector4& fir, const Matrix4x4& sec) {
+	Vector4 result;
+	for (unsigned char i = 0u; i < 4u; i++) {
+		__m128 vecB = _mm_set_ps(sec.m[3][i], sec.m[2][i], sec.m[1][i], sec.m[0][i]);
+		((float*)&result)[i] = _mm_cvtss_f32(_mm_dp_ps(*(__m128*)&fir, vecB, 0xFF));
+	}
+	return result;
 }

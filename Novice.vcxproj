@@ -117,6 +117,7 @@
     <ClCompile Include="Header\Math\Quaternion.cpp" />
     <ClCompile Include="Header\Math\Vector2.cpp" />
     <ClCompile Include="Header\Math\Vector3.cpp" />
+    <ClCompile Include="Header\Math\Vector4.cpp" />
     <ClCompile Include="Header\Object\Object.cpp" />
     <ClCompile Include="Header\Object\Transform.cpp" />
     <ClCompile Include="Header\Render\Render.cpp" />

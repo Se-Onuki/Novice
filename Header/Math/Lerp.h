@@ -105,13 +105,13 @@ public:
 		int index = static_cast<int>(std::floorf(t));
 		if (index == 0) {
 			return GetStructPosition(points[0], points[0], points[1], points[2], t);
-		}
-		if (index == points.size() - 2) {
+		} else if (index == points.size() - 2) {
 			return GetStructPosition(
 			    points[index - 1], points[index], points[index + 1], points[index + 1], t - index);
-		}
-		if (index == points.size() - 1) {
+		} else if (index == points.size() - 1) {
 			return points[index];
+		} else if (index == points.size()) {
+			return points.back();
 		}
 		return GetStructPosition(
 		    points[index - 1], points[index], points[index + 1], points[index + 2], t - index);

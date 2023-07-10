@@ -1,4 +1,5 @@
 #include "Vector3.h"
+#include "Header/Math/Vector4.h"
 #include "Math.hpp"
 #include "Matrix4x4.h"
 #include <Novice.h>
@@ -11,18 +12,12 @@ void Vector3::Printf(int x_, int y_) const {
 }
 
 Vector3 Vector3::operator*(const Matrix4x4& Second) const {
-	Vector3 result;
-
-	result.x = this->x * Second.m[0][0] + this->y * Second.m[1][0] + this->z * Second.m[2][0] +
-	           1.0f * Second.m[3][0];
-	result.y = this->x * Second.m[0][1] + this->y * Second.m[1][1] + this->z * Second.m[2][1] +
-	           1.0f * Second.m[3][1];
-	result.z = this->x * Second.m[0][2] + this->y * Second.m[1][2] + this->z * Second.m[2][2] +
-	           1.0f * Second.m[3][2];
-	const float w = this->x * Second.m[0][3] + this->y * Second.m[1][3] + this->z * Second.m[2][3] +
-	                1.0f * Second.m[3][3];
-	assert(w != 0.0f);
-	return result / w; // 演算子のオーバーライド
+	Vector4 result;
+	std::memcpy(&result, this, 12u);
+	result.w = 1.f;
+	result = result * Second;
+	assert(result.w != 0.0f);
+	return *(Vector3*)&(result /= result.w); // 演算子のオーバーライド
 }
 
 Vector3& Vector3::operator*=(const Matrix4x4& Second) {
