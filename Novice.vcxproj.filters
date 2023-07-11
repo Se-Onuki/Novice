@@ -81,7 +81,7 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="Header\Math\Vector4.cpp">
-      <Filter>KamataEngine</Filter>
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

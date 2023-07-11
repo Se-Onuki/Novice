@@ -50,7 +50,7 @@ struct Matrix4x4 final {
 	/// @return 逆行列
 	Matrix4x4 InverseRT() const;
 
-	/// @brief [未実装] Transform逆行列
+	/// @brief Transform逆行列
 	/// @return 逆行列
 	Matrix4x4 InverseSRT() const;
 

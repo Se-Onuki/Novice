@@ -44,12 +44,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	float cameraRadius = 15.f;
 
-	Catmull catmull({
-	    Vector3{0.f,  0.f, 0.f },
-        Vector3{1.f,  1.f, 0.f },
-        Vector3{1.f,  0.f, -3.f},
-	    Vector3{-2.f, 1.f, -3.f}
-    });
+
 
 	// uint32_t sphereColor = WHITE;
 
