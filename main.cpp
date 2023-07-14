@@ -45,7 +45,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	float cameraRadius = 15.f;
 
 
-
 	// uint32_t sphereColor = WHITE;
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -132,7 +131,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			cameraRadius = 15.f;
 		}
 
-		catmull.ImGuiDebug("catmull");
+		//catmull.ImGuiDebug("catmull");
 
 		ImGui::End();
 
@@ -146,7 +145,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection(), 5);
-		render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
+		//render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
 
 		///
 		/// ↑描画処理ここまで

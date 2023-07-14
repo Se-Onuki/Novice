@@ -97,12 +97,7 @@ struct Vector3 {
 
 	// 内積
 	[[nodiscard]] inline float operator*(const Vector3& v) const {
-
-		const __m128 self = _mm_set_ps(0.f, z, y, x);
-		const __m128 other = _mm_set_ps(0.f, v.z, v.y, v.x);
-		const __m128 result = _mm_dp_ps(self, other, 0x71);
-
-		return _mm_cvtss_f32(result);
+		return x * v.x + y * v.y + z * v.z;
 	}
 	// 外積(クロス積)
 	[[nodiscard]] inline Vector3 cross(const Vector3& v) const {
