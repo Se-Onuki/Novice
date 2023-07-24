@@ -44,6 +44,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	float cameraRadius = 15.f;
 
+	Transform shoulder{
+	    Vector3::one(), Vector3{0.f,  0.f,  -6.8f},
+         Vector3{0.2f, 0.1f, 0.f  }
+    };
+
+	Transform elbow{
+	    Vector3{3.f,  1.f, 1.f  },
+        Vector3{0.f,  0.f, -1.4f},
+        Vector3{0.4f, 0.f, 0.f  }
+    };
+	Transform hand{
+	    Vector3::one(), Vector3::zero(), Vector3{0.3f, 0.f, 0.f}
+    };
+
+	std::array<Matrix4x4, 3u> worldMatrix = {};
+	std::array<Sphere, 3u> sphere = {};
+	std::array<LineBase, 2u> line = {};
 
 	// uint32_t sphereColor = WHITE;
 
@@ -111,6 +128,36 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
+		ImGui::Begin("Tree");
+		;
+		if (ImGui::TreeNode("Shoulder")) {
+			shoulder.ImGuiWidget();
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("Elbow")) {
+			elbow.ImGuiWidget();
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("Hand")) {
+			hand.ImGuiWidget();
+			ImGui::TreePop();
+		}
+
+		ImGui::End();
+
+		worldMatrix[0] = shoulder.Affine();
+		worldMatrix[1] = elbow.Affine() * worldMatrix[0];
+		worldMatrix[2] = hand.Affine() * worldMatrix[1];
+
+		for (uint32_t i = 0u; i < 3u; i++) {
+			sphere[i].centor = *(Vector3*)worldMatrix[i].m[3];
+			sphere[i].radius = 0.2f;
+		}
+		for (uint32_t i = 0; i < 2u; i++) {
+			line[i].origin = sphere[i].centor;
+			line[i].diff = sphere[i + 1u].centor - sphere[i].centor;
+		}
+
 		// if (Collision::IsHit(line, triangle))
 		//	sphereColor = RED;
 		// else
@@ -131,7 +178,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			cameraRadius = 15.f;
 		}
 
-		//catmull.ImGuiDebug("catmull");
+		// catmull.ImGuiDebug("catmull");
 
 		ImGui::End();
 
@@ -145,7 +192,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection(), 5);
-		//render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
+		// render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
+
+		for (uint32_t i = 0; i < 3u; i++) {
+			render.DrawSphere(camera.GetViewProjection(), sphere[i]);
+		}
+		render.DrawLine(camera.GetViewProjection(), line[0]);
+		render.DrawLine(camera.GetViewProjection(), line[1]);
 
 		///
 		/// ↑描画処理ここまで

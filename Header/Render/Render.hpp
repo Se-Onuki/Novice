@@ -70,7 +70,7 @@ public:
 
 	void DrawLine(
 	    const Matrix4x4& viewProjectionMatrix, const LineBase& segment,
-	    const uint32_t& color) const;
+	    const uint32_t& color = 0xFFFFFFFF) const;
 
 	void DrawPlane(
 	    const Matrix4x4& viewProjectionMatrix, const Plane& plane,
