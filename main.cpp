@@ -45,15 +45,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	float cameraRadius = 15.f;
 
 	const float deltaTime = 1.f / 60.f;
+	const Vector3 kGravity{0.f, -9.8f, 0.f};
+	const Vector3 defaultPos{0.8f, 0.2f, 0.f};
 
 	Spring spring{};
-	spring.anchor = Vector3::zero();
-	spring.naturalLength = 1.f;
+	spring.anchor = {0.f, 1.f, 0.f};
+	spring.naturalLength = 0.7f;
 	spring.stiffness = 100.f;
 	spring.dampingCoefficient = 2.f;
 
 	Ball ball{};
-	ball.position = {1.2f, 0.f, 0.f};
+	ball.position = defaultPos;
 	ball.mass = 2.f;
 	ball.radius = 0.05f;
 	ball.color = BLUE;
@@ -127,7 +129,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
+		ImGui::Begin("ball");
+		if (ImGui::Button("reset")) {
+			ball.position = defaultPos;
+		}
+		ImGui::End();
+
 #pragma region Spring
+
+		ball.acceleration += kGravity;
 
 		const Vector3 diff = ball.position - spring.anchor;
 		const float length = diff.Length();
@@ -139,10 +149,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			Vector3 dampingForce = -spring.dampingCoefficient * ball.velocity;
 			Vector3 force = restoringForce + dampingForce;
-			ball.acceleration = force / ball.mass;
+			ball.acceleration += force / ball.mass;
 		}
 		ball.velocity += ball.acceleration * deltaTime;
 		ball.position += ball.velocity * deltaTime;
+		ball.acceleration = Vector3::zero();
 
 #pragma endregion
 
