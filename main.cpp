@@ -44,6 +44,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	float cameraRadius = 15.f;
 
+	const float deltaTime = 1.f / 60.f;
+
+	Spring spring{};
+	spring.anchor = Vector3::zero();
+	spring.naturalLength = 1.f;
+	spring.stiffness = 100.f;
+	spring.dampingCoefficient = 2.f;
+
+	Ball ball{};
+	ball.position = {1.2f, 0.f, 0.f};
+	ball.mass = 2.f;
+	ball.radius = 0.05f;
+	ball.color = BLUE;
+
+	LineBase line{};
+	Sphere sphere{.radius = ball.radius};
+
 	// uint32_t sphereColor = WHITE;
 
 	// ウィンドウの×ボタンが押されるまでループ
@@ -110,6 +127,34 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
+#pragma region Spring
+
+		const Vector3 diff = ball.position - spring.anchor;
+		const float length = diff.Length();
+		if (length) {
+			Vector3 direction = diff.Nomalize();
+			Vector3 restPosition = spring.anchor + direction * spring.naturalLength;
+			Vector3 desplacement = length * (ball.position - restPosition);
+			Vector3 restoringForce = -spring.stiffness * desplacement;
+
+			Vector3 dampingForce = -spring.dampingCoefficient * ball.velocity;
+			Vector3 force = restoringForce + dampingForce;
+			ball.acceleration = force / ball.mass;
+		}
+		ball.velocity += ball.acceleration * deltaTime;
+		ball.position += ball.velocity * deltaTime;
+
+#pragma endregion
+
+#pragma region 見た目設定
+
+		line.origin = spring.anchor;
+		line.diff = ball.position - spring.anchor;
+
+		sphere.centor = ball.position;
+
+#pragma endregion
+
 		// if (Collision::IsHit(line, triangle))
 		//	sphereColor = RED;
 		// else
@@ -144,6 +189,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection(), 5);
+
+		render.DrawSphere(camera.GetViewProjection(), sphere, ball.color);
+		render.DrawLine(camera.GetViewProjection(), line, RED);
 		// render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
 
 		///

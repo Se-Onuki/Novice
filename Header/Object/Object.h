@@ -141,9 +141,10 @@ struct AABB {
 };
 
 struct Spring {
-	Vector3 anchor;      // 固定された端
-	float naturalLength; // 自然長
-	float stiffness;     // 剛性 ばね定数k
+	Vector3 anchor;           // 固定された端
+	float naturalLength;      // 自然長
+	float stiffness;          // 剛性 ばね定数k
+	float dampingCoefficient; // 減衰係数
 };
 
 struct Ball {
