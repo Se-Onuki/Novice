@@ -240,9 +240,19 @@ Matrix4x4 Matrix4x4::operator/=(const float& Second) { return *this = *this / Se
 
 Vector4 operator*(const Vector4& fir, const Matrix4x4& sec) {
 	Vector4 result;
-	for (unsigned char i = 0u; i < 4u; i++) {
-		__m128 vecB = _mm_set_ps(sec.m[3][i], sec.m[2][i], sec.m[1][i], sec.m[0][i]);
-		((float*)&result)[i] = _mm_cvtss_f32(_mm_dp_ps(*(__m128*)&fir, vecB, 0xFF));
-	}
+	__m128 row0 = _mm_load_ps(sec.m[0]);
+	__m128 row1 = _mm_load_ps(sec.m[1]);
+	__m128 row2 = _mm_load_ps(sec.m[2]);
+	__m128 row3 = _mm_load_ps(sec.m[3]);
+
+	__m128 brod0 = _mm_set1_ps(fir.x);
+	__m128 brod1 = _mm_set1_ps(fir.y);
+	__m128 brod2 = _mm_set1_ps(fir.z);
+	__m128 brod3 = _mm_set1_ps(fir.w);
+	__m128 row = _mm_add_ps(
+	    _mm_add_ps(_mm_mul_ps(brod0, row0), _mm_mul_ps(brod1, row1)),
+	    _mm_add_ps(_mm_mul_ps(brod2, row2), _mm_mul_ps(brod3, row3)));
+	_mm_store_ps(&result.x, row);
+
 	return result;
 }

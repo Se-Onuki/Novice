@@ -44,23 +44,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	float cameraRadius = 15.f;
 
-	Transform shoulder{
-	    Vector3::one(), Vector3{0.f,  0.f,  -6.8f},
-         Vector3{0.2f, 0.1f, 0.f  }
-    };
+	Vector3 a{0.2f, 1.f, 0.f};
+	Vector3 b{2.4f, 3.1f, 1.2f};
 
-	Transform elbow{
-	    Vector3{3.f,  1.f, 1.f  },
-        Vector3{0.f,  0.f, -1.4f},
-        Vector3{0.4f, 0.f, 0.f  }
-    };
-	Transform hand{
-	    Vector3::one(), Vector3::zero(), Vector3{0.3f, 0.f, 0.f}
-    };
+	Vector3 c = a + b;
+	Vector3 d = a - b;
+	Vector3 e = a * 2.4f;
 
-	std::array<Matrix4x4, 3u> worldMatrix = {};
-	std::array<Sphere, 3u> sphere = {};
-	std::array<LineBase, 2u> line = {};
+	Vector3 rotate{.4f, 1.43f, -.8f};
+	Matrix4x4 xRot = Matrix4x4::EulerRotate(Matrix4x4::Pitch, rotate.x);
+	Matrix4x4 yRot = Matrix4x4::EulerRotate(Matrix4x4::Yaw, rotate.y);
+	Matrix4x4 zRot = Matrix4x4::EulerRotate(Matrix4x4::Roll, rotate.z);
+
+	Matrix4x4 matRot = xRot * yRot * zRot;
 
 	// uint32_t sphereColor = WHITE;
 
@@ -128,36 +124,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
-		ImGui::Begin("Tree");
-		;
-		if (ImGui::TreeNode("Shoulder")) {
-			shoulder.ImGuiWidget();
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNode("Elbow")) {
-			elbow.ImGuiWidget();
-			ImGui::TreePop();
-		}
-		if (ImGui::TreeNode("Hand")) {
-			hand.ImGuiWidget();
-			ImGui::TreePop();
-		}
-
-		ImGui::End();
-
-		worldMatrix[0] = shoulder.Affine();
-		worldMatrix[1] = elbow.Affine() * worldMatrix[0];
-		worldMatrix[2] = hand.Affine() * worldMatrix[1];
-
-		for (uint32_t i = 0u; i < 3u; i++) {
-			sphere[i].centor = *(Vector3*)worldMatrix[i].m[3];
-			sphere[i].radius = 0.2f;
-		}
-		for (uint32_t i = 0; i < 2u; i++) {
-			line[i].origin = sphere[i].centor;
-			line[i].diff = sphere[i + 1u].centor - sphere[i].centor;
-		}
-
 		// if (Collision::IsHit(line, triangle))
 		//	sphereColor = RED;
 		// else
@@ -165,6 +131,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		camera.UpdateMatrix();
 		render.UpdateSurface();
+
+		ImGui::Begin("Math");
+		ImGui::Text("c : %.4f %.4f %.4f", c.x, c.y, c.z);
+		ImGui::Text("d : %.4f %.4f %.4f", d.x, d.y, d.z);
+		ImGui::Text("e : %.4f %.4f %.4f", e.x, e.y, e.z);
+
+		ImGui::Text("matRot :"
+			"\n%.4f %.4f %.4f %.4f"
+			"\n%.4f %.4f %.4f %.4f"
+			"\n%.4f %.4f %.4f %.4f"
+			"\n%.4f %.4f %.4f %.4f",
+		    matRot.m[0][0],matRot.m[0][1],matRot.m[0][2],matRot.m[0][3],
+		    matRot.m[1][0],matRot.m[1][1],matRot.m[1][2],matRot.m[1][3],
+		    matRot.m[2][0],matRot.m[2][1],matRot.m[2][2],matRot.m[2][3],
+		    matRot.m[3][0],matRot.m[3][1],matRot.m[3][2],matRot.m[3][3]
+			);
+		ImGui::End();
 
 		ImGui::Begin("window");
 
@@ -193,12 +176,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection(), 5);
 		// render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
-
-		for (uint32_t i = 0; i < 3u; i++) {
-			render.DrawSphere(camera.GetViewProjection(), sphere[i]);
-		}
-		render.DrawLine(camera.GetViewProjection(), line[0]);
-		render.DrawLine(camera.GetViewProjection(), line[1]);
 
 		///
 		/// ↑描画処理ここまで
