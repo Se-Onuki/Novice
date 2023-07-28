@@ -48,16 +48,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	const Vector3 kGravity{0.f, -9.8f, 0.f};
 	// const Vector3 defaultPos{0.8f, 0.2f, 0.f};
 
-	const Vector3 anchor = Vector3::zero();
-	float angle = 0.f;
-	float angulerVelocity = Angle::PI;
-	// float angularAcceleration = 0.f;
-	float radius = 0.8f;
+	Pendulum pendulum{};
+	pendulum.anchor = {0.f, 1.f, 0.f};
+	pendulum.length = 0.8f;
+	pendulum.angle = 0.7f;
+	pendulum.angularVelocity = 0.f;
+	pendulum.angularAcceleration = 0.f;
 
-	bool startFlag = false;
+	// bool startFlag = false;
 
-	// LineBase line{};
-	Sphere sphere{.radius = 0.3f};
+	LineBase line{};
+	Sphere sphere{.radius = 0.15f};
 
 	// uint32_t sphereColor = WHITE;
 
@@ -127,22 +128,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region 振り子
 
-		ImGui::Begin("pendulum");
-		if (ImGui::Button("start")) {
+		pendulum.angularAcceleration = kGravity.y / pendulum.length * std::sin(pendulum.angle);
+		pendulum.angularVelocity += pendulum.angularAcceleration * deltaTime;
+		pendulum.angle += pendulum.angularVelocity * deltaTime;
 
-			startFlag = true;
-			angle = 0.f;
-		}
-		ImGui::Text("angle: %.3f", angle);
-		ImGui::End();
+		pendulum.angularAcceleration = 0.f;
 
-		if (startFlag) {
-			angle += angulerVelocity * deltaTime;
-			if (angle >= Angle::PI * 2.f) {
-				startFlag = false;
-			}
-		}
-		sphere.centor = Vector3{std::cos(angle), std::sin(angle), 0.f} * radius + anchor;
+#pragma region 見た目
+
+		sphere.centor =
+		    pendulum.anchor +
+		    Vector3{std::sin(pendulum.angle), -std::cos(pendulum.angle), 0.f} * pendulum.length;
+
+		line.origin = pendulum.anchor;
+		line.diff = sphere.centor - line.origin;
+
+#pragma endregion
 
 #pragma endregion
 
@@ -182,7 +183,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.DrawGrid(camera.GetViewProjection(), 5);
 
 		render.DrawSphere(camera.GetViewProjection(), sphere);
-		// render.DrawLine(camera.GetViewProjection(), line, RED);
+		render.DrawLine(camera.GetViewProjection(), line, RED);
 		//  render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
 
 		///
