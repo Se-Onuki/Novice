@@ -385,3 +385,19 @@ void OBB::SetRotate(const Vector3& euler) {
 	std::memcpy(&orientations[1], &rotateMat.m[1], sizeof(Vector3));
 	std::memcpy(&orientations[2], &rotateMat.m[2], sizeof(Vector3));
 }
+
+Vector3 Spring::GetAcceleration(const Ball& ball) {
+	const Vector3 diff = ball.position - anchor;
+	const float length = diff.Length();
+	if (length) {
+		Vector3 direction = diff.Nomalize();
+		Vector3 restPosition = anchor + direction * naturalLength;
+		Vector3 desplacement = length * (ball.position - restPosition);
+		Vector3 restoringForce = -stiffness * desplacement;
+
+		Vector3 dampingForce = -dampingCoefficient * ball.velocity;
+		Vector3 force = restoringForce + dampingForce;
+		return force / ball.mass;
+	}
+	return Vector3::zero();
+}

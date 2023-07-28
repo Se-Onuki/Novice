@@ -139,18 +139,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ball.acceleration += kGravity;
 
-		const Vector3 diff = ball.position - spring.anchor;
-		const float length = diff.Length();
-		if (length) {
-			Vector3 direction = diff.Nomalize();
-			Vector3 restPosition = spring.anchor + direction * spring.naturalLength;
-			Vector3 desplacement = length * (ball.position - restPosition);
-			Vector3 restoringForce = -spring.stiffness * desplacement;
+		ball.acceleration += spring.GetAcceleration(ball);
 
-			Vector3 dampingForce = -spring.dampingCoefficient * ball.velocity;
-			Vector3 force = restoringForce + dampingForce;
-			ball.acceleration += force / ball.mass;
-		}
 		ball.velocity += ball.acceleration * deltaTime;
 		ball.position += ball.velocity * deltaTime;
 		ball.acceleration = Vector3::zero();

@@ -140,13 +140,6 @@ struct AABB {
 	void Swaping();
 };
 
-struct Spring {
-	Vector3 anchor;           // 固定された端
-	float naturalLength;      // 自然長
-	float stiffness;          // 剛性 ばね定数k
-	float dampingCoefficient; // 減衰係数
-};
-
 struct Ball {
 	Vector3 position;     // ボールの位置
 	Vector3 velocity;     // ボールの速度
@@ -154,6 +147,23 @@ struct Ball {
 	float mass;           // ボールの質量
 	float radius;         // ボールの半径
 	uint32_t color;       // ボールの色
+};
+
+struct Spring {
+	Vector3 anchor;           // 固定された端
+	float naturalLength;      // 自然長
+	float stiffness;          // 剛性 ばね定数k
+	float dampingCoefficient; // 減衰係数
+
+	Vector3 GetAcceleration(const Ball& ball);
+};
+
+struct Pendulum {
+	Vector3 anchor;            // 固定された端
+	float length;              // 紐の長さ
+	float angle;               // 現在の角度
+	float angularVelocity;     // 角速度ω
+	float angularAcceleration; // 角加速度
 };
 
 class ModelClass {
