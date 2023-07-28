@@ -46,22 +46,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	const float deltaTime = 1.f / 60.f;
 	const Vector3 kGravity{0.f, -9.8f, 0.f};
-	const Vector3 defaultPos{0.8f, 0.2f, 0.f};
+	// const Vector3 defaultPos{0.8f, 0.2f, 0.f};
 
-	Spring spring{};
-	spring.anchor = {0.f, 1.f, 0.f};
-	spring.naturalLength = 0.7f;
-	spring.stiffness = 100.f;
-	spring.dampingCoefficient = 2.f;
+	const Vector3 anchor = Vector3::zero();
+	float angle = 0.f;
+	float angulerVelocity = Angle::PI;
+	// float angularAcceleration = 0.f;
+	float radius = 0.8f;
 
-	Ball ball{};
-	ball.position = defaultPos;
-	ball.mass = 2.f;
-	ball.radius = 0.05f;
-	ball.color = BLUE;
+	bool startFlag = false;
 
-	LineBase line{};
-	Sphere sphere{.radius = ball.radius};
+	// LineBase line{};
+	Sphere sphere{.radius = 0.3f};
 
 	// uint32_t sphereColor = WHITE;
 
@@ -129,30 +125,24 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             cameraRotate, cameraPos + cameraOrigin
         });
 
-		ImGui::Begin("ball");
-		if (ImGui::Button("reset")) {
-			ball.position = defaultPos;
+#pragma region 振り子
+
+		ImGui::Begin("pendulum");
+		if (ImGui::Button("start")) {
+
+			startFlag = true;
+			angle = 0.f;
 		}
+		ImGui::Text("angle: %.3f", angle);
 		ImGui::End();
 
-#pragma region Spring
-
-		ball.acceleration += kGravity;
-
-		ball.acceleration += spring.GetAcceleration(ball);
-
-		ball.velocity += ball.acceleration * deltaTime;
-		ball.position += ball.velocity * deltaTime;
-		ball.acceleration = Vector3::zero();
-
-#pragma endregion
-
-#pragma region 見た目設定
-
-		line.origin = spring.anchor;
-		line.diff = ball.position - spring.anchor;
-
-		sphere.centor = ball.position;
+		if (startFlag) {
+			angle += angulerVelocity * deltaTime;
+			if (angle >= Angle::PI * 2.f) {
+				startFlag = false;
+			}
+		}
+		sphere.centor = Vector3{std::cos(angle), std::sin(angle), 0.f} * radius + anchor;
 
 #pragma endregion
 
@@ -191,9 +181,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.Draw();
 		render.DrawGrid(camera.GetViewProjection(), 5);
 
-		render.DrawSphere(camera.GetViewProjection(), sphere, ball.color);
-		render.DrawLine(camera.GetViewProjection(), line, RED);
-		// render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
+		render.DrawSphere(camera.GetViewProjection(), sphere);
+		// render.DrawLine(camera.GetViewProjection(), line, RED);
+		//  render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
 
 		///
 		/// ↑描画処理ここまで
