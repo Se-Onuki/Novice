@@ -164,6 +164,7 @@ struct Pendulum {
 	float angle;               // 現在の角度
 	float angularVelocity;     // 角速度ω
 	float angularAcceleration; // 角加速度
+	void MoveSwing(const Vector3& kGravity, const float deltaTime);
 };
 
 class ModelClass {

@@ -401,3 +401,11 @@ Vector3 Spring::GetAcceleration(const Ball& ball) {
 	}
 	return Vector3::zero();
 }
+
+void Pendulum::MoveSwing(const Vector3& kGravity, const float deltaTime) {
+	angularAcceleration = kGravity.y / length * std::sin(angle);
+	angularVelocity += angularAcceleration * deltaTime;
+	angle += angularVelocity * deltaTime;
+
+	angularAcceleration = 0.f;
+}

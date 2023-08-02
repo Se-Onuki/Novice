@@ -141,11 +141,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::DragFloat("Acceleration", &pendulum.angularAcceleration);
 
 		if (startFlag) {
-			pendulum.angularAcceleration = kGravity.y / pendulum.length * std::sin(pendulum.angle);
-			pendulum.angularVelocity += pendulum.angularAcceleration * deltaTime;
-			pendulum.angle += pendulum.angularVelocity * deltaTime;
-
-			pendulum.angularAcceleration = 0.f;
+			pendulum.MoveSwing(kGravity, deltaTime);
 		}
 
 #pragma region 見た目
