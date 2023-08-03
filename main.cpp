@@ -61,6 +61,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	LineBase line{};
 	Sphere sphere{.radius = 0.15f};
 
+	LineBase a{.lineType = LineBase::LineType::Segment};
+
 	// uint32_t sphereColor = WHITE;
 
 	// ウィンドウの×ボタンが押されるまでループ

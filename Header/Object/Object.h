@@ -177,6 +177,11 @@ struct ConicalPendulum {
 	Vector3 GetPos();
 };
 
+struct Capsule {
+	LineBase segment{.lineType = LineBase::LineType::Segment};
+	float radius;
+};
+
 class ModelClass {
 public:
 	ModelClass();

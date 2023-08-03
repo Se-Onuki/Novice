@@ -104,11 +104,9 @@ struct Vector3 {
 		return Vector3{y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x};
 	}
 
-	//[[nodiscard]] inline Vector3 Reflect(Vector3 normal) const {
-	//	return (*this) - normal * 2 * ((*this) * normal);
-
-	//	// return {this->x- 2}
-	//}
+	inline Vector3 Reflect(Vector3 normal) const {
+		return (*this) - normal * 2.f * ((*this) * normal);
+	}
 
 	/// @brief 垂直ベクトル
 	/// @return 90度回転したベクトル
