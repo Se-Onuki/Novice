@@ -419,5 +419,5 @@ void ConicalPendulum::MoveAngle(const Vector3& kGravity, const float deltaTime) 
 Vector3 ConicalPendulum::GetPos() { 
 	const float radius = std::sin(halfApexAngle) * length;
 	const float height = std::cos(halfApexAngle) * length;
-	return Vector3{std::cos(angle) * radius, -height, std::sin(angle) * radius} + anchor;
+	return Vector3{std::cos(angle) * radius, -height, -std::sin(angle) * radius} + anchor;
 }
