@@ -416,8 +416,16 @@ void ConicalPendulum::MoveAngle(const Vector3& kGravity, const float deltaTime) 
 	angle = std::fmod(angle, Angle::PI_2);
 }
 
-Vector3 ConicalPendulum::GetPos() { 
+Vector3 ConicalPendulum::GetPos() {
 	const float radius = std::sin(halfApexAngle) * length;
 	const float height = std::cos(halfApexAngle) * length;
 	return Vector3{std::cos(angle) * radius, -height, -std::sin(angle) * radius} + anchor;
+}
+
+void Ball::Update(const Plane& plane, const float deltaTime, const float elasticity) {
+	velocity += acceleration * deltaTime;
+	position += velocity * deltaTime;
+	if (Collision::IsHit(Sphere{position, radius}, plane)) {
+		velocity = velocity.Reflect(plane.normal) * elasticity;
+	}
 }

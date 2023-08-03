@@ -147,6 +147,8 @@ struct Ball {
 	float mass;           // ボールの質量
 	float radius;         // ボールの半径
 	uint32_t color;       // ボールの色
+
+	void Update(const Plane& plane, const float deltaTime, const float elasticity);
 };
 
 struct Spring {
