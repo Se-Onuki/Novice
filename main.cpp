@@ -46,22 +46,24 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	const float deltaTime = 1.f / 60.f;
 	const Vector3 kGravity{0.f, -9.8f, 0.f};
-	// const Vector3 defaultPos{0.8f, 0.2f, 0.f};
-	float defaultAngle = 0.0f;
 
-	ConicalPendulum pendulum{};
-	pendulum.anchor = {0.f, 1.f, 0.f};
-	pendulum.length = 0.8f;
-	pendulum.halfApexAngle = 0.7f;
-	pendulum.angle = defaultAngle;
-	pendulum.angularVelocity = 0.f;
+	const Vector3 defaultPos{0.8f, 1.2f, 0.3f};
+	// float defaultAngle = 0.0f;
+
+	Plane plane{};
+	plane.normal = Vector3{-0.2f, 0.9f, -0.3f}.Nomalize();
+	plane.distance = 0.f;
+
+	Ball ball{};
+	ball.position = defaultPos;
+	ball.mass = 2.f;
+	ball.radius = 0.05f;
+	ball.color = WHITE;
 
 	bool startFlag = false;
 
-	LineBase line{};
-	Sphere sphere{.radius = 0.15f};
-
-	// LineBase a{.lineType = LineBase::LineType::Segment};
+	Sphere sphere{};
+	sphere.radius = ball.radius;
 
 	// uint32_t sphereColor = WHITE;
 
@@ -130,27 +132,25 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         });
 
 #pragma region 振り子
-		ImGui::DragFloat("DefaultAngle", &defaultAngle);
+		// ImGui::DragFloat("DefaultAngle", &defaultAngle);
 		if (ImGui::Button("start")) {
-			pendulum.angle = defaultAngle;
-			pendulum.angularVelocity = 0.f;
+			ball.position = defaultPos;
+			ball.velocity = Vector3::zero();
+			ball.acceleration = Vector3::zero();
 			startFlag = true;
 		}
-		ImGui::DragFloat3("Anchor", &pendulum.anchor.x);
-		ImGui::DragFloat("Length", &pendulum.length);
-		ImGui::DragFloat("Velocity", &pendulum.angularVelocity);
-		ImGui::SliderAngle("Angle", &pendulum.angle);
 
 		if (startFlag) {
-			pendulum.MoveAngle(kGravity, deltaTime);
+			ball.acceleration += kGravity;
+			ball.Update(plane, deltaTime, 0.98f);
 		}
 
 #pragma region 見た目
 
-		sphere.centor = pendulum.GetPos();
+		sphere.centor = ball.position;
 
-		line.origin = pendulum.anchor;
-		line.diff = sphere.centor - line.origin;
+		// line.origin = pendulum.anchor;
+		// line.diff = sphere.centor - line.origin;
 
 #pragma endregion
 
@@ -192,8 +192,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		render.DrawGrid(camera.GetViewProjection(), 5);
 
 		render.DrawSphere(camera.GetViewProjection(), sphere);
-		render.DrawLine(camera.GetViewProjection(), line, RED);
-		//  render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
+		render.DrawPlane(camera.GetViewProjection(), plane);
+		// render.DrawLine(camera.GetViewProjection(), line, RED);
+		//   render.DrawCurve(camera.GetViewProjection(), catmull, WHITE, 20u);
 
 		///
 		/// ↑描画処理ここまで

@@ -425,6 +425,7 @@ Vector3 ConicalPendulum::GetPos() {
 void Ball::Update(const Plane& plane, const float deltaTime, const float elasticity) {
 	velocity += acceleration * deltaTime;
 	position += velocity * deltaTime;
+	acceleration = Vector3::zero();
 	if (Collision::IsHit(Sphere{position, radius}, plane)) {
 		velocity = velocity.Reflect(plane.normal) * elasticity;
 	}
