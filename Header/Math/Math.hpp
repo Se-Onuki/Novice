@@ -104,6 +104,7 @@ struct Radian {
 	float ToDigree();
 };
 constexpr float PI = static_cast<float>(std::numbers::pi);
+constexpr float PI_2 = static_cast<float>(std::numbers::pi) * 2;
 
 constexpr float Dig2Rad = Angle::PI / 180.f;
 constexpr float Rad2Dig = 180.f / Angle::PI;

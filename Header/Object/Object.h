@@ -167,6 +167,16 @@ struct Pendulum {
 	void MoveSwing(const Vector3& kGravity, const float deltaTime);
 };
 
+struct ConicalPendulum {
+	Vector3 anchor;        // 固定された端
+	float length;          // 紐の長さ
+	float halfApexAngle;   // 円錐の頂点の半分
+	float angle;           // 現在の角度
+	float angularVelocity; // 角速度ω
+	void MoveAngle(const Vector3& kGravity, const float deltaTime);
+	Vector3 GetPos();
+};
+
 class ModelClass {
 public:
 	ModelClass();

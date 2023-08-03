@@ -47,14 +47,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	const float deltaTime = 1.f / 60.f;
 	const Vector3 kGravity{0.f, -9.8f, 0.f};
 	// const Vector3 defaultPos{0.8f, 0.2f, 0.f};
-	float defaultAngle = 0.7f;
+	float defaultAngle = 0.0f;
 
-	Pendulum pendulum{};
+	ConicalPendulum pendulum{};
 	pendulum.anchor = {0.f, 1.f, 0.f};
 	pendulum.length = 0.8f;
+	pendulum.halfApexAngle = 0.7f;
 	pendulum.angle = defaultAngle;
 	pendulum.angularVelocity = 0.f;
-	pendulum.angularAcceleration = 0.f;
 
 	bool startFlag = false;
 
@@ -131,24 +131,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::DragFloat("DefaultAngle", &defaultAngle);
 		if (ImGui::Button("start")) {
 			pendulum.angle = defaultAngle;
-			pendulum.angularAcceleration = 0.f;
 			pendulum.angularVelocity = 0.f;
 			startFlag = true;
 		}
 		ImGui::DragFloat3("Anchor", &pendulum.anchor.x);
 		ImGui::DragFloat("Length", &pendulum.length);
 		ImGui::DragFloat("Velocity", &pendulum.angularVelocity);
-		ImGui::DragFloat("Acceleration", &pendulum.angularAcceleration);
+		ImGui::SliderAngle("Angle", &pendulum.angle);
 
 		if (startFlag) {
-			pendulum.MoveSwing(kGravity, deltaTime);
+			pendulum.MoveAngle(kGravity, deltaTime);
 		}
 
 #pragma region 見た目
 
-		sphere.centor =
-		    pendulum.anchor +
-		    Vector3{std::sin(pendulum.angle), -std::cos(pendulum.angle), 0.f} * pendulum.length;
+		sphere.centor = pendulum.GetPos();
 
 		line.origin = pendulum.anchor;
 		line.diff = sphere.centor - line.origin;
